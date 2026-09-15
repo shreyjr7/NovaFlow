@@ -15,6 +15,10 @@ db_url = settings.DATABASE_URL
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
+# Check for placeholder password
+if "[YOUR" in db_url:
+    db_url = "sqlite:///./novaflow.db"
+
 # Configure connection arguments (pool_pre_ping for resilient cloud connection to Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if "sqlite" in db_url:
@@ -24,7 +28,11 @@ else:
     engine_kwargs["pool_size"] = 10
     engine_kwargs["max_overflow"] = 20
 
-engine = create_engine(db_url, **engine_kwargs)
+try:
+    engine = create_engine(db_url, **engine_kwargs)
+except Exception:
+    db_url = "sqlite:///./novaflow.db"
+    engine = create_engine(db_url, connect_args={"check_same_thread": False}, echo=False, future=True)
 
 def get_session() -> Session:
     with Session(engine) as session:

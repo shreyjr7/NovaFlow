@@ -1,100 +1,1258 @@
 {
   "all_states": [
     {
-      "state": "National Capital Territory of Delhi",
-      "capital": "New Delhi",
-      "code": "DL",
+      "code": "AP",
+      "state": "Andhra Pradesh",
+      "capital": "Amaravati",
+      "authority": "APSRTC",
       "districts": [
         {
-          "name": "New Delhi",
+          "name": "Vijayawada",
           "tehsils": [
-            "Chanakyapuri",
-            "Delhi Cantonment",
-            "Vasant Vihar"
+            "Vijayawada Central",
+            "Vijayawada North",
+            "Vijayawada South"
           ],
-          "lat": 28.6139,
-          "lon": 77.209,
+          "lat": 16.4867,
+          "lon": 80.6477,
           "zoom": 13,
           "corridors": [
-            "Connaught Place Inner Circle",
-            "Barakhamba Road",
-            "Janpath",
-            "Ashoka Road"
+            "MG Road - Bandar Road Transit Arterial",
+            "Vijayawada Ring Road",
+            "Vijayawada Station Connector"
           ],
           "active_buses": 4,
-          "defects": 68,
-          "congestion": "High (Peak)"
-        },
-        {
-          "name": "Central Delhi",
-          "tehsils": [
-            "Civil Lines",
-            "Karol Bagh",
-            "Kotwali"
-          ],
-          "lat": 28.6453,
-          "lon": 77.2128,
-          "zoom": 13,
-          "corridors": [
-            "Pusa Road",
-            "DB Gupta Road",
-            "Chandni Chowk Red Fort Loop"
-          ],
-          "active_buses": 4,
-          "defects": 42,
-          "congestion": "Severe"
-        },
-        {
-          "name": "South Delhi",
-          "tehsils": [
-            "Hauz Khas",
-            "Mehrauli",
-            "Saket"
-          ],
-          "lat": 28.5355,
-          "lon": 77.2,
-          "zoom": 13,
-          "corridors": [
-            "Ring Road AIIMS Flyover",
-            "Outer Ring Road IIT Flyover",
-            "Aurobindo Marg"
-          ],
-          "active_buses": 4,
-          "defects": 74,
+          "defects": 39,
           "congestion": "Moderate"
         },
         {
-          "name": "South West Delhi",
+          "name": "Visakhapatnam",
           "tehsils": [
-            "Dwarka",
-            "Kapashere",
-            "Najafgarh"
+            "Visakhapatnam Central",
+            "Visakhapatnam North",
+            "Visakhapatnam South"
           ],
-          "lat": 28.5921,
-          "lon": 77.046,
+          "lat": 16.4708,
+          "lon": 80.634,
           "zoom": 13,
           "corridors": [
-            "IGI Airport Express Corridor",
-            "Dwarka Expressway Sector 21",
-            "Aerocity Spine"
+            "MG Road - Bandar Road Transit Arterial",
+            "Visakhapatnam Ring Road",
+            "Visakhapatnam Station Connector"
           ],
           "active_buses": 4,
-          "defects": 35,
+          "defects": 70,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Guntur",
+          "tehsils": [
+            "Guntur Central",
+            "Guntur North",
+            "Guntur South"
+          ],
+          "lat": 16.4811,
+          "lon": 80.6585,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - Bandar Road Transit Arterial",
+            "Guntur Ring Road",
+            "Guntur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 50,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Tirupati",
+          "tehsils": [
+            "Tirupati Central",
+            "Tirupati North",
+            "Tirupati South"
+          ],
+          "lat": 16.5279,
+          "lon": 80.6704,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - Bandar Road Transit Arterial",
+            "Tirupati Ring Road",
+            "Tirupati Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 56,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "AR",
+      "state": "Arunachal Pradesh",
+      "capital": "Itanagar",
+      "authority": "APSTS",
+      "districts": [
+        {
+          "name": "Papum Pare",
+          "tehsils": [
+            "Papum Pare Central",
+            "Papum Pare North",
+            "Papum Pare South"
+          ],
+          "lat": 27.0933,
+          "lon": 93.6437,
+          "zoom": 13,
+          "corridors": [
+            "NH-415 Ganga Market Transit Spine",
+            "Papum Pare Ring Road",
+            "Papum Pare Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 61,
+          "congestion": "Severe"
+        },
+        {
+          "name": "East Kameng",
+          "tehsils": [
+            "East Kameng Central",
+            "East Kameng North",
+            "East Kameng South"
+          ],
+          "lat": 27.0476,
+          "lon": 93.6359,
+          "zoom": 13,
+          "corridors": [
+            "NH-415 Ganga Market Transit Spine",
+            "East Kameng Ring Road",
+            "East Kameng Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 50,
           "congestion": "Normal"
         },
         {
-          "name": "North Delhi",
+          "name": "West Siang",
           "tehsils": [
-            "Alipur",
-            "Model Town",
-            "Narela"
+            "West Siang Central",
+            "West Siang North",
+            "West Siang South"
           ],
-          "lat": 28.73,
-          "lon": 77.15,
+          "lat": 27.0521,
+          "lon": 93.6238,
           "zoom": 13,
           "corridors": [
-            "GT Karnal Road (NH-44)",
-            "Mall Road University Enclave"
+            "NH-415 Ganga Market Transit Spine",
+            "West Siang Ring Road",
+            "West Siang Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 37,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Tawang",
+          "tehsils": [
+            "Tawang Central",
+            "Tawang North",
+            "Tawang South"
+          ],
+          "lat": 27.1105,
+          "lon": 93.6308,
+          "zoom": 13,
+          "corridors": [
+            "NH-415 Ganga Market Transit Spine",
+            "Tawang Ring Road",
+            "Tawang Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 62,
+          "congestion": "High (Peak)"
+        }
+      ]
+    },
+    {
+      "code": "AS",
+      "state": "Assam",
+      "capital": "Dispur",
+      "authority": "ASTC",
+      "districts": [
+        {
+          "name": "Kamrup Metropolitan",
+          "tehsils": [
+            "Kamrup Metropolitan Central",
+            "Kamrup Metropolitan North",
+            "Kamrup Metropolitan South"
+          ],
+          "lat": 26.137,
+          "lon": 91.7338,
+          "zoom": 13,
+          "corridors": [
+            "GS Road - Paltan Bazaar Express Corridor",
+            "Kamrup Metropolitan Ring Road",
+            "Kamrup Metropolitan Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 57,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Dibrugarh",
+          "tehsils": [
+            "Dibrugarh Central",
+            "Dibrugarh North",
+            "Dibrugarh South"
+          ],
+          "lat": 26.119,
+          "lon": 91.7236,
+          "zoom": 13,
+          "corridors": [
+            "GS Road - Paltan Bazaar Express Corridor",
+            "Dibrugarh Ring Road",
+            "Dibrugarh Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 49,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Silchar",
+          "tehsils": [
+            "Silchar Central",
+            "Silchar North",
+            "Silchar South"
+          ],
+          "lat": 26.1568,
+          "lon": 91.775,
+          "zoom": 13,
+          "corridors": [
+            "GS Road - Paltan Bazaar Express Corridor",
+            "Silchar Ring Road",
+            "Silchar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 71,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Jorhat",
+          "tehsils": [
+            "Jorhat Central",
+            "Jorhat North",
+            "Jorhat South"
+          ],
+          "lat": 26.1361,
+          "lon": 91.729,
+          "zoom": 13,
+          "corridors": [
+            "GS Road - Paltan Bazaar Express Corridor",
+            "Jorhat Ring Road",
+            "Jorhat Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "BR",
+      "state": "Bihar",
+      "capital": "Patna",
+      "authority": "BSRTC",
+      "districts": [
+        {
+          "name": "Patna",
+          "tehsils": [
+            "Patna Central",
+            "Patna North",
+            "Patna South"
+          ],
+          "lat": 25.5549,
+          "lon": 85.1476,
+          "zoom": 13,
+          "corridors": [
+            "Bailey Road - Dak Bungalow Arterial",
+            "Patna Ring Road",
+            "Patna Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 67,
+          "congestion": "High"
+        },
+        {
+          "name": "Gaya",
+          "tehsils": [
+            "Gaya Central",
+            "Gaya North",
+            "Gaya South"
+          ],
+          "lat": 25.5721,
+          "lon": 85.1325,
+          "zoom": 13,
+          "corridors": [
+            "Bailey Road - Dak Bungalow Arterial",
+            "Gaya Ring Road",
+            "Gaya Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Muzaffarpur",
+          "tehsils": [
+            "Muzaffarpur Central",
+            "Muzaffarpur North",
+            "Muzaffarpur South"
+          ],
+          "lat": 25.6153,
+          "lon": 85.1647,
+          "zoom": 13,
+          "corridors": [
+            "Bailey Road - Dak Bungalow Arterial",
+            "Muzaffarpur Ring Road",
+            "Muzaffarpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 64,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Bhagalpur",
+          "tehsils": [
+            "Bhagalpur Central",
+            "Bhagalpur North",
+            "Bhagalpur South"
+          ],
+          "lat": 25.5697,
+          "lon": 85.1333,
+          "zoom": 13,
+          "corridors": [
+            "Bailey Road - Dak Bungalow Arterial",
+            "Bhagalpur Ring Road",
+            "Bhagalpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 54,
+          "congestion": "High (Peak)"
+        }
+      ]
+    },
+    {
+      "code": "CG",
+      "state": "Chhattisgarh",
+      "capital": "Raipur",
+      "authority": "CSRTC",
+      "districts": [
+        {
+          "name": "Raipur",
+          "tehsils": [
+            "Raipur Central",
+            "Raipur North",
+            "Raipur South"
+          ],
+          "lat": 21.2719,
+          "lon": 81.6438,
+          "zoom": 13,
+          "corridors": [
+            "GE Road - Telibandha Ring Corridor",
+            "Raipur Ring Road",
+            "Raipur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Bilaspur",
+          "tehsils": [
+            "Bilaspur Central",
+            "Bilaspur North",
+            "Bilaspur South"
+          ],
+          "lat": 21.2395,
+          "lon": 81.6005,
+          "zoom": 13,
+          "corridors": [
+            "GE Road - Telibandha Ring Corridor",
+            "Bilaspur Ring Road",
+            "Bilaspur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 56,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Durg",
+          "tehsils": [
+            "Durg Central",
+            "Durg North",
+            "Durg South"
+          ],
+          "lat": 21.2688,
+          "lon": 81.6121,
+          "zoom": 13,
+          "corridors": [
+            "GE Road - Telibandha Ring Corridor",
+            "Durg Ring Road",
+            "Durg Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 46,
+          "congestion": "High"
+        },
+        {
+          "name": "Korba",
+          "tehsils": [
+            "Korba Central",
+            "Korba North",
+            "Korba South"
+          ],
+          "lat": 21.2724,
+          "lon": 81.608,
+          "zoom": 13,
+          "corridors": [
+            "GE Road - Telibandha Ring Corridor",
+            "Korba Ring Road",
+            "Korba Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 67,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "GA",
+      "state": "Goa",
+      "capital": "Panaji",
+      "authority": "Kadamba Transport (KTC)",
+      "districts": [
+        {
+          "name": "North Goa",
+          "tehsils": [
+            "North Goa Central",
+            "North Goa North",
+            "North Goa South"
+          ],
+          "lat": 15.4803,
+          "lon": 73.8613,
+          "zoom": 13,
+          "corridors": [
+            "Dayanand Bandodkar Marg - Miramar Loop",
+            "North Goa Ring Road",
+            "North Goa Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 36,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "South Goa",
+          "tehsils": [
+            "South Goa Central",
+            "South Goa North",
+            "South Goa South"
+          ],
+          "lat": 15.5178,
+          "lon": 73.8079,
+          "zoom": 13,
+          "corridors": [
+            "Dayanand Bandodkar Marg - Miramar Loop",
+            "South Goa Ring Road",
+            "South Goa Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 38,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Tiswadi",
+          "tehsils": [
+            "Tiswadi Central",
+            "Tiswadi North",
+            "Tiswadi South"
+          ],
+          "lat": 15.458,
+          "lon": 73.8509,
+          "zoom": 13,
+          "corridors": [
+            "Dayanand Bandodkar Marg - Miramar Loop",
+            "Tiswadi Ring Road",
+            "Tiswadi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 62,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Bardez",
+          "tehsils": [
+            "Bardez Central",
+            "Bardez North",
+            "Bardez South"
+          ],
+          "lat": 15.5006,
+          "lon": 73.8404,
+          "zoom": 13,
+          "corridors": [
+            "Dayanand Bandodkar Marg - Miramar Loop",
+            "Bardez Ring Road",
+            "Bardez Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 67,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "GJ",
+      "state": "Gujarat",
+      "capital": "Gandhinagar",
+      "authority": "GSRTC / AMTS",
+      "districts": [
+        {
+          "name": "Gandhinagar",
+          "tehsils": [
+            "Gandhinagar Central",
+            "Gandhinagar North",
+            "Gandhinagar South"
+          ],
+          "lat": 23.0204,
+          "lon": 72.5494,
+          "zoom": 13,
+          "corridors": [
+            "SG Highway - Ashram Road BRTS Corridor",
+            "Gandhinagar Ring Road",
+            "Gandhinagar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 75,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Ahmedabad",
+          "tehsils": [
+            "Ahmedabad Central",
+            "Ahmedabad North",
+            "Ahmedabad South"
+          ],
+          "lat": 23.052,
+          "lon": 72.5941,
+          "zoom": 13,
+          "corridors": [
+            "SG Highway - Ashram Road BRTS Corridor",
+            "Ahmedabad Ring Road",
+            "Ahmedabad Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 52,
+          "congestion": "High"
+        },
+        {
+          "name": "Surat",
+          "tehsils": [
+            "Surat Central",
+            "Surat North",
+            "Surat South"
+          ],
+          "lat": 22.9972,
+          "lon": 72.6075,
+          "zoom": 13,
+          "corridors": [
+            "SG Highway - Ashram Road BRTS Corridor",
+            "Surat Ring Road",
+            "Surat Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 58,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Vadodara",
+          "tehsils": [
+            "Vadodara Central",
+            "Vadodara North",
+            "Vadodara South"
+          ],
+          "lat": 23.0435,
+          "lon": 72.5456,
+          "zoom": 13,
+          "corridors": [
+            "SG Highway - Ashram Road BRTS Corridor",
+            "Vadodara Ring Road",
+            "Vadodara Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 60,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "code": "HR",
+      "state": "Haryana",
+      "capital": "Chandigarh",
+      "authority": "Haryana Roadways (GMCBL)",
+      "districts": [
+        {
+          "name": "Gurugram",
+          "tehsils": [
+            "Gurugram Central",
+            "Gurugram North",
+            "Gurugram South"
+          ],
+          "lat": 28.445,
+          "lon": 77.0279,
+          "zoom": 13,
+          "corridors": [
+            "Cyber City - Golf Course Road Express",
+            "Gurugram Ring Road",
+            "Gurugram Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 36,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Faridabad",
+          "tehsils": [
+            "Faridabad Central",
+            "Faridabad North",
+            "Faridabad South"
+          ],
+          "lat": 28.4503,
+          "lon": 77.0564,
+          "zoom": 13,
+          "corridors": [
+            "Cyber City - Golf Course Road Express",
+            "Faridabad Ring Road",
+            "Faridabad Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 56,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Panchkula",
+          "tehsils": [
+            "Panchkula Central",
+            "Panchkula North",
+            "Panchkula South"
+          ],
+          "lat": 28.4878,
+          "lon": 77.0352,
+          "zoom": 13,
+          "corridors": [
+            "Cyber City - Golf Course Road Express",
+            "Panchkula Ring Road",
+            "Panchkula Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 47,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Karnal",
+          "tehsils": [
+            "Karnal Central",
+            "Karnal North",
+            "Karnal South"
+          ],
+          "lat": 28.4841,
+          "lon": 77.0188,
+          "zoom": 13,
+          "corridors": [
+            "Cyber City - Golf Course Road Express",
+            "Karnal Ring Road",
+            "Karnal Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 63,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "HP",
+      "state": "Himachal Pradesh",
+      "capital": "Shimla",
+      "authority": "HRTC",
+      "districts": [
+        {
+          "name": "Shimla",
+          "tehsils": [
+            "Shimla Central",
+            "Shimla North",
+            "Shimla South"
+          ],
+          "lat": 31.1228,
+          "lon": 77.1669,
+          "zoom": 13,
+          "corridors": [
+            "Cart Road - Circular Mall Road Spine",
+            "Shimla Ring Road",
+            "Shimla Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "High"
+        },
+        {
+          "name": "Kangra",
+          "tehsils": [
+            "Kangra Central",
+            "Kangra North",
+            "Kangra South"
+          ],
+          "lat": 31.1312,
+          "lon": 77.1582,
+          "zoom": 13,
+          "corridors": [
+            "Cart Road - Circular Mall Road Spine",
+            "Kangra Ring Road",
+            "Kangra Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 57,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Mandi",
+          "tehsils": [
+            "Mandi Central",
+            "Mandi North",
+            "Mandi South"
+          ],
+          "lat": 31.1072,
+          "lon": 77.1429,
+          "zoom": 13,
+          "corridors": [
+            "Cart Road - Circular Mall Road Spine",
+            "Mandi Ring Road",
+            "Mandi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "High"
+        },
+        {
+          "name": "Solan",
+          "tehsils": [
+            "Solan Central",
+            "Solan North",
+            "Solan South"
+          ],
+          "lat": 31.1415,
+          "lon": 77.2,
+          "zoom": 13,
+          "corridors": [
+            "Cart Road - Circular Mall Road Spine",
+            "Solan Ring Road",
+            "Solan Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 61,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "JH",
+      "state": "Jharkhand",
+      "capital": "Ranchi",
+      "authority": "JSRTC",
+      "districts": [
+        {
+          "name": "Ranchi",
+          "tehsils": [
+            "Ranchi Central",
+            "Ranchi North",
+            "Ranchi South"
+          ],
+          "lat": 23.3105,
+          "lon": 85.3462,
+          "zoom": 13,
+          "corridors": [
+            "Main Road - Kanke Road Arterial",
+            "Ranchi Ring Road",
+            "Ranchi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 52,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Dhanbad",
+          "tehsils": [
+            "Dhanbad Central",
+            "Dhanbad North",
+            "Dhanbad South"
+          ],
+          "lat": 23.336,
+          "lon": 85.2934,
+          "zoom": 13,
+          "corridors": [
+            "Main Road - Kanke Road Arterial",
+            "Dhanbad Ring Road",
+            "Dhanbad Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "High"
+        },
+        {
+          "name": "Jamshedpur",
+          "tehsils": [
+            "Jamshedpur Central",
+            "Jamshedpur North",
+            "Jamshedpur South"
+          ],
+          "lat": 23.3231,
+          "lon": 85.2963,
+          "zoom": 13,
+          "corridors": [
+            "Main Road - Kanke Road Arterial",
+            "Jamshedpur Ring Road",
+            "Jamshedpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Bokaro",
+          "tehsils": [
+            "Bokaro Central",
+            "Bokaro North",
+            "Bokaro South"
+          ],
+          "lat": 23.3647,
+          "lon": 85.3217,
+          "zoom": 13,
+          "corridors": [
+            "Main Road - Kanke Road Arterial",
+            "Bokaro Ring Road",
+            "Bokaro Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 59,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "KA",
+      "state": "Karnataka",
+      "capital": "Bengaluru",
+      "authority": "BMTC / KSRTC",
+      "districts": [
+        {
+          "name": "Bengaluru Urban",
+          "tehsils": [
+            "Bengaluru Urban Central",
+            "Bengaluru Urban North",
+            "Bengaluru Urban South"
+          ],
+          "lat": 12.9782,
+          "lon": 77.5653,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road - Silk Board - Marathahalli Trunk",
+            "Bengaluru Urban Ring Road",
+            "Bengaluru Urban Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "High"
+        },
+        {
+          "name": "Mysuru",
+          "tehsils": [
+            "Mysuru Central",
+            "Mysuru North",
+            "Mysuru South"
+          ],
+          "lat": 12.9708,
+          "lon": 77.6296,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road - Silk Board - Marathahalli Trunk",
+            "Mysuru Ring Road",
+            "Mysuru Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 49,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Hubballi-Dharwad",
+          "tehsils": [
+            "Hubballi-Dharwad Central",
+            "Hubballi-Dharwad North",
+            "Hubballi-Dharwad South"
+          ],
+          "lat": 12.965,
+          "lon": 77.6111,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road - Silk Board - Marathahalli Trunk",
+            "Hubballi-Dharwad Ring Road",
+            "Hubballi-Dharwad Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Mangaluru",
+          "tehsils": [
+            "Mangaluru Central",
+            "Mangaluru North",
+            "Mangaluru South"
+          ],
+          "lat": 12.9869,
+          "lon": 77.6116,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road - Silk Board - Marathahalli Trunk",
+            "Mangaluru Ring Road",
+            "Mangaluru Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 54,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "code": "KL",
+      "state": "Kerala",
+      "capital": "Thiruvananthapuram",
+      "authority": "KSRTC (Kerala)",
+      "districts": [
+        {
+          "name": "Thiruvananthapuram",
+          "tehsils": [
+            "Thiruvananthapuram Central",
+            "Thiruvananthapuram North",
+            "Thiruvananthapuram South"
+          ],
+          "lat": 8.4962,
+          "lon": 76.9296,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - East Fort - Kowdiar Loop",
+            "Thiruvananthapuram Ring Road",
+            "Thiruvananthapuram Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 71,
+          "congestion": "High"
+        },
+        {
+          "name": "Ernakulam",
+          "tehsils": [
+            "Ernakulam Central",
+            "Ernakulam North",
+            "Ernakulam South"
+          ],
+          "lat": 8.4955,
+          "lon": 76.9751,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - East Fort - Kowdiar Loop",
+            "Ernakulam Ring Road",
+            "Ernakulam Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Kozhikode",
+          "tehsils": [
+            "Kozhikode Central",
+            "Kozhikode North",
+            "Kozhikode South"
+          ],
+          "lat": 8.5285,
+          "lon": 76.9312,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - East Fort - Kowdiar Loop",
+            "Kozhikode Ring Road",
+            "Kozhikode Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 40,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Thrissur",
+          "tehsils": [
+            "Thrissur Central",
+            "Thrissur North",
+            "Thrissur South"
+          ],
+          "lat": 8.4977,
+          "lon": 76.9737,
+          "zoom": 13,
+          "corridors": [
+            "MG Road - East Fort - Kowdiar Loop",
+            "Thrissur Ring Road",
+            "Thrissur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "code": "MP",
+      "state": "Madhya Pradesh",
+      "capital": "Bhopal",
+      "authority": "BCLL / AiCTSL",
+      "districts": [
+        {
+          "name": "Bhopal",
+          "tehsils": [
+            "Bhopal Central",
+            "Bhopal North",
+            "Bhopal South"
+          ],
+          "lat": 23.2856,
+          "lon": 77.4273,
+          "zoom": 13,
+          "corridors": [
+            "Hoshangabad Road - MP Nagar Central Corridor",
+            "Bhopal Ring Road",
+            "Bhopal Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 44,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Indore",
+          "tehsils": [
+            "Indore Central",
+            "Indore North",
+            "Indore South"
+          ],
+          "lat": 23.244,
+          "lon": 77.3928,
+          "zoom": 13,
+          "corridors": [
+            "Hoshangabad Road - MP Nagar Central Corridor",
+            "Indore Ring Road",
+            "Indore Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 66,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Gwalior",
+          "tehsils": [
+            "Gwalior Central",
+            "Gwalior North",
+            "Gwalior South"
+          ],
+          "lat": 23.2567,
+          "lon": 77.4305,
+          "zoom": 13,
+          "corridors": [
+            "Hoshangabad Road - MP Nagar Central Corridor",
+            "Gwalior Ring Road",
+            "Gwalior Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 35,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Jabalpur",
+          "tehsils": [
+            "Jabalpur Central",
+            "Jabalpur North",
+            "Jabalpur South"
+          ],
+          "lat": 23.2322,
+          "lon": 77.4173,
+          "zoom": 13,
+          "corridors": [
+            "Hoshangabad Road - MP Nagar Central Corridor",
+            "Jabalpur Ring Road",
+            "Jabalpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 70,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "code": "MH",
+      "state": "Maharashtra",
+      "capital": "Mumbai",
+      "authority": "BEST / MSRTC",
+      "districts": [
+        {
+          "name": "Mumbai City",
+          "tehsils": [
+            "Mumbai City Central",
+            "Mumbai City North",
+            "Mumbai City South"
+          ],
+          "lat": 19.0947,
+          "lon": 72.8911,
+          "zoom": 13,
+          "corridors": [
+            "Western Express Highway - Bandra Worli Sea Link",
+            "Mumbai City Ring Road",
+            "Mumbai City Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "High"
+        },
+        {
+          "name": "Mumbai Suburban",
+          "tehsils": [
+            "Mumbai Suburban Central",
+            "Mumbai Suburban North",
+            "Mumbai Suburban South"
+          ],
+          "lat": 19.0395,
+          "lon": 72.8968,
+          "zoom": 13,
+          "corridors": [
+            "Western Express Highway - Bandra Worli Sea Link",
+            "Mumbai Suburban Ring Road",
+            "Mumbai Suburban Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Pune",
+          "tehsils": [
+            "Pune Central",
+            "Pune North",
+            "Pune South"
+          ],
+          "lat": 19.1088,
+          "lon": 72.8872,
+          "zoom": 13,
+          "corridors": [
+            "Western Express Highway - Bandra Worli Sea Link",
+            "Pune Ring Road",
+            "Pune Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 42,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Nagpur",
+          "tehsils": [
+            "Nagpur Central",
+            "Nagpur North",
+            "Nagpur South"
+          ],
+          "lat": 19.0727,
+          "lon": 72.8962,
+          "zoom": 13,
+          "corridors": [
+            "Western Express Highway - Bandra Worli Sea Link",
+            "Nagpur Ring Road",
+            "Nagpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 40,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "code": "MN",
+      "state": "Manipur",
+      "capital": "Imphal",
+      "authority": "Manipur State Transport (MST)",
+      "districts": [
+        {
+          "name": "Imphal West",
+          "tehsils": [
+            "Imphal West Central",
+            "Imphal West North",
+            "Imphal West South"
+          ],
+          "lat": 24.7843,
+          "lon": 93.9042,
+          "zoom": 13,
+          "corridors": [
+            "Kangla Fort - Thangal Bazaar Ring",
+            "Imphal West Ring Road",
+            "Imphal West Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Imphal East",
+          "tehsils": [
+            "Imphal East Central",
+            "Imphal East North",
+            "Imphal East South"
+          ],
+          "lat": 24.8161,
+          "lon": 93.9203,
+          "zoom": 13,
+          "corridors": [
+            "Kangla Fort - Thangal Bazaar Ring",
+            "Imphal East Ring Road",
+            "Imphal East Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "High"
+        },
+        {
+          "name": "Thoubal",
+          "tehsils": [
+            "Thoubal Central",
+            "Thoubal North",
+            "Thoubal South"
+          ],
+          "lat": 24.8501,
+          "lon": 93.9547,
+          "zoom": 13,
+          "corridors": [
+            "Kangla Fort - Thangal Bazaar Ring",
+            "Thoubal Ring Road",
+            "Thoubal Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 57,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Bishnupur",
+          "tehsils": [
+            "Bishnupur Central",
+            "Bishnupur North",
+            "Bishnupur South"
+          ],
+          "lat": 24.7994,
+          "lon": 93.9034,
+          "zoom": 13,
+          "corridors": [
+            "Kangla Fort - Thangal Bazaar Ring",
+            "Bishnupur Ring Road",
+            "Bishnupur Station Connector"
           ],
           "active_buses": 4,
           "defects": 51,
@@ -103,1006 +1261,1674 @@
       ]
     },
     {
-      "state": "Haryana",
-      "capital": "Chandigarh",
-      "code": "HR",
+      "code": "ML",
+      "state": "Meghalaya",
+      "capital": "Shillong",
+      "authority": "Meghalaya Transport (MTC)",
       "districts": [
         {
-          "name": "Gurugram (Gurgaon)",
+          "name": "East Khasi Hills",
           "tehsils": [
-            "Gurugram",
-            "Sohna",
-            "Pataudi",
-            "Badshahpur",
-            "Wazirabad"
+            "East Khasi Hills Central",
+            "East Khasi Hills North",
+            "East Khasi Hills South"
           ],
-          "lat": 28.4595,
-          "lon": 77.0266,
+          "lat": 25.602,
+          "lon": 91.8667,
           "zoom": 13,
           "corridors": [
-            "Cyber City Cyber Hub Spine",
-            "Golf Course Road Expressway",
-            "NH-48 Rajiv Chowk",
-            "Sohna Elevated Corridor"
+            "GS Road - Police Bazar - Laitumkhrah Loop",
+            "East Khasi Hills Ring Road",
+            "East Khasi Hills Station Connector"
           ],
-          "active_buses": 6,
-          "defects": 82,
-          "congestion": "Severe"
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "Normal"
         },
         {
-          "name": "Faridabad",
+          "name": "West Garo Hills",
           "tehsils": [
-            "Faridabad",
-            "Ballabgarh",
-            "Badkhal",
-            "Dhauj"
+            "West Garo Hills Central",
+            "West Garo Hills North",
+            "West Garo Hills South"
           ],
-          "lat": 28.4089,
-          "lon": 77.3178,
+          "lat": 25.5475,
+          "lon": 91.9006,
           "zoom": 13,
           "corridors": [
-            "Mathura Road NH-19",
-            "Bypass Express Road",
-            "Bata Chowk"
+            "GS Road - Police Bazar - Laitumkhrah Loop",
+            "West Garo Hills Ring Road",
+            "West Garo Hills Station Connector"
           ],
-          "active_buses": 3,
-          "defects": 58,
+          "active_buses": 4,
+          "defects": 54,
           "congestion": "Moderate"
         },
         {
-          "name": "Karnal",
+          "name": "Ri-Bhoi",
           "tehsils": [
-            "Karnal",
-            "Assandh",
-            "Gharaunda",
-            "Indri",
-            "Nilokheri"
+            "Ri-Bhoi Central",
+            "Ri-Bhoi North",
+            "Ri-Bhoi South"
           ],
-          "lat": 29.6857,
-          "lon": 76.9905,
+          "lat": 25.6178,
+          "lon": 91.901,
           "zoom": 13,
           "corridors": [
-            "NH-44 Grand Trunk Corridor",
-            "Kunjpura Road",
-            "Meerut Road"
+            "GS Road - Police Bazar - Laitumkhrah Loop",
+            "Ri-Bhoi Ring Road",
+            "Ri-Bhoi Station Connector"
           ],
-          "active_buses": 2,
-          "defects": 32,
-          "congestion": "Normal"
+          "active_buses": 4,
+          "defects": 56,
+          "congestion": "Severe"
         },
         {
-          "name": "Panchkula",
+          "name": "Jaintia Hills",
           "tehsils": [
-            "Panchkula",
-            "Kalka",
-            "Raipur Rani"
+            "Jaintia Hills Central",
+            "Jaintia Hills North",
+            "Jaintia Hills South"
           ],
-          "lat": 30.6942,
-          "lon": 76.8606,
+          "lat": 25.5955,
+          "lon": 91.8671,
           "zoom": 13,
           "corridors": [
-            "Himalayan Expressway Zirakpur-Panchkula",
-            "Sector 5 Civic Spine"
+            "GS Road - Police Bazar - Laitumkhrah Loop",
+            "Jaintia Hills Ring Road",
+            "Jaintia Hills Station Connector"
           ],
-          "active_buses": 2,
-          "defects": 18,
+          "active_buses": 4,
+          "defects": 68,
           "congestion": "Normal"
         }
       ]
     },
     {
-      "state": "Maharashtra",
-      "capital": "Mumbai",
-      "code": "MH",
+      "code": "MZ",
+      "state": "Mizoram",
+      "capital": "Aizawl",
+      "authority": "Mizoram State Transport",
       "districts": [
         {
-          "name": "Mumbai Suburban",
+          "name": "Aizawl",
           "tehsils": [
-            "Andheri",
-            "Borivali",
-            "Kurla"
+            "Aizawl Central",
+            "Aizawl North",
+            "Aizawl South"
           ],
-          "lat": 19.1136,
-          "lon": 72.8697,
+          "lat": 23.7659,
+          "lon": 92.7548,
           "zoom": 13,
           "corridors": [
-            "Western Express Highway (Andheri Flyover)",
-            "JVLR Corridor",
-            "SV Road Bandra"
+            "Bara Bazar - Chanmari - Zarkawt Arterial",
+            "Aizawl Ring Road",
+            "Aizawl Station Connector"
           ],
-          "active_buses": 8,
-          "defects": 112,
+          "active_buses": 4,
+          "defects": 72,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Lunglei",
+          "tehsils": [
+            "Lunglei Central",
+            "Lunglei North",
+            "Lunglei South"
+          ],
+          "lat": 23.7445,
+          "lon": 92.6846,
+          "zoom": 13,
+          "corridors": [
+            "Bara Bazar - Chanmari - Zarkawt Arterial",
+            "Lunglei Ring Road",
+            "Lunglei Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 74,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Champhai",
+          "tehsils": [
+            "Champhai Central",
+            "Champhai North",
+            "Champhai South"
+          ],
+          "lat": 23.705,
+          "lon": 92.7537,
+          "zoom": 13,
+          "corridors": [
+            "Bara Bazar - Chanmari - Zarkawt Arterial",
+            "Champhai Ring Road",
+            "Champhai Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 36,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Kolasib",
+          "tehsils": [
+            "Kolasib Central",
+            "Kolasib North",
+            "Kolasib South"
+          ],
+          "lat": 23.7018,
+          "lon": 92.7002,
+          "zoom": 13,
+          "corridors": [
+            "Bara Bazar - Chanmari - Zarkawt Arterial",
+            "Kolasib Ring Road",
+            "Kolasib Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "NL",
+      "state": "Nagaland",
+      "capital": "Kohima",
+      "authority": "Nagaland State Transport (NST)",
+      "districts": [
+        {
+          "name": "Kohima",
+          "tehsils": [
+            "Kohima Central",
+            "Kohima North",
+            "Kohima South"
+          ],
+          "lat": 25.6531,
+          "lon": 94.1109,
+          "zoom": 13,
+          "corridors": [
+            "Main Market - High School Junction Loop",
+            "Kohima Ring Road",
+            "Kohima Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Dimapur",
+          "tehsils": [
+            "Dimapur Central",
+            "Dimapur North",
+            "Dimapur South"
+          ],
+          "lat": 25.6556,
+          "lon": 94.0779,
+          "zoom": 13,
+          "corridors": [
+            "Main Market - High School Junction Loop",
+            "Dimapur Ring Road",
+            "Dimapur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 46,
           "congestion": "Severe"
         },
         {
-          "name": "Mumbai City",
+          "name": "Mokokchung",
           "tehsils": [
-            "Colaba",
-            "Byculla",
-            "Malabar Hill",
-            "Parel"
+            "Mokokchung Central",
+            "Mokokchung North",
+            "Mokokchung South"
           ],
-          "lat": 18.9388,
-          "lon": 72.8354,
+          "lat": 25.7058,
+          "lon": 94.0996,
           "zoom": 13,
           "corridors": [
-            "Marine Drive Coastal Link",
-            "Eastern Freeway South Terminal",
-            "Pedder Road"
+            "Main Market - High School Junction Loop",
+            "Mokokchung Ring Road",
+            "Mokokchung Station Connector"
           ],
-          "active_buses": 6,
+          "active_buses": 4,
+          "defects": 43,
+          "congestion": "High"
+        },
+        {
+          "name": "Tuensang",
+          "tehsils": [
+            "Tuensang Central",
+            "Tuensang North",
+            "Tuensang South"
+          ],
+          "lat": 25.6987,
+          "lon": 94.0818,
+          "zoom": 13,
+          "corridors": [
+            "Main Market - High School Junction Loop",
+            "Tuensang Ring Road",
+            "Tuensang Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 70,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "OD",
+      "state": "Odisha",
+      "capital": "Bhubaneswar",
+      "authority": "CRUT (Mo Bus)",
+      "districts": [
+        {
+          "name": "Khordha",
+          "tehsils": [
+            "Khordha Central",
+            "Khordha North",
+            "Khordha South"
+          ],
+          "lat": 20.3032,
+          "lon": 85.8354,
+          "zoom": 13,
+          "corridors": [
+            "Janpath - Nandankanan Smart Transit Corridor",
+            "Khordha Ring Road",
+            "Khordha Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 49,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Cuttack",
+          "tehsils": [
+            "Cuttack Central",
+            "Cuttack North",
+            "Cuttack South"
+          ],
+          "lat": 20.2716,
+          "lon": 85.8068,
+          "zoom": 13,
+          "corridors": [
+            "Janpath - Nandankanan Smart Transit Corridor",
+            "Cuttack Ring Road",
+            "Cuttack Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 75,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Sundargarh",
+          "tehsils": [
+            "Sundargarh Central",
+            "Sundargarh North",
+            "Sundargarh South"
+          ],
+          "lat": 20.2887,
+          "lon": 85.7856,
+          "zoom": 13,
+          "corridors": [
+            "Janpath - Nandankanan Smart Transit Corridor",
+            "Sundargarh Ring Road",
+            "Sundargarh Station Connector"
+          ],
+          "active_buses": 4,
           "defects": 48,
-          "congestion": "High"
+          "congestion": "Moderate"
         },
         {
-          "name": "Pune",
+          "name": "Ganjam",
           "tehsils": [
-            "Pune City",
-            "Haveli",
-            "Baramati",
-            "Maval (Lonavala)",
-            "Khed"
+            "Ganjam Central",
+            "Ganjam North",
+            "Ganjam South"
           ],
-          "lat": 18.5204,
-          "lon": 73.8567,
+          "lat": 20.2978,
+          "lon": 85.8202,
           "zoom": 13,
           "corridors": [
-            "Hinjawadi IT Park Spine",
-            "Pune-Bangalore Highway NH-48",
-            "Senapati Bapat Road"
+            "Janpath - Nandankanan Smart Transit Corridor",
+            "Ganjam Ring Road",
+            "Ganjam Station Connector"
           ],
-          "active_buses": 5,
-          "defects": 64,
-          "congestion": "High"
-        },
-        {
-          "name": "Nagpur",
-          "tehsils": [
-            "Nagpur Urban",
-            "Nagpur Rural",
-            "Kamthi",
-            "Hingna",
-            "Katol"
-          ],
-          "lat": 21.1458,
-          "lon": 79.0882,
-          "zoom": 13,
-          "corridors": [
-            "Wardha Road Metro Corridor",
-            "Outer Ring Road Nagpur",
-            "Amravati Road"
-          ],
-          "active_buses": 3,
-          "defects": 29,
-          "congestion": "Normal"
+          "active_buses": 4,
+          "defects": 48,
+          "congestion": "Moderate"
         }
       ]
     },
     {
-      "state": "Karnataka",
-      "capital": "Bengaluru",
-      "code": "KA",
+      "code": "PB",
+      "state": "Punjab",
+      "capital": "Chandigarh",
+      "authority": "PRTC / Punbus",
       "districts": [
         {
-          "name": "Bengaluru Urban",
+          "name": "Ludhiana",
           "tehsils": [
-            "Bengaluru North",
-            "Bengaluru South",
-            "Bengaluru East",
-            "Anekal",
-            "Yelahanka"
+            "Ludhiana Central",
+            "Ludhiana North",
+            "Ludhiana South"
           ],
-          "lat": 12.9716,
-          "lon": 77.5946,
+          "lat": 30.9285,
+          "lon": 75.836,
           "zoom": 13,
           "corridors": [
-            "Outer Ring Road (Silk Board to Marathahalli)",
-            "Electronic City Flyover",
-            "Hebbal Flyover Junction",
-            "Hosur Road"
+            "Ferozepur Road - Clock Tower Loop",
+            "Ludhiana Ring Road",
+            "Ludhiana Station Connector"
           ],
-          "active_buses": 8,
-          "defects": 124,
+          "active_buses": 4,
+          "defects": 55,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Amritsar",
+          "tehsils": [
+            "Amritsar Central",
+            "Amritsar North",
+            "Amritsar South"
+          ],
+          "lat": 30.9361,
+          "lon": 75.844,
+          "zoom": 13,
+          "corridors": [
+            "Ferozepur Road - Clock Tower Loop",
+            "Amritsar Ring Road",
+            "Amritsar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 57,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Jalandhar",
+          "tehsils": [
+            "Jalandhar Central",
+            "Jalandhar North",
+            "Jalandhar South"
+          ],
+          "lat": 30.8735,
+          "lon": 75.8359,
+          "zoom": 13,
+          "corridors": [
+            "Ferozepur Road - Clock Tower Loop",
+            "Jalandhar Ring Road",
+            "Jalandhar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 73,
           "congestion": "Severe"
         },
         {
-          "name": "Mysuru",
+          "name": "Patiala",
           "tehsils": [
-            "Mysuru",
-            "Hunsur",
-            "Nanjangud",
-            "T. Narasipura",
-            "K.R. Nagar"
+            "Patiala Central",
+            "Patiala North",
+            "Patiala South"
           ],
-          "lat": 12.2958,
-          "lon": 76.6394,
+          "lat": 30.8937,
+          "lon": 75.8724,
           "zoom": 13,
           "corridors": [
-            "Bengaluru-Mysuru Expressway (NH-275)",
-            "Ring Road Mysuru",
-            "Sayyaji Rao Road"
+            "Ferozepur Road - Clock Tower Loop",
+            "Patiala Ring Road",
+            "Patiala Station Connector"
           ],
-          "active_buses": 3,
-          "defects": 31,
-          "congestion": "Normal"
-        },
-        {
-          "name": "Dharwad (Hubli-Dharwad)",
-          "tehsils": [
-            "Dharwad",
-            "Hubballi Urban",
-            "Hubballi Rural",
-            "Navalgund",
-            "Kalghatgi"
-          ],
-          "lat": 15.3647,
-          "lon": 75.124,
-          "zoom": 13,
-          "corridors": [
-            "Hubli-Dharwad BRTS Corridor",
-            "Gokul Road Industrial Spine"
-          ],
-          "active_buses": 2,
-          "defects": 22,
-          "congestion": "Normal"
+          "active_buses": 4,
+          "defects": 69,
+          "congestion": "Moderate"
         }
       ]
     },
     {
-      "state": "Uttar Pradesh",
-      "capital": "Lucknow",
-      "code": "UP",
+      "code": "RJ",
+      "state": "Rajasthan",
+      "capital": "Jaipur",
+      "authority": "RSRTC / JCTSL",
       "districts": [
         {
-          "name": "Gautam Buddha Nagar (Noida)",
+          "name": "Jaipur",
           "tehsils": [
-            "Noida (Dadri)",
-            "Greater Noida",
-            "Jewar"
+            "Jaipur Central",
+            "Jaipur North",
+            "Jaipur South"
           ],
-          "lat": 28.5355,
-          "lon": 77.391,
+          "lat": 26.9502,
+          "lon": 75.7767,
           "zoom": 13,
           "corridors": [
-            "Noida-Greater Noida Expressway",
-            "DND Flyway Terminal",
-            "Yamuna Expressway Mile 0-25"
+            "MI Road - Tonk Road Heritage Loop",
+            "Jaipur Ring Road",
+            "Jaipur Station Connector"
           ],
-          "active_buses": 6,
+          "active_buses": 4,
           "defects": 65,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Jodhpur",
+          "tehsils": [
+            "Jodhpur Central",
+            "Jodhpur North",
+            "Jodhpur South"
+          ],
+          "lat": 26.8889,
+          "lon": 75.7617,
+          "zoom": 13,
+          "corridors": [
+            "MI Road - Tonk Road Heritage Loop",
+            "Jodhpur Ring Road",
+            "Jodhpur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 38,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Udaipur",
+          "tehsils": [
+            "Udaipur Central",
+            "Udaipur North",
+            "Udaipur South"
+          ],
+          "lat": 26.8943,
+          "lon": 75.8017,
+          "zoom": 13,
+          "corridors": [
+            "MI Road - Tonk Road Heritage Loop",
+            "Udaipur Ring Road",
+            "Udaipur Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 75,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Kota",
+          "tehsils": [
+            "Kota Central",
+            "Kota North",
+            "Kota South"
+          ],
+          "lat": 26.9389,
+          "lon": 75.7572,
+          "zoom": 13,
+          "corridors": [
+            "MI Road - Tonk Road Heritage Loop",
+            "Kota Ring Road",
+            "Kota Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "SK",
+      "state": "Sikkim",
+      "capital": "Gangtok",
+      "authority": "Sikkim Nationalised Transport (SNT)",
+      "districts": [
+        {
+          "name": "East Sikkim",
+          "tehsils": [
+            "East Sikkim Central",
+            "East Sikkim North",
+            "East Sikkim South"
+          ],
+          "lat": 27.3556,
+          "lon": 88.5818,
+          "zoom": 13,
+          "corridors": [
+            "MG Marg - Deorali - Indira Bypass Spine",
+            "East Sikkim Ring Road",
+            "East Sikkim Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 64,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "West Sikkim",
+          "tehsils": [
+            "West Sikkim Central",
+            "West Sikkim North",
+            "West Sikkim South"
+          ],
+          "lat": 27.3329,
+          "lon": 88.653,
+          "zoom": 13,
+          "corridors": [
+            "MG Marg - Deorali - Indira Bypass Spine",
+            "West Sikkim Ring Road",
+            "West Sikkim Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 51,
           "congestion": "High"
         },
         {
-          "name": "Lucknow",
+          "name": "North Sikkim",
           "tehsils": [
-            "Lucknow",
-            "Bakshi Ka Talab",
-            "Malihabad",
-            "Mohanlalganj",
-            "Sarojini Nagar"
+            "North Sikkim Central",
+            "North Sikkim North",
+            "North Sikkim South"
           ],
-          "lat": 26.8467,
-          "lon": 80.9462,
+          "lat": 27.3224,
+          "lon": 88.5924,
           "zoom": 13,
           "corridors": [
-            "Shaheed Path Ring Expressway",
-            "Hazratganj MG Marg",
-            "Kanpur Road Transport Corridor"
+            "MG Marg - Deorali - Indira Bypass Spine",
+            "North Sikkim Ring Road",
+            "North Sikkim Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 48,
+          "congestion": "Normal"
+        },
+        {
+          "name": "South Sikkim",
+          "tehsils": [
+            "South Sikkim Central",
+            "South Sikkim North",
+            "South Sikkim South"
+          ],
+          "lat": 27.3143,
+          "lon": 88.583,
+          "zoom": 13,
+          "corridors": [
+            "MG Marg - Deorali - Indira Bypass Spine",
+            "South Sikkim Ring Road",
+            "South Sikkim Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 66,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "TN",
+      "state": "Tamil Nadu",
+      "capital": "Chennai",
+      "authority": "MTC / TNSTC",
+      "districts": [
+        {
+          "name": "Chennai",
+          "tehsils": [
+            "Chennai Central",
+            "Chennai North",
+            "Chennai South"
+          ],
+          "lat": 13.094,
+          "lon": 80.3086,
+          "zoom": 13,
+          "corridors": [
+            "Anna Salai (Mount Road) - OMR IT Expressway",
+            "Chennai Ring Road",
+            "Chennai Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 47,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Coimbatore",
+          "tehsils": [
+            "Coimbatore Central",
+            "Coimbatore North",
+            "Coimbatore South"
+          ],
+          "lat": 13.045,
+          "lon": 80.2977,
+          "zoom": 13,
+          "corridors": [
+            "Anna Salai (Mount Road) - OMR IT Expressway",
+            "Coimbatore Ring Road",
+            "Coimbatore Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 40,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Madurai",
+          "tehsils": [
+            "Madurai Central",
+            "Madurai North",
+            "Madurai South"
+          ],
+          "lat": 13.086,
+          "lon": 80.2898,
+          "zoom": 13,
+          "corridors": [
+            "Anna Salai (Mount Road) - OMR IT Expressway",
+            "Madurai Ring Road",
+            "Madurai Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Tiruchirappalli",
+          "tehsils": [
+            "Tiruchirappalli Central",
+            "Tiruchirappalli North",
+            "Tiruchirappalli South"
+          ],
+          "lat": 13.0862,
+          "lon": 80.2858,
+          "zoom": 13,
+          "corridors": [
+            "Anna Salai (Mount Road) - OMR IT Expressway",
+            "Tiruchirappalli Ring Road",
+            "Tiruchirappalli Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 60,
+          "congestion": "High (Peak)"
+        }
+      ]
+    },
+    {
+      "code": "TS",
+      "state": "Telangana",
+      "capital": "Hyderabad",
+      "authority": "TSRTC",
+      "districts": [
+        {
+          "name": "Hyderabad",
+          "tehsils": [
+            "Hyderabad Central",
+            "Hyderabad North",
+            "Hyderabad South"
+          ],
+          "lat": 17.3543,
+          "lon": 78.4959,
+          "zoom": 13,
+          "corridors": [
+            "Tank Bund - Hitec City - Gachibowli Corridor",
+            "Hyderabad Ring Road",
+            "Hyderabad Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 73,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Ranga Reddy",
+          "tehsils": [
+            "Ranga Reddy Central",
+            "Ranga Reddy North",
+            "Ranga Reddy South"
+          ],
+          "lat": 17.3577,
+          "lon": 78.4844,
+          "zoom": 13,
+          "corridors": [
+            "Tank Bund - Hitec City - Gachibowli Corridor",
+            "Ranga Reddy Ring Road",
+            "Ranga Reddy Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Medchal",
+          "tehsils": [
+            "Medchal Central",
+            "Medchal North",
+            "Medchal South"
+          ],
+          "lat": 17.3803,
+          "lon": 78.5074,
+          "zoom": 13,
+          "corridors": [
+            "Tank Bund - Hitec City - Gachibowli Corridor",
+            "Medchal Ring Road",
+            "Medchal Station Connector"
           ],
           "active_buses": 4,
           "defects": 46,
           "congestion": "Moderate"
         },
         {
-          "name": "Varanasi",
+          "name": "Warangal",
           "tehsils": [
-            "Varanasi",
-            "Pindra",
-            "Raja Talab"
+            "Warangal Central",
+            "Warangal North",
+            "Warangal South"
           ],
-          "lat": 25.3176,
-          "lon": 82.9739,
+          "lat": 17.4127,
+          "lon": 78.512,
           "zoom": 13,
           "corridors": [
-            "Ring Road Phase 1 & 2",
-            "Babatpur Airport Highway (NH-56)",
-            "Godowlia-Dashashwamedh Corridor"
+            "Tank Bund - Hitec City - Gachibowli Corridor",
+            "Warangal Ring Road",
+            "Warangal Station Connector"
           ],
-          "active_buses": 3,
-          "defects": 38,
+          "active_buses": 4,
+          "defects": 35,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "TR",
+      "state": "Tripura",
+      "capital": "Agartala",
+      "authority": "Tripura Road Transport (TRTC)",
+      "districts": [
+        {
+          "name": "West Tripura",
+          "tehsils": [
+            "West Tripura Central",
+            "West Tripura North",
+            "West Tripura South"
+          ],
+          "lat": 23.8711,
+          "lon": 91.275,
+          "zoom": 13,
+          "corridors": [
+            "Akhaura Road - Motorstand - GB Bazar Loop",
+            "West Tripura Ring Road",
+            "West Tripura Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 52,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Gomati",
+          "tehsils": [
+            "Gomati Central",
+            "Gomati North",
+            "Gomati South"
+          ],
+          "lat": 23.8057,
+          "lon": 91.2554,
+          "zoom": 13,
+          "corridors": [
+            "Akhaura Road - Motorstand - GB Bazar Loop",
+            "Gomati Ring Road",
+            "Gomati Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 67,
+          "congestion": "Normal"
+        },
+        {
+          "name": "South Tripura",
+          "tehsils": [
+            "South Tripura Central",
+            "South Tripura North",
+            "South Tripura South"
+          ],
+          "lat": 23.8172,
+          "lon": 91.2488,
+          "zoom": 13,
+          "corridors": [
+            "Akhaura Road - Motorstand - GB Bazar Loop",
+            "South Tripura Ring Road",
+            "South Tripura Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 41,
           "congestion": "High"
+        },
+        {
+          "name": "Dhalai",
+          "tehsils": [
+            "Dhalai Central",
+            "Dhalai North",
+            "Dhalai South"
+          ],
+          "lat": 23.8017,
+          "lon": 91.3088,
+          "zoom": 13,
+          "corridors": [
+            "Akhaura Road - Motorstand - GB Bazar Loop",
+            "Dhalai Ring Road",
+            "Dhalai Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 64,
+          "congestion": "High (Peak)"
+        }
+      ]
+    },
+    {
+      "code": "UP",
+      "state": "Uttar Pradesh",
+      "capital": "Lucknow",
+      "authority": "UPSRTC / Lucknow City Transport",
+      "districts": [
+        {
+          "name": "Lucknow",
+          "tehsils": [
+            "Lucknow Central",
+            "Lucknow North",
+            "Lucknow South"
+          ],
+          "lat": 26.822,
+          "lon": 80.9186,
+          "zoom": 13,
+          "corridors": [
+            "Hazratganj - Vidhan Sabha - Gomti Nagar Arterial",
+            "Lucknow Ring Road",
+            "Lucknow Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 69,
+          "congestion": "High (Peak)"
         },
         {
           "name": "Kanpur Nagar",
           "tehsils": [
-            "Kanpur Sadar",
-            "Ghatampur",
-            "Bilhaur"
+            "Kanpur Nagar Central",
+            "Kanpur Nagar North",
+            "Kanpur Nagar South"
           ],
-          "lat": 26.4499,
-          "lon": 80.3319,
+          "lat": 26.8557,
+          "lon": 80.971,
           "zoom": 13,
           "corridors": [
-            "GT Road Kanpur Section",
-            "VIP Road Civil Lines",
-            "Chakeri Industrial Corridor"
-          ],
-          "active_buses": 3,
-          "defects": 52,
-          "congestion": "High"
-        }
-      ]
-    },
-    {
-      "state": "Tamil Nadu",
-      "capital": "Chennai",
-      "code": "TN",
-      "districts": [
-        {
-          "name": "Chennai",
-          "tehsils": [
-            "Egmore",
-            "Guindy",
-            "Mylapore",
-            "Tondiarpet",
-            "Velachery",
-            "Alandur"
-          ],
-          "lat": 13.0827,
-          "lon": 80.2707,
-          "zoom": 13,
-          "corridors": [
-            "Old Mahabalipuram Road (OMR IT Expressway)",
-            "Mount Road (Anna Salai)",
-            "Kathipara Junction Flyover"
-          ],
-          "active_buses": 6,
-          "defects": 78,
-          "congestion": "High"
-        },
-        {
-          "name": "Coimbatore",
-          "tehsils": [
-            "Coimbatore North",
-            "Coimbatore South",
-            "Pollachi",
-            "Mettupalayam",
-            "Sulur"
-          ],
-          "lat": 11.0168,
-          "lon": 76.9558,
-          "zoom": 13,
-          "corridors": [
-            "Avinashi Road Express Flyover",
-            "Trichy Road NH-81",
-            "Sathy Road"
-          ],
-          "active_buses": 3,
-          "defects": 34,
-          "congestion": "Moderate"
-        },
-        {
-          "name": "Madurai",
-          "tehsils": [
-            "Madurai North",
-            "Madurai South",
-            "Melur",
-            "Thirumangalam",
-            "Usilampatti"
-          ],
-          "lat": 9.9252,
-          "lon": 78.1198,
-          "zoom": 13,
-          "corridors": [
-            "Ring Road Madurai",
-            "Kamarajar Salai",
-            "Dindigul Bypass NH-44"
-          ],
-          "active_buses": 2,
-          "defects": 26,
-          "congestion": "Normal"
-        }
-      ]
-    },
-    {
-      "state": "Telangana",
-      "capital": "Hyderabad",
-      "code": "TS",
-      "districts": [
-        {
-          "name": "Hyderabad",
-          "tehsils": [
-            "Ameerpet",
-            "Khairatabad",
-            "Charminar",
-            "Secunderabad",
-            "Shaikpet"
-          ],
-          "lat": 17.385,
-          "lon": 78.4867,
-          "zoom": 13,
-          "corridors": [
-            "PV Narasimha Rao Expressway",
-            "Raj Bhavan Road",
-            "Inner Ring Road Mehdipatnam"
-          ],
-          "active_buses": 5,
-          "defects": 62,
-          "congestion": "High"
-        },
-        {
-          "name": "Ranga Reddy",
-          "tehsils": [
-            "Serilingampally (Gachibowli)",
-            "Rajendranagar",
-            "Ibrahimpatnam",
-            "Chevella",
-            "Maheshwaram"
-          ],
-          "lat": 17.4401,
-          "lon": 78.3489,
-          "zoom": 13,
-          "corridors": [
-            "Outer Ring Road (ORR Gachibowli-Shamshabad)",
-            "HITEC City Cyber Towers Spine",
-            "Financial District Corridor"
-          ],
-          "active_buses": 6,
-          "defects": 54,
-          "congestion": "Severe"
-        }
-      ]
-    },
-    {
-      "state": "Gujarat",
-      "capital": "Gandhinagar",
-      "code": "GJ",
-      "districts": [
-        {
-          "name": "Ahmedabad",
-          "tehsils": [
-            "Ahmedabad City",
-            "Daskroi",
-            "Sanand",
-            "Bavla",
-            "Dholka"
-          ],
-          "lat": 23.0225,
-          "lon": 72.5714,
-          "zoom": 13,
-          "corridors": [
-            "Sardar Patel Ring Road (SP Ring Road)",
-            "SG Highway (Sarkhej-Gandhinagar)",
-            "BRTS Janmarg Central Spine",
-            "Ashram Road"
-          ],
-          "active_buses": 5,
-          "defects": 49,
-          "congestion": "High"
-        },
-        {
-          "name": "Gandhinagar",
-          "tehsils": [
-            "Gandhinagar",
-            "Kalol",
-            "Dehgam",
-            "Mansa"
-          ],
-          "lat": 23.2156,
-          "lon": 72.6369,
-          "zoom": 13,
-          "corridors": [
-            "GIFT City Access Corridor",
-            "CH Road Sector 10 Secretariat",
-            "GH Road Arterial"
-          ],
-          "active_buses": 3,
-          "defects": 14,
-          "congestion": "Normal"
-        },
-        {
-          "name": "Surat",
-          "tehsils": [
-            "Surat City",
-            "Chorasi",
-            "Olpad",
-            "Kamrej",
-            "Bardoli"
-          ],
-          "lat": 21.1702,
-          "lon": 72.8311,
-          "zoom": 13,
-          "corridors": [
-            "Dumas Road Diamond Bourse Spine",
-            "Ring Road Textile Market",
-            "BRTS Udhna-Sachin Link"
+            "Hazratganj - Vidhan Sabha - Gomti Nagar Arterial",
+            "Kanpur Nagar Ring Road",
+            "Kanpur Nagar Station Connector"
           ],
           "active_buses": 4,
-          "defects": 41,
-          "congestion": "Moderate"
-        }
-      ]
-    },
-    {
-      "state": "West Bengal",
-      "capital": "Kolkata",
-      "code": "WB",
-      "districts": [
-        {
-          "name": "Kolkata",
-          "tehsils": [
-            "Kolkata Municipal Corp Core",
-            "Alipore",
-            "Sealdah",
-            "Shyambazar"
-          ],
-          "lat": 22.5726,
-          "lon": 88.3639,
-          "zoom": 13,
-          "corridors": [
-            "Eastern Metropolitan Bypass (EM Bypass)",
-            "AJC Bose Road Flyover",
-            "Chowringhee Jawaharlal Nehru Road",
-            "Maa Flyover"
-          ],
-          "active_buses": 6,
-          "defects": 89,
+          "defects": 46,
           "congestion": "Severe"
         },
         {
-          "name": "North 24 Parganas (Salt Lake & New Town)",
+          "name": "Varanasi",
           "tehsils": [
-            "Bidhannagar (Salt Lake)",
-            "Rajarhat (New Town)",
-            "Barrackpore",
-            "Barasat"
+            "Varanasi Central",
+            "Varanasi North",
+            "Varanasi South"
           ],
-          "lat": 22.5867,
-          "lon": 88.4178,
+          "lat": 26.8095,
+          "lon": 80.9481,
           "zoom": 13,
           "corridors": [
-            "Major Arterial Road New Town (Biswa Bangla Sarani)",
-            "Salt Lake Sector V IT Hub",
-            "VIP Road Airport Corridor"
+            "Hazratganj - Vidhan Sabha - Gomti Nagar Arterial",
+            "Varanasi Ring Road",
+            "Varanasi Station Connector"
           ],
-          "active_buses": 5,
-          "defects": 53,
-          "congestion": "High"
-        }
-      ]
-    },
-    {
-      "state": "Rajasthan",
-      "capital": "Jaipur",
-      "code": "RJ",
-      "districts": [
+          "active_buses": 4,
+          "defects": 55,
+          "congestion": "Moderate"
+        },
         {
-          "name": "Jaipur",
+          "name": "Gautam Buddha Nagar (Noida)",
           "tehsils": [
-            "Jaipur",
-            "Sanganer",
-            "Amer",
-            "Chaksu",
-            "Kotputli"
+            "Noida Sector 62 & Electronic City",
+            "Noida Sector 18 (Atta Market / Mall of India)",
+            "Greater Noida Pari Chowk & Knowledge Park",
+            "Dadri Commercial Hub",
+            "Jewar Airport Corridor"
           ],
-          "lat": 26.9124,
-          "lon": 75.7873,
+          "lat": 28.5355,
+          "lon": 77.3910,
           "zoom": 13,
           "corridors": [
-            "JLN Marg University Spine",
-            "Tonk Road (NH-52)",
-            "Ajmer Road Elevated Road",
-            "MI Road Central"
+            "Noida-Greater Noida Expressway Transit Spine",
+            "DND Flyway - Sector 18 Arterial",
+            "DSC Road (Dadri-Surajpur-Chhalera) Corridor",
+            "Aqua Line Metro Multimodal Loop"
           ],
           "active_buses": 4,
           "defects": 47,
           "congestion": "High"
-        },
-        {
-          "name": "Jodhpur",
-          "tehsils": [
-            "Jodhpur",
-            "Luni",
-            "Bilara",
-            "Osian",
-            "Phalodi"
-          ],
-          "lat": 26.2389,
-          "lon": 73.0243,
-          "zoom": 13,
-          "corridors": [
-            "High Court Road",
-            "Pali Road NH-62",
-            "Residency Road"
-          ],
-          "active_buses": 2,
-          "defects": 23,
-          "congestion": "Normal"
         }
       ]
     },
     {
-      "state": "Punjab",
-      "capital": "Chandigarh",
-      "code": "PB",
+      "code": "UK",
+      "state": "Uttarakhand",
+      "capital": "Dehradun",
+      "authority": "Uttarakhand Transport (UTC)",
       "districts": [
         {
-          "name": "Ludhiana",
+          "name": "Dehradun",
           "tehsils": [
-            "Ludhiana East",
-            "Ludhiana West",
-            "Jagraon",
-            "Khanna",
-            "Samrala"
+            "Dehradun Central",
+            "Dehradun North",
+            "Dehradun South"
           ],
-          "lat": 30.901,
-          "lon": 75.8573,
+          "lat": 30.3152,
+          "lon": 78.0324,
           "zoom": 13,
           "corridors": [
-            "Ferozepur Road Elevated Corridor",
-            "GT Road NH-44",
-            "Gill Road Industrial Spine"
-          ],
-          "active_buses": 3,
-          "defects": 61,
-          "congestion": "High"
-        },
-        {
-          "name": "Amritsar",
-          "tehsils": [
-            "Amritsar-I",
-            "Amritsar-II",
-            "Ajnala",
-            "Baba Bakala"
-          ],
-          "lat": 31.634,
-          "lon": 74.8723,
-          "zoom": 13,
-          "corridors": [
-            "Heritage Street Golden Temple Corridor",
-            "Mall Road Amritsar",
-            "GT Road Airport Bypass"
-          ],
-          "active_buses": 3,
-          "defects": 39,
-          "congestion": "Moderate"
-        }
-      ]
-    },
-    {
-      "state": "Kerala",
-      "capital": "Thiruvananthapuram",
-      "code": "KL",
-      "districts": [
-        {
-          "name": "Thiruvananthapuram",
-          "tehsils": [
-            "Thiruvananthapuram",
-            "Neyyattinkara",
-            "Nedumangad",
-            "Chirayinkeezhu",
-            "Varkala"
-          ],
-          "lat": 8.5241,
-          "lon": 76.9366,
-          "zoom": 13,
-          "corridors": [
-            "Kazhakkoottam Technopark NH-66 Elevated Highway",
-            "MG Road East Fort",
-            "Kowdiar Avenue"
+            "Rajpur Road - Clock Tower - ISBT Corridor",
+            "Dehradun Ring Road",
+            "Dehradun Station Connector"
           ],
           "active_buses": 4,
-          "defects": 41,
+          "defects": 69,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Haridwar",
+          "tehsils": [
+            "Haridwar Central",
+            "Haridwar North",
+            "Haridwar South"
+          ],
+          "lat": 30.2827,
+          "lon": 78.0355,
+          "zoom": 13,
+          "corridors": [
+            "Rajpur Road - Clock Tower - ISBT Corridor",
+            "Haridwar Ring Road",
+            "Haridwar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 36,
           "congestion": "Moderate"
         },
         {
-          "name": "Ernakulam (Kochi)",
+          "name": "Nainital",
           "tehsils": [
-            "Kanayannur (Kochi)",
-            "Kochi (Fort Kochi)",
-            "Aluva",
-            "Paravur",
-            "Kunnathunad"
+            "Nainital Central",
+            "Nainital North",
+            "Nainital South"
           ],
-          "lat": 9.9312,
-          "lon": 76.2673,
+          "lat": 30.3154,
+          "lon": 78.0131,
           "zoom": 13,
           "corridors": [
-            "Seaport-Airport Road",
-            "Banerji Road MG Road Spine",
-            "Kaloor-Kadavanthra Road",
-            "Kochi Bypass NH-66 Edappally"
+            "Rajpur Road - Clock Tower - ISBT Corridor",
+            "Nainital Ring Road",
+            "Nainital Station Connector"
           ],
-          "active_buses": 5,
-          "defects": 57,
-          "congestion": "High"
+          "active_buses": 4,
+          "defects": 74,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Udham Singh Nagar",
+          "tehsils": [
+            "Udham Singh Nagar Central",
+            "Udham Singh Nagar North",
+            "Udham Singh Nagar South"
+          ],
+          "lat": 30.3124,
+          "lon": 78.0669,
+          "zoom": 13,
+          "corridors": [
+            "Rajpur Road - Clock Tower - ISBT Corridor",
+            "Udham Singh Nagar Ring Road",
+            "Udham Singh Nagar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 65,
+          "congestion": "High (Peak)"
         }
       ]
     },
     {
-      "state": "Madhya Pradesh",
-      "capital": "Bhopal",
-      "code": "MP",
+      "code": "WB",
+      "state": "West Bengal",
+      "capital": "Kolkata",
+      "authority": "WBTC",
       "districts": [
         {
-          "name": "Indore",
+          "name": "Kolkata",
           "tehsils": [
-            "Indore",
-            "Mhow (Dr. Ambedkar Nagar)",
-            "Sanwer",
-            "Depalpur"
+            "Kolkata Central",
+            "Kolkata North",
+            "Kolkata South"
           ],
-          "lat": 22.7196,
-          "lon": 75.8577,
+          "lat": 22.5653,
+          "lon": 88.3912,
           "zoom": 13,
           "corridors": [
-            "AB Road BRTS i-Bus Corridor",
-            "Super Corridor TCS-Infosys Hub",
-            "Bypass Road NH-52"
+            "Park Street - BBD Bagh - EM Bypass Corridor",
+            "Kolkata Ring Road",
+            "Kolkata Station Connector"
           ],
           "active_buses": 4,
-          "defects": 33,
+          "defects": 36,
+          "congestion": "Severe"
+        },
+        {
+          "name": "North 24 Parganas",
+          "tehsils": [
+            "North 24 Parganas Central",
+            "North 24 Parganas North",
+            "North 24 Parganas South"
+          ],
+          "lat": 22.596,
+          "lon": 88.3572,
+          "zoom": 13,
+          "corridors": [
+            "Park Street - BBD Bagh - EM Bypass Corridor",
+            "North 24 Parganas Ring Road",
+            "North 24 Parganas Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 58,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Howrah",
+          "tehsils": [
+            "Howrah Central",
+            "Howrah North",
+            "Howrah South"
+          ],
+          "lat": 22.596,
+          "lon": 88.3355,
+          "zoom": 13,
+          "corridors": [
+            "Park Street - BBD Bagh - EM Bypass Corridor",
+            "Howrah Ring Road",
+            "Howrah Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 47,
           "congestion": "Moderate"
         },
         {
-          "name": "Bhopal",
+          "name": "South 24 Parganas",
           "tehsils": [
-            "Huzur (Bhopal City)",
-            "Berasia",
-            "Kolar"
+            "South 24 Parganas Central",
+            "South 24 Parganas North",
+            "South 24 Parganas South"
           ],
-          "lat": 23.2599,
-          "lon": 77.4126,
+          "lat": 22.589,
+          "lon": 88.3938,
           "zoom": 13,
           "corridors": [
-            "Hoshangabad Road BRTS Spine",
-            "VIP Road Upper Lake Drive",
-            "Link Road 1 & 2"
-          ],
-          "active_buses": 3,
-          "defects": 28,
-          "congestion": "Normal"
-        }
-      ]
-    },
-    {
-      "state": "Odisha",
-      "capital": "Bhubaneswar",
-      "code": "OD",
-      "districts": [
-        {
-          "name": "Khordha (Bhubaneswar)",
-          "tehsils": [
-            "Bhubaneswar",
-            "Jatni",
-            "Khordha",
-            "Balianta",
-            "Balipatna"
-          ],
-          "lat": 20.2961,
-          "lon": 85.8245,
-          "zoom": 13,
-          "corridors": [
-            "Janpath Master Canteen to Vani Vihar",
-            "Cuttack-Bhubaneswar NH-16",
-            "Infocity Chandrasekharpur Spine"
-          ],
-          "active_buses": 3,
-          "defects": 27,
-          "congestion": "Moderate"
-        }
-      ]
-    },
-    {
-      "state": "Bihar",
-      "capital": "Patna",
-      "code": "BR",
-      "districts": [
-        {
-          "name": "Patna",
-          "tehsils": [
-            "Patna Sadar",
-            "Danapur",
-            "Patna City",
-            "Barh",
-            "Masaurhi",
-            "Paliganj"
-          ],
-          "lat": 25.5941,
-          "lon": 85.1376,
-          "zoom": 13,
-          "corridors": [
-            "Bailey Road (Jawaharlal Nehru Marg)",
-            "Ganga Path Marine Drive",
-            "Ashok Rajpath PMCH Corridor",
-            "Kankarbagh Main Road"
+            "Park Street - BBD Bagh - EM Bypass Corridor",
+            "South 24 Parganas Ring Road",
+            "South 24 Parganas Station Connector"
           ],
           "active_buses": 4,
-          "defects": 72,
+          "defects": 43,
           "congestion": "Severe"
         }
       ]
     },
     {
-      "state": "Assam",
-      "capital": "Dispur (Guwahati)",
-      "code": "AS",
+      "code": "AN",
+      "state": "Andaman and Nicobar Islands",
+      "capital": "Port Blair",
+      "authority": "State Transport Services (STS)",
       "districts": [
         {
-          "name": "Kamrup Metropolitan (Guwahati)",
+          "name": "South Andaman",
           "tehsils": [
-            "Guwahati",
-            "Dispur",
-            "Sonapur",
-            "Azara",
-            "Chandrapur"
+            "South Andaman Central",
+            "South Andaman North",
+            "South Andaman South"
           ],
-          "lat": 26.1445,
-          "lon": 91.7362,
+          "lat": 11.611,
+          "lon": 92.7504,
           "zoom": 13,
           "corridors": [
-            "GS Road (Guwahati-Shillong Road)",
-            "RG Baruah Road (Zoo Road)",
-            "MG Road Brahmaputra Riverfront",
-            "NH-27 Jalukbari Bypass"
+            "Aberdeen Bazaar - Marine Hill Coastal Loop",
+            "South Andaman Ring Road",
+            "South Andaman Station Connector"
           ],
-          "active_buses": 3,
-          "defects": 34,
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "Severe"
+        },
+        {
+          "name": "North & Middle Andaman",
+          "tehsils": [
+            "North & Middle Andaman Central",
+            "North & Middle Andaman North",
+            "North & Middle Andaman South"
+          ],
+          "lat": 11.6453,
+          "lon": 92.7346,
+          "zoom": 13,
+          "corridors": [
+            "Aberdeen Bazaar - Marine Hill Coastal Loop",
+            "North & Middle Andaman Ring Road",
+            "North & Middle Andaman Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 69,
           "congestion": "High"
+        },
+        {
+          "name": "Nicobar",
+          "tehsils": [
+            "Nicobar Central",
+            "Nicobar North",
+            "Nicobar South"
+          ],
+          "lat": 11.6258,
+          "lon": 92.764,
+          "zoom": 13,
+          "corridors": [
+            "Aberdeen Bazaar - Marine Hill Coastal Loop",
+            "Nicobar Ring Road",
+            "Nicobar Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 37,
+          "congestion": "Moderate"
         }
       ]
     },
     {
-      "state": "Jammu & Kashmir",
-      "capital": "Srinagar (Summer) / Jammu (Winter)",
+      "code": "CH",
+      "state": "Chandigarh",
+      "capital": "Chandigarh",
+      "authority": "Chandigarh Transport (CTU)",
+      "districts": [
+        {
+          "name": "Chandigarh Sector 17",
+          "tehsils": [
+            "Chandigarh Sector 17 Central",
+            "Chandigarh Sector 17 North",
+            "Chandigarh Sector 17 South"
+          ],
+          "lat": 30.7697,
+          "lon": 76.7819,
+          "zoom": 13,
+          "corridors": [
+            "Madhya Marg - Jan Marg Grid Loop",
+            "Chandigarh Sector 17 Ring Road",
+            "Chandigarh Sector 17 Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 53,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Sector 35",
+          "tehsils": [
+            "Sector 35 Central",
+            "Sector 35 North",
+            "Sector 35 South"
+          ],
+          "lat": 30.7346,
+          "lon": 76.8087,
+          "zoom": 13,
+          "corridors": [
+            "Madhya Marg - Jan Marg Grid Loop",
+            "Sector 35 Ring Road",
+            "Sector 35 Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 74,
+          "congestion": "High"
+        },
+        {
+          "name": "Manimajra",
+          "tehsils": [
+            "Manimajra Central",
+            "Manimajra North",
+            "Manimajra South"
+          ],
+          "lat": 30.7501,
+          "lon": 76.7645,
+          "zoom": 13,
+          "corridors": [
+            "Madhya Marg - Jan Marg Grid Loop",
+            "Manimajra Ring Road",
+            "Manimajra Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "code": "DN",
+      "state": "Dadra & Nagar Haveli and Daman & Diu",
+      "capital": "Daman",
+      "authority": "DNH & DD Transport",
+      "districts": [
+        {
+          "name": "Daman",
+          "tehsils": [
+            "Daman Central",
+            "Daman North",
+            "Daman South"
+          ],
+          "lat": 20.4263,
+          "lon": 72.8307,
+          "zoom": 13,
+          "corridors": [
+            "Seaface Road - Nani Daman Fort Spine",
+            "Daman Ring Road",
+            "Daman Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 50,
+          "congestion": "High"
+        },
+        {
+          "name": "Diu",
+          "tehsils": [
+            "Diu Central",
+            "Diu North",
+            "Diu South"
+          ],
+          "lat": 20.4392,
+          "lon": 72.8648,
+          "zoom": 13,
+          "corridors": [
+            "Seaface Road - Nani Daman Fort Spine",
+            "Diu Ring Road",
+            "Diu Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 43,
+          "congestion": "High"
+        },
+        {
+          "name": "Dadra and Nagar Haveli",
+          "tehsils": [
+            "Dadra and Nagar Haveli Central",
+            "Dadra and Nagar Haveli North",
+            "Dadra and Nagar Haveli South"
+          ],
+          "lat": 20.4012,
+          "lon": 72.8345,
+          "zoom": 13,
+          "corridors": [
+            "Seaface Road - Nani Daman Fort Spine",
+            "Dadra and Nagar Haveli Ring Road",
+            "Dadra and Nagar Haveli Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 67,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "DL",
+      "state": "National Capital Territory of Delhi",
+      "capital": "New Delhi",
+      "authority": "Delhi Transport Corporation (DTC)",
+      "districts": [
+        {
+          "name": "New Delhi",
+          "tehsils": [
+            "New Delhi Central",
+            "New Delhi North",
+            "New Delhi South"
+          ],
+          "lat": 28.6286,
+          "lon": 77.2065,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Ring & Central Secretariat Loop",
+            "New Delhi Ring Road",
+            "New Delhi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 39,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Central Delhi",
+          "tehsils": [
+            "Central Delhi Central",
+            "Central Delhi North",
+            "Central Delhi South"
+          ],
+          "lat": 28.6467,
+          "lon": 77.2337,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Ring & Central Secretariat Loop",
+            "Central Delhi Ring Road",
+            "Central Delhi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 73,
+          "congestion": "Severe"
+        },
+        {
+          "name": "South Delhi",
+          "tehsils": [
+            "South Delhi Central",
+            "South Delhi North",
+            "South Delhi South"
+          ],
+          "lat": 28.6094,
+          "lon": 77.2077,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Ring & Central Secretariat Loop",
+            "South Delhi Ring Road",
+            "South Delhi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 43,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "North Delhi",
+          "tehsils": [
+            "North Delhi Central",
+            "North Delhi North",
+            "North Delhi South"
+          ],
+          "lat": 28.6136,
+          "lon": 77.2465,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Ring & Central Secretariat Loop",
+            "North Delhi Ring Road",
+            "North Delhi Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 59,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Dwarka",
+          "tehsils": [
+            "Dwarka Central",
+            "Dwarka North",
+            "Dwarka South"
+          ],
+          "lat": 28.6522,
+          "lon": 77.2199,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Ring & Central Secretariat Loop",
+            "Dwarka Ring Road",
+            "Dwarka Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
       "code": "JK",
+      "state": "Jammu & Kashmir",
+      "capital": "Srinagar",
+      "authority": "JKSRTC",
       "districts": [
         {
           "name": "Srinagar",
           "tehsils": [
-            "Srinagar South",
+            "Srinagar Central",
             "Srinagar North",
-            "Pantha Chowk",
-            "Khanyar",
-            "Eidgah"
+            "Srinagar South"
           ],
-          "lat": 34.0837,
-          "lon": 74.7973,
+          "lat": 34.0952,
+          "lon": 74.7669,
           "zoom": 13,
           "corridors": [
-            "Foreshore Road Dal Lake",
-            "Residency Road Lal Chowk",
-            "NH-44 Bypass Pantha Chowk"
+            "Lal Chowk - Boulevard Dal Lake Loop",
+            "Srinagar Ring Road",
+            "Srinagar Station Connector"
           ],
-          "active_buses": 2,
-          "defects": 25,
+          "active_buses": 4,
+          "defects": 75,
           "congestion": "Moderate"
         },
         {
           "name": "Jammu",
           "tehsils": [
-            "Jammu",
-            "Jammu South",
-            "Bahu",
-            "Akhnoor",
-            "R.S. Pura"
+            "Jammu Central",
+            "Jammu North",
+            "Jammu South"
           ],
-          "lat": 32.7266,
-          "lon": 74.857,
+          "lat": 34.1141,
+          "lon": 74.7643,
           "zoom": 13,
           "corridors": [
-            "Jammu-Pathankot NH-44",
-            "Bikram Chowk Flyover Spine",
-            "Bahu Fort Road"
+            "Lal Chowk - Boulevard Dal Lake Loop",
+            "Jammu Ring Road",
+            "Jammu Station Connector"
           ],
-          "active_buses": 2,
-          "defects": 21,
-          "congestion": "Normal"
-        }
-      ]
-    },
-    {
-      "state": "Jharkhand",
-      "capital": "Ranchi",
-      "code": "JH",
-      "districts": [
-        {
-          "name": "Ranchi",
-          "tehsils": [
-            "Ranchi Sadar",
-            "Kanke",
-            "Nagri",
-            "Namkum",
-            "Ormanjhi"
-          ],
-          "lat": 23.3441,
-          "lon": 85.3096,
-          "zoom": 13,
-          "corridors": [
-            "Main Road Albert Ekka Chowk",
-            "Harmu Bypass Road",
-            "Ranchi Ring Road NH-33"
-          ],
-          "active_buses": 3,
-          "defects": 36,
-          "congestion": "Moderate"
-        }
-      ]
-    },
-    {
-      "state": "Uttarakhand",
-      "capital": "Dehradun",
-      "code": "UK",
-      "districts": [
-        {
-          "name": "Dehradun",
-          "tehsils": [
-            "Dehradun Sadar",
-            "Rishikesh",
-            "Vikasnagar",
-            "Chakrata",
-            "Doiwala"
-          ],
-          "lat": 30.3165,
-          "lon": 78.0322,
-          "zoom": 13,
-          "corridors": [
-            "Rajpur Road Clock Tower",
-            "Haridwar Road NH-7",
-            "Chakrata Road ISBT Connector"
-          ],
-          "active_buses": 2,
-          "defects": 29,
-          "congestion": "Moderate"
-        }
-      ]
-    },
-    {
-      "state": "Goa",
-      "capital": "Panaji",
-      "code": "GA",
-      "districts": [
-        {
-          "name": "North Goa",
-          "tehsils": [
-            "Tiswadi (Panaji)",
-            "Bardez (Mapusa)",
-            "Pernem",
-            "Bicholim",
-            "Sattari"
-          ],
-          "lat": 15.4909,
-          "lon": 73.8278,
-          "zoom": 13,
-          "corridors": [
-            "Atal Setu Mandovi Cable Bridge",
-            "Miramar-Dona Paula Coastal Highway",
-            "NH-66 Porvorim"
-          ],
-          "active_buses": 2,
-          "defects": 16,
-          "congestion": "Normal"
+          "active_buses": 4,
+          "defects": 47,
+          "congestion": "Severe"
         },
         {
-          "name": "South Goa",
+          "name": "Anantnag",
           "tehsils": [
-            "Salcete (Margao)",
-            "Mormugao (Vasco)",
-            "Ponda",
-            "Quepem",
-            "Canacona"
+            "Anantnag Central",
+            "Anantnag North",
+            "Anantnag South"
           ],
-          "lat": 15.2832,
-          "lon": 73.9862,
+          "lat": 34.0697,
+          "lon": 74.7633,
           "zoom": 13,
           "corridors": [
-            "Zuari Bridge New Corridor (NH-66)",
-            "Margao Western Bypass",
-            "Vasco Harbour Link"
+            "Lal Chowk - Boulevard Dal Lake Loop",
+            "Anantnag Ring Road",
+            "Anantnag Station Connector"
           ],
-          "active_buses": 2,
-          "defects": 14,
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Baramulla",
+          "tehsils": [
+            "Baramulla Central",
+            "Baramulla North",
+            "Baramulla South"
+          ],
+          "lat": 34.1131,
+          "lon": 74.802,
+          "zoom": 13,
+          "corridors": [
+            "Lal Chowk - Boulevard Dal Lake Loop",
+            "Baramulla Ring Road",
+            "Baramulla Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 59,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "LA",
+      "state": "Ladakh",
+      "capital": "Leh",
+      "authority": "Ladakh Transport Cooperative",
+      "districts": [
+        {
+          "name": "Leh",
+          "tehsils": [
+            "Leh Central",
+            "Leh North",
+            "Leh South"
+          ],
+          "lat": 34.1517,
+          "lon": 77.5437,
+          "zoom": 13,
+          "corridors": [
+            "Main Bazaar - Fort Road - Airport Spine",
+            "Leh Ring Road",
+            "Leh Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "High"
+        },
+        {
+          "name": "Kargil",
+          "tehsils": [
+            "Kargil Central",
+            "Kargil North",
+            "Kargil South"
+          ],
+          "lat": 34.1395,
+          "lon": 77.5675,
+          "zoom": 13,
+          "corridors": [
+            "Main Bazaar - Fort Road - Airport Spine",
+            "Kargil Ring Road",
+            "Kargil Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 45,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "code": "LD",
+      "state": "Lakshadweep",
+      "capital": "Kavaratti",
+      "authority": "Lakshadweep Port Transport",
+      "districts": [
+        {
+          "name": "Kavaratti",
+          "tehsils": [
+            "Kavaratti Central",
+            "Kavaratti North",
+            "Kavaratti South"
+          ],
+          "lat": 10.5945,
+          "lon": 72.6174,
+          "zoom": 13,
+          "corridors": [
+            "Harbour Jetty - Marine Aquarium Spine",
+            "Kavaratti Ring Road",
+            "Kavaratti Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 64,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Agatti",
+          "tehsils": [
+            "Agatti Central",
+            "Agatti North",
+            "Agatti South"
+          ],
+          "lat": 10.5472,
+          "lon": 72.6331,
+          "zoom": 13,
+          "corridors": [
+            "Harbour Jetty - Marine Aquarium Spine",
+            "Agatti Ring Road",
+            "Agatti Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 50,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Minicoy",
+          "tehsils": [
+            "Minicoy Central",
+            "Minicoy North",
+            "Minicoy South"
+          ],
+          "lat": 10.541,
+          "lon": 72.6744,
+          "zoom": 13,
+          "corridors": [
+            "Harbour Jetty - Marine Aquarium Spine",
+            "Minicoy Ring Road",
+            "Minicoy Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 57,
           "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "code": "PY",
+      "state": "Puducherry",
+      "capital": "Puducherry",
+      "authority": "Puducherry Road Transport (PRTC)",
+      "districts": [
+        {
+          "name": "Puducherry",
+          "tehsils": [
+            "Puducherry Central",
+            "Puducherry North",
+            "Puducherry South"
+          ],
+          "lat": 11.975,
+          "lon": 79.8081,
+          "zoom": 13,
+          "corridors": [
+            "Goubert Avenue - Promenade Beach Heritage Loop",
+            "Puducherry Ring Road",
+            "Puducherry Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Karaikal",
+          "tehsils": [
+            "Karaikal Central",
+            "Karaikal North",
+            "Karaikal South"
+          ],
+          "lat": 11.9672,
+          "lon": 79.8065,
+          "zoom": 13,
+          "corridors": [
+            "Goubert Avenue - Promenade Beach Heritage Loop",
+            "Karaikal Ring Road",
+            "Karaikal Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 63,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Mahe",
+          "tehsils": [
+            "Mahe Central",
+            "Mahe North",
+            "Mahe South"
+          ],
+          "lat": 11.9522,
+          "lon": 79.7697,
+          "zoom": 13,
+          "corridors": [
+            "Goubert Avenue - Promenade Beach Heritage Loop",
+            "Mahe Ring Road",
+            "Mahe Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "High"
+        },
+        {
+          "name": "Yanam",
+          "tehsils": [
+            "Yanam Central",
+            "Yanam North",
+            "Yanam South"
+          ],
+          "lat": 11.9562,
+          "lon": 79.8381,
+          "zoom": 13,
+          "corridors": [
+            "Goubert Avenue - Promenade Beach Heritage Loop",
+            "Yanam Ring Road",
+            "Yanam Station Connector"
+          ],
+          "active_buses": 4,
+          "defects": 47,
+          "congestion": "Moderate"
         }
       ]
     }

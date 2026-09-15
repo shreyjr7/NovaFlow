@@ -63,7 +63,8 @@ def test_system():
         seeder = get_demo_seeder_service()
         buses = seeder.get_buses()
         routes = seeder.get_routes()
-        print(f"  [3/7] Fleet Kinematics ({len(buses)} buses, 5 routes) .. [ OK ]")
+        r_count = len(routes.get('routes', []))
+        print(f"  [3/7] Fleet Kinematics ({len(buses)} buses, {r_count} routes) .. [ OK ]")
         passed += 1
     except Exception as e:
         print(f"  [3/7] Fleet Kinematics ..................... [ FAIL: {e} ]")

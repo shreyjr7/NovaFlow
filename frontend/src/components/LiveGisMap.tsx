@@ -54,25 +54,25 @@ const BASEMAP_PRESETS = [
   { 
     id: "google_streets", 
     name: "Google Maps (Roadmap)", 
-    url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", 
+    url: "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", 
     attribution: "&copy; Google Maps" 
   },
   { 
     id: "google_hybrid", 
     name: "Google Maps (Satellite + Streets)", 
-    url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", 
+    url: "https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", 
     attribution: "&copy; Google Maps Imagery" 
   },
   { 
     id: "google_satellite", 
     name: "Google Maps (Satellite Only)", 
-    url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", 
+    url: "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", 
     attribution: "&copy; Google Maps Satellite" 
   },
   { 
     id: "google_terrain", 
     name: "Google Maps (Terrain)", 
-    url: "https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", 
+    url: "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", 
     attribution: "&copy; Google Maps Terrain" 
   },
   { 
@@ -157,16 +157,21 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
     }
   };
 
-  // Helper to build tile layer
+  // Helper to build tile layer with smooth high-zoom fallback
   const createTileLayer = (presetId: string, apiKey: string): L.TileLayer => {
     const preset = BASEMAP_PRESETS.find(p => p.id === presetId) || BASEMAP_PRESETS[0];
     const tileUrl = (presetId.startsWith("google") && apiKey)
       ? `${preset.url}&key=${apiKey}`
       : preset.url;
 
+    const isGoogle = presetId.startsWith("google");
+
     return L.tileLayer(tileUrl, {
-      maxZoom: 20,
+      maxZoom: 22,
+      maxNativeZoom: isGoogle ? 20 : 19,
+      subdomains: isGoogle ? ["mt0", "mt1", "mt2", "mt3"] : ["a", "b", "c"],
       attribution: preset.attribution,
+      crossOrigin: true,
     });
   };
 

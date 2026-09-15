@@ -358,16 +358,9 @@ export const GisCommandCenter: React.FC = () => {
       // 6. Status filter
       if (filterStatus !== "ALL" && ev.status !== filterStatus) return false;
 
-      // 7. City proximity filter
-      const center = CITY_COORDS[activeCity];
-      const dist = Math.sqrt(
-        Math.pow(ev.gps.lat - center.lat, 2) + Math.pow(ev.gps.lon - center.lon, 2)
-      );
-      if (dist > 0.8) return false;
-
       return true;
     });
-  }, [events, layers, filterType, filterSeverity, filterDistrict, filterBus, filterStatus, activeCity]);
+  }, [events, layers, filterType, filterSeverity, filterDistrict, filterBus, filterStatus]);
 
   // ── Spatial Clustering at Lower Zoom Levels ─────────────────────────────────
   const clusters = useMemo(() => {
@@ -679,7 +672,7 @@ export const GisCommandCenter: React.FC = () => {
         </aside>
 
         {/* ── TOP FILTER BAR: 8 FILTERS ────────────────────────────────────────── */}
-        <div className="absolute top-3 left-72 right-3 z-20 flex flex-wrap items-center gap-2 bg-gray-900/90 backdrop-blur-md border border-gray-800 p-2 rounded-xl shadow-xl text-xs">
+        <div className="absolute top-3 left-72 right-3 z-30 flex flex-wrap items-center gap-2 bg-gray-900/90 backdrop-blur-md border border-gray-800 p-2 rounded-xl shadow-xl text-xs">
           <div className="flex items-center gap-1 text-gray-400 font-bold uppercase tracking-wider text-[10px] pl-1">
             <Filter size={12} className="text-brand" />
             <span>Filters:</span>
@@ -846,11 +839,11 @@ export const GisCommandCenter: React.FC = () => {
           </button>
 
           {/* Map View Mode Toggle */}
-          <div className="flex items-center bg-gray-900 border border-gray-700 rounded-md p-0.5 ml-auto">
+          <div className="relative z-[50] flex items-center bg-gray-900 border border-gray-700 rounded-md p-0.5 ml-auto pointer-events-auto">
             <button
               onClick={() => setMapViewMode("REAL_MAP")}
-              className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                mapViewMode === "REAL_MAP" ? "bg-blue-600 text-white shadow" : "text-gray-400 hover:text-white"
+              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                mapViewMode === "REAL_MAP" ? "bg-blue-600 text-white shadow" : "text-gray-400 hover:text-white hover:bg-gray-800"
               }`}
               title="Google Maps / Cartographic Tile Layer"
             >
@@ -858,8 +851,8 @@ export const GisCommandCenter: React.FC = () => {
             </button>
             <button
               onClick={() => setMapViewMode("VECTOR")}
-              className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
-                mapViewMode === "VECTOR" ? "bg-indigo-600 text-white shadow" : "text-gray-400 hover:text-white"
+              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                mapViewMode === "VECTOR" ? "bg-indigo-600 text-white shadow" : "text-gray-400 hover:text-white hover:bg-gray-800"
               }`}
               title="Schematic Vector Grid"
             >
@@ -883,7 +876,7 @@ export const GisCommandCenter: React.FC = () => {
             />
           </div>
         ) : (
-        <div className="flex-1 w-full h-full relative bg-gray-950 overflow-hidden cursor-crosshair">
+        <div className="flex-1 w-full h-full relative bg-gray-950 overflow-hidden cursor-default">
           {/* Cartographic Vector Grid Background (CartoDB Dark Tile Simulation) */}
           <div
             className="absolute inset-0 opacity-40"
