@@ -1,0 +1,11 @@
+{
+  "demo_mode": true,
+  "indicator": "DEMO MODE",
+  "banner_text": "\u26a1 DEMO MODE | 20 Active Buses \u2022 5 Routes \u2022 115 Road Segments \u2022 Simulated Fleet Telemetry",
+  "buses_count": 20,
+  "routes_count": 5,
+  "road_segments_count": 115,
+  "historical_events_in_database": 552,
+  "is_seeded": false,
+  "last_updated": "2026-09-15T05:06:52.880895+00:00"
+}

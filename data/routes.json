@@ -1,0 +1,382 @@
+{
+  "routes": [
+    {
+      "route_id": "ROUTE_1",
+      "name": "Route 1 \u2014 Connaught Place Circular Ring (Delhi)",
+      "city": "New Delhi",
+      "color": "#6366f1",
+      "segment_count": 25,
+      "waypoints": [
+        [
+          28.6328,
+          77.2185
+        ],
+        [
+          28.634,
+          77.2215
+        ],
+        [
+          28.632,
+          77.225
+        ],
+        [
+          28.629,
+          77.227
+        ],
+        [
+          28.6265,
+          77.224
+        ],
+        [
+          28.625,
+          77.22
+        ],
+        [
+          28.627,
+          77.216
+        ],
+        [
+          28.63,
+          77.215
+        ],
+        [
+          28.6328,
+          77.2185
+        ]
+      ]
+    },
+    {
+      "route_id": "ROUTE_2",
+      "name": "Route 2 \u2014 Mumbai Western Express Arterial (Mumbai)",
+      "city": "Mumbai",
+      "color": "#06b6d4",
+      "segment_count": 25,
+      "waypoints": [
+        [
+          19.055,
+          72.835
+        ],
+        [
+          19.068,
+          72.842
+        ],
+        [
+          19.082,
+          72.851
+        ],
+        [
+          19.096,
+          72.86
+        ],
+        [
+          19.112,
+          72.868
+        ],
+        [
+          19.13,
+          72.872
+        ],
+        [
+          19.155,
+          72.875
+        ],
+        [
+          19.178,
+          72.869
+        ],
+        [
+          19.205,
+          72.862
+        ]
+      ]
+    },
+    {
+      "route_id": "ROUTE_3",
+      "name": "Route 3 \u2014 Bengaluru Outer Ring Road Tech Trunk (Bengaluru)",
+      "city": "Bengaluru",
+      "color": "#10b981",
+      "segment_count": 25,
+      "waypoints": [
+        [
+          12.925,
+          77.685
+        ],
+        [
+          12.935,
+          77.692
+        ],
+        [
+          12.952,
+          77.701
+        ],
+        [
+          12.973,
+          77.712
+        ],
+        [
+          12.99,
+          77.705
+        ],
+        [
+          13.01,
+          77.69
+        ],
+        [
+          13.025,
+          77.665
+        ],
+        [
+          13.038,
+          77.64
+        ],
+        [
+          13.045,
+          77.615
+        ]
+      ]
+    },
+    {
+      "route_id": "ROUTE_4",
+      "name": "Route 4 \u2014 Old Delhi Heritage Loop (Chandni Chowk - Red Fort)",
+      "city": "New Delhi",
+      "color": "#f59e0b",
+      "segment_count": 20,
+      "waypoints": [
+        [
+          28.6505,
+          77.23
+        ],
+        [
+          28.653,
+          77.235
+        ],
+        [
+          28.656,
+          77.241
+        ],
+        [
+          28.658,
+          77.245
+        ],
+        [
+          28.655,
+          77.249
+        ],
+        [
+          28.65,
+          77.244
+        ],
+        [
+          28.647,
+          77.238
+        ],
+        [
+          28.6485,
+          77.232
+        ],
+        [
+          28.6505,
+          77.23
+        ]
+      ]
+    },
+    {
+      "route_id": "ROUTE_5",
+      "name": "Route 5 \u2014 Indira Gandhi Airport Express Corridor",
+      "city": "New Delhi",
+      "color": "#ec4899",
+      "segment_count": 20,
+      "waypoints": [
+        [
+          28.58,
+          77.16
+        ],
+        [
+          28.568,
+          77.145
+        ],
+        [
+          28.555,
+          77.13
+        ],
+        [
+          28.548,
+          77.112
+        ],
+        [
+          28.552,
+          77.095
+        ],
+        [
+          28.558,
+          77.085
+        ],
+        [
+          28.565,
+          77.09
+        ],
+        [
+          28.572,
+          77.11
+        ],
+        [
+          28.58,
+          77.16
+        ]
+      ]
+    }
+  ],
+  "total_segments": 115,
+  "segments_sample": [
+    {
+      "segment_id": "CP_RING_SEG_01",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 1",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6328,
+      "lon": 77.2185,
+      "surface_condition": "FAIR"
+    },
+    {
+      "segment_id": "CP_RING_SEG_02",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 2",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6328,
+      "lon": 77.2185,
+      "surface_condition": "EXCELLENT"
+    },
+    {
+      "segment_id": "CP_RING_SEG_03",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 3",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6328,
+      "lon": 77.2185,
+      "surface_condition": "EXCELLENT"
+    },
+    {
+      "segment_id": "CP_RING_SEG_04",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 4",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.634,
+      "lon": 77.2215,
+      "surface_condition": "GOOD"
+    },
+    {
+      "segment_id": "CP_RING_SEG_05",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 5",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.634,
+      "lon": 77.2215,
+      "surface_condition": "NEEDS_MAINTENANCE"
+    },
+    {
+      "segment_id": "CP_RING_SEG_06",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 6",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.634,
+      "lon": 77.2215,
+      "surface_condition": "NEEDS_MAINTENANCE"
+    },
+    {
+      "segment_id": "CP_RING_SEG_07",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 7",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.632,
+      "lon": 77.225,
+      "surface_condition": "NEEDS_MAINTENANCE"
+    },
+    {
+      "segment_id": "CP_RING_SEG_08",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 8",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.632,
+      "lon": 77.225,
+      "surface_condition": "GOOD"
+    },
+    {
+      "segment_id": "CP_RING_SEG_09",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 9",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.632,
+      "lon": 77.225,
+      "surface_condition": "FAIR"
+    },
+    {
+      "segment_id": "CP_RING_SEG_10",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 10",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.629,
+      "lon": 77.227,
+      "surface_condition": "GOOD"
+    },
+    {
+      "segment_id": "CP_RING_SEG_11",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 11",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.629,
+      "lon": 77.227,
+      "surface_condition": "EXCELLENT"
+    },
+    {
+      "segment_id": "CP_RING_SEG_12",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 12",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.629,
+      "lon": 77.227,
+      "surface_condition": "EXCELLENT"
+    },
+    {
+      "segment_id": "CP_RING_SEG_13",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 13",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6265,
+      "lon": 77.224,
+      "surface_condition": "NEEDS_MAINTENANCE"
+    },
+    {
+      "segment_id": "CP_RING_SEG_14",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 14",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6265,
+      "lon": 77.224,
+      "surface_condition": "GOOD"
+    },
+    {
+      "segment_id": "CP_RING_SEG_15",
+      "route_id": "ROUTE_1",
+      "name": "New Delhi CP_RING Corridor - Section 15",
+      "speed_limit_kmh": 50,
+      "lanes": 2,
+      "lat": 28.6265,
+      "lon": 77.224,
+      "surface_condition": "GOOD"
+    }
+  ]
+}

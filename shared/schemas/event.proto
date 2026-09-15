@@ -1,0 +1,29 @@
+﻿syntax =  proto3;
+package urban;
+
+message BBox {
+  float x1 = 1;
+  float y1 = 2;
+  float x2 = 3;
+  float y2 = 4;
+}
+
+message Detection {
+  string label = 1;
+  float confidence = 2;
+  BBox bbox = 3;
+}
+
+message GPS {
+  double lat = 1;
+  double lng = 2;
+}
+
+message Event {
+  string id = 1;
+  GPS gps = 2;
+  string timestamp = 3; // ISO8601 UTC
+  repeated Detection detections = 4;
+  string clip_path = 5;
+  map<string, string> extra = 6;
+}

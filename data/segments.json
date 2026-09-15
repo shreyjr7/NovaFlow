@@ -1,0 +1,1152 @@
+[
+  {
+    "segment_id": "CP_RING_SEG_01",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 1",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6328,
+    "lon": 77.2185,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "CP_RING_SEG_02",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 2",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6328,
+    "lon": 77.2185,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "CP_RING_SEG_03",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 3",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6328,
+    "lon": 77.2185,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "CP_RING_SEG_04",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 4",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.634,
+    "lon": 77.2215,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_05",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 5",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.634,
+    "lon": 77.2215,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_06",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 6",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.634,
+    "lon": 77.2215,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_07",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 7",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.632,
+    "lon": 77.225,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_08",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 8",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.632,
+    "lon": 77.225,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_09",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 9",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.632,
+    "lon": 77.225,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "CP_RING_SEG_10",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 10",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.629,
+    "lon": 77.227,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_11",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 11",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.629,
+    "lon": 77.227,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "CP_RING_SEG_12",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 12",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.629,
+    "lon": 77.227,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "CP_RING_SEG_13",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 13",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6265,
+    "lon": 77.224,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_14",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 14",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6265,
+    "lon": 77.224,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_15",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 15",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6265,
+    "lon": 77.224,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_16",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 16",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.625,
+    "lon": 77.22,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "CP_RING_SEG_17",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 17",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.625,
+    "lon": 77.22,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_18",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 18",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.625,
+    "lon": 77.22,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_19",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 19",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.627,
+    "lon": 77.216,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_20",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 20",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.627,
+    "lon": 77.216,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_21",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 21",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.627,
+    "lon": 77.216,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "CP_RING_SEG_22",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 22",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.63,
+    "lon": 77.215,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_23",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 23",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.63,
+    "lon": 77.215,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "CP_RING_SEG_24",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 24",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.63,
+    "lon": 77.215,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "CP_RING_SEG_25",
+    "route_id": "ROUTE_1",
+    "name": "New Delhi CP_RING Corridor - Section 25",
+    "speed_limit_kmh": 50,
+    "lanes": 2,
+    "lat": 28.6328,
+    "lon": 77.2185,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_01",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 1",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.055,
+    "lon": 72.835,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_02",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 2",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.055,
+    "lon": 72.835,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_03",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 3",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.055,
+    "lon": 72.835,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_04",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 4",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.068,
+    "lon": 72.842,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_05",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 5",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.068,
+    "lon": 72.842,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_06",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 6",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.068,
+    "lon": 72.842,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_07",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 7",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.082,
+    "lon": 72.851,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_08",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 8",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.082,
+    "lon": 72.851,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_09",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 9",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.082,
+    "lon": 72.851,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_10",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 10",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.096,
+    "lon": 72.86,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_11",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 11",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.096,
+    "lon": 72.86,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_12",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 12",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.096,
+    "lon": 72.86,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_13",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 13",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.112,
+    "lon": 72.868,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_14",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 14",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.112,
+    "lon": 72.868,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_15",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 15",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.112,
+    "lon": 72.868,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_16",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 16",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.13,
+    "lon": 72.872,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_17",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 17",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.13,
+    "lon": 72.872,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_18",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 18",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.13,
+    "lon": 72.872,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_19",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 19",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.155,
+    "lon": 72.875,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_20",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 20",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.155,
+    "lon": 72.875,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_21",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 21",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.155,
+    "lon": 72.875,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_22",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 22",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.178,
+    "lon": 72.869,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_23",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 23",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.178,
+    "lon": 72.869,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_24",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 24",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.178,
+    "lon": 72.869,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "WEH_MUM_SEG_25",
+    "route_id": "ROUTE_2",
+    "name": "Mumbai WEH_MUM Corridor - Section 25",
+    "speed_limit_kmh": 50,
+    "lanes": 3,
+    "lat": 19.205,
+    "lon": 72.862,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_01",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 1",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.925,
+    "lon": 77.685,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_02",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 2",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.925,
+    "lon": 77.685,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_03",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 3",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.925,
+    "lon": 77.685,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_04",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 4",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.935,
+    "lon": 77.692,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_05",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 5",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.935,
+    "lon": 77.692,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_06",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 6",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.935,
+    "lon": 77.692,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_07",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 7",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.952,
+    "lon": 77.701,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_08",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 8",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.952,
+    "lon": 77.701,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_09",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 9",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.952,
+    "lon": 77.701,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_10",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 10",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.973,
+    "lon": 77.712,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_11",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 11",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.973,
+    "lon": 77.712,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_12",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 12",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.973,
+    "lon": 77.712,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_13",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 13",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.99,
+    "lon": 77.705,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_14",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 14",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.99,
+    "lon": 77.705,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_15",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 15",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 12.99,
+    "lon": 77.705,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_16",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 16",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.01,
+    "lon": 77.69,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_17",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 17",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.01,
+    "lon": 77.69,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_18",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 18",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.01,
+    "lon": 77.69,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_19",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 19",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.025,
+    "lon": 77.665,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_20",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 20",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.025,
+    "lon": 77.665,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_21",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 21",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.025,
+    "lon": 77.665,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_22",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 22",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.038,
+    "lon": 77.64,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_23",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 23",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.038,
+    "lon": 77.64,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_24",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 24",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.038,
+    "lon": 77.64,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "ORR_BLR_SEG_25",
+    "route_id": "ROUTE_3",
+    "name": "Bengaluru ORR_BLR Corridor - Section 25",
+    "speed_limit_kmh": 40,
+    "lanes": 3,
+    "lat": 13.045,
+    "lon": 77.615,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_01",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 1",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6505,
+    "lon": 77.23,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_02",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 2",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6505,
+    "lon": 77.23,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_03",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 3",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6505,
+    "lon": 77.23,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_04",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 4",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.653,
+    "lon": 77.235,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_05",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 5",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.653,
+    "lon": 77.235,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_06",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 6",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.656,
+    "lon": 77.241,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_07",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 7",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.656,
+    "lon": 77.241,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_08",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 8",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.656,
+    "lon": 77.241,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_09",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 9",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.658,
+    "lon": 77.245,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_10",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 10",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.658,
+    "lon": 77.245,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_11",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 11",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.655,
+    "lon": 77.249,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_12",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 12",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.655,
+    "lon": 77.249,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_13",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 13",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.65,
+    "lon": 77.244,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_14",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 14",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.65,
+    "lon": 77.244,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_15",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 15",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.65,
+    "lon": 77.244,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_16",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 16",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.647,
+    "lon": 77.238,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_17",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 17",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.647,
+    "lon": 77.238,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_18",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 18",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6485,
+    "lon": 77.232,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_19",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 19",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6485,
+    "lon": 77.232,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "HERITAGE_DEL_SEG_20",
+    "route_id": "ROUTE_4",
+    "name": "New Delhi HERITAGE_DEL Corridor - Section 20",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.6505,
+    "lon": 77.23,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_01",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 1",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.58,
+    "lon": 77.16,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_02",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 2",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.58,
+    "lon": 77.16,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_03",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 3",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.58,
+    "lon": 77.16,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_04",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 4",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.568,
+    "lon": 77.145,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_05",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 5",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.568,
+    "lon": 77.145,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_06",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 6",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.555,
+    "lon": 77.13,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_07",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 7",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.555,
+    "lon": 77.13,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_08",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 8",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.555,
+    "lon": 77.13,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_09",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 9",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.548,
+    "lon": 77.112,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_10",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 10",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.548,
+    "lon": 77.112,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_11",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 11",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.552,
+    "lon": 77.095,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_12",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 12",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.552,
+    "lon": 77.095,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_13",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 13",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.558,
+    "lon": 77.085,
+    "surface_condition": "FAIR"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_14",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 14",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.558,
+    "lon": 77.085,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_15",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 15",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.558,
+    "lon": 77.085,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_16",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 16",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.565,
+    "lon": 77.09,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_17",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 17",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.565,
+    "lon": 77.09,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_18",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 18",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.572,
+    "lon": 77.11,
+    "surface_condition": "GOOD"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_19",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 19",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.572,
+    "lon": 77.11,
+    "surface_condition": "EXCELLENT"
+  },
+  {
+    "segment_id": "AERO_DEL_SEG_20",
+    "route_id": "ROUTE_5",
+    "name": "New Delhi AERO_DEL Corridor - Section 20",
+    "speed_limit_kmh": 40,
+    "lanes": 2,
+    "lat": 28.58,
+    "lon": 77.16,
+    "surface_condition": "NEEDS_MAINTENANCE"
+  }
+]

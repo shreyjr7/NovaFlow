@@ -1,0 +1,24 @@
+@import "leaflet/dist/leaflet.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fix leaflet popup styles in dark mode */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #374151 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}

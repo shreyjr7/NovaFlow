@@ -1,0 +1,21 @@
+mqtt:
+  host: broker
+  port: 1883
+  tls: false
+  username: ''
+  password: ''
+cameras:
+  - name: front
+    type: usb
+    source: /dev/video0
+  - name: rear
+    type: usb
+    source: /dev/video1
+  - name: side
+    type: rtsp
+    source: rtsp://192.168.1.100/stream
+storage:
+  minio_endpoint: http://minio:9000
+  bucket: edge-clips
+  access_key: minioadmin
+  secret_key: minioadmin

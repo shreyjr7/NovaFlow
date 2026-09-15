@@ -1,0 +1,9 @@
+﻿python-jose[cryptography]
+passlib[bcrypt]
+sqlmodel
+fastapi
+uvicorn
+psycopg2-binary
+geoalchemy2
+pandas
+scikit-learn

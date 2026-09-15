@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  broker:
+    image: emqx/emqx:latest
+    container_name: emqx
+    ports:
+      - " 1883:1883\ # MQTT
+ - \8083:8083\
+ environment:
+ EMQX_ALLOW_ANONYMOUS: 'true'
+ networks:
+ - appnet
+
+ minio:
+ image: minio/minio:latest
+ container_name: minio
+ command: server /data --console-address \/:9001\
+ environment:
+ MINIO_ROOT_USER: minioadmin
+ MINIO_ROOT_PASSWORD: minioadmin
+ ports:
+ - \9000:9000\
+ - \9001:9001\
+ networks:
+ - appnet
+
+ db:
+ image: postgis/postgis:14-3.3
+ container_name: postgres
+ environment:
+ POSTGRES_USER: urban
+ POSTGRES_PASSWORD: urbanpwd
+ POSTGRES_DB: urban_intelligence
+ ports:
+ - \5432:5432\
+ volumes:
+ - db_data:/var/lib/postgresql/data
+ networks:
+ - appnet
+
+ backend:
+ build:
+ context: ./backend
+ dockerfile: Dockerfile.backend
+ container_name: backend
+ depends_on:
+ - db
+ - broker
+ - minio
+ ports:
+ - \8000:8000\
+ environment:
+ DATABASE_URL: postgresql+psycopg2://urban:urbanpwd@db:5432/urban_intelligence
+ MINIO_ENDPOINT: minio:9000
+ MINIO_ACCESS_KEY: minioadmin
+ MINIO_SECRET_KEY: minioadmin
+ MQTT_BROKER: broker:1883
+ networks:
+ - appnet
+
+ edge:
+ build:
+ context: ./edge
+ dockerfile: Dockerfile.edge
+ container_name: edge
+ depends_on:
+ - broker
+ - minio
+ environment:
+ MQTT_BROKER: broker:1883
+ MINIO_ENDPOINT: http://minio:9000
+ networks:
+ - appnet
+
+ frontend:
+ build:
+ context: ./frontend
+ dockerfile: Dockerfile.frontend
+ container_name: frontend
+ ports:
+ - \3000:80\
+ depends_on:
+ - backend
+ networks:
+ - appnet
+
+networks:
+ appnet:
+ driver: bridge
+
+volumes:
+ db_data:

@@ -1,0 +1,1110 @@
+{
+  "all_states": [
+    {
+      "state": "National Capital Territory of Delhi",
+      "capital": "New Delhi",
+      "code": "DL",
+      "districts": [
+        {
+          "name": "New Delhi",
+          "tehsils": [
+            "Chanakyapuri",
+            "Delhi Cantonment",
+            "Vasant Vihar"
+          ],
+          "lat": 28.6139,
+          "lon": 77.209,
+          "zoom": 13,
+          "corridors": [
+            "Connaught Place Inner Circle",
+            "Barakhamba Road",
+            "Janpath",
+            "Ashoka Road"
+          ],
+          "active_buses": 4,
+          "defects": 68,
+          "congestion": "High (Peak)"
+        },
+        {
+          "name": "Central Delhi",
+          "tehsils": [
+            "Civil Lines",
+            "Karol Bagh",
+            "Kotwali"
+          ],
+          "lat": 28.6453,
+          "lon": 77.2128,
+          "zoom": 13,
+          "corridors": [
+            "Pusa Road",
+            "DB Gupta Road",
+            "Chandni Chowk Red Fort Loop"
+          ],
+          "active_buses": 4,
+          "defects": 42,
+          "congestion": "Severe"
+        },
+        {
+          "name": "South Delhi",
+          "tehsils": [
+            "Hauz Khas",
+            "Mehrauli",
+            "Saket"
+          ],
+          "lat": 28.5355,
+          "lon": 77.2,
+          "zoom": 13,
+          "corridors": [
+            "Ring Road AIIMS Flyover",
+            "Outer Ring Road IIT Flyover",
+            "Aurobindo Marg"
+          ],
+          "active_buses": 4,
+          "defects": 74,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "South West Delhi",
+          "tehsils": [
+            "Dwarka",
+            "Kapashere",
+            "Najafgarh"
+          ],
+          "lat": 28.5921,
+          "lon": 77.046,
+          "zoom": 13,
+          "corridors": [
+            "IGI Airport Express Corridor",
+            "Dwarka Expressway Sector 21",
+            "Aerocity Spine"
+          ],
+          "active_buses": 4,
+          "defects": 35,
+          "congestion": "Normal"
+        },
+        {
+          "name": "North Delhi",
+          "tehsils": [
+            "Alipur",
+            "Model Town",
+            "Narela"
+          ],
+          "lat": 28.73,
+          "lon": 77.15,
+          "zoom": 13,
+          "corridors": [
+            "GT Karnal Road (NH-44)",
+            "Mall Road University Enclave"
+          ],
+          "active_buses": 4,
+          "defects": 51,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "state": "Haryana",
+      "capital": "Chandigarh",
+      "code": "HR",
+      "districts": [
+        {
+          "name": "Gurugram (Gurgaon)",
+          "tehsils": [
+            "Gurugram",
+            "Sohna",
+            "Pataudi",
+            "Badshahpur",
+            "Wazirabad"
+          ],
+          "lat": 28.4595,
+          "lon": 77.0266,
+          "zoom": 13,
+          "corridors": [
+            "Cyber City Cyber Hub Spine",
+            "Golf Course Road Expressway",
+            "NH-48 Rajiv Chowk",
+            "Sohna Elevated Corridor"
+          ],
+          "active_buses": 6,
+          "defects": 82,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Faridabad",
+          "tehsils": [
+            "Faridabad",
+            "Ballabgarh",
+            "Badkhal",
+            "Dhauj"
+          ],
+          "lat": 28.4089,
+          "lon": 77.3178,
+          "zoom": 13,
+          "corridors": [
+            "Mathura Road NH-19",
+            "Bypass Express Road",
+            "Bata Chowk"
+          ],
+          "active_buses": 3,
+          "defects": 58,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Karnal",
+          "tehsils": [
+            "Karnal",
+            "Assandh",
+            "Gharaunda",
+            "Indri",
+            "Nilokheri"
+          ],
+          "lat": 29.6857,
+          "lon": 76.9905,
+          "zoom": 13,
+          "corridors": [
+            "NH-44 Grand Trunk Corridor",
+            "Kunjpura Road",
+            "Meerut Road"
+          ],
+          "active_buses": 2,
+          "defects": 32,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Panchkula",
+          "tehsils": [
+            "Panchkula",
+            "Kalka",
+            "Raipur Rani"
+          ],
+          "lat": 30.6942,
+          "lon": 76.8606,
+          "zoom": 13,
+          "corridors": [
+            "Himalayan Expressway Zirakpur-Panchkula",
+            "Sector 5 Civic Spine"
+          ],
+          "active_buses": 2,
+          "defects": 18,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Maharashtra",
+      "capital": "Mumbai",
+      "code": "MH",
+      "districts": [
+        {
+          "name": "Mumbai Suburban",
+          "tehsils": [
+            "Andheri",
+            "Borivali",
+            "Kurla"
+          ],
+          "lat": 19.1136,
+          "lon": 72.8697,
+          "zoom": 13,
+          "corridors": [
+            "Western Express Highway (Andheri Flyover)",
+            "JVLR Corridor",
+            "SV Road Bandra"
+          ],
+          "active_buses": 8,
+          "defects": 112,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Mumbai City",
+          "tehsils": [
+            "Colaba",
+            "Byculla",
+            "Malabar Hill",
+            "Parel"
+          ],
+          "lat": 18.9388,
+          "lon": 72.8354,
+          "zoom": 13,
+          "corridors": [
+            "Marine Drive Coastal Link",
+            "Eastern Freeway South Terminal",
+            "Pedder Road"
+          ],
+          "active_buses": 6,
+          "defects": 48,
+          "congestion": "High"
+        },
+        {
+          "name": "Pune",
+          "tehsils": [
+            "Pune City",
+            "Haveli",
+            "Baramati",
+            "Maval (Lonavala)",
+            "Khed"
+          ],
+          "lat": 18.5204,
+          "lon": 73.8567,
+          "zoom": 13,
+          "corridors": [
+            "Hinjawadi IT Park Spine",
+            "Pune-Bangalore Highway NH-48",
+            "Senapati Bapat Road"
+          ],
+          "active_buses": 5,
+          "defects": 64,
+          "congestion": "High"
+        },
+        {
+          "name": "Nagpur",
+          "tehsils": [
+            "Nagpur Urban",
+            "Nagpur Rural",
+            "Kamthi",
+            "Hingna",
+            "Katol"
+          ],
+          "lat": 21.1458,
+          "lon": 79.0882,
+          "zoom": 13,
+          "corridors": [
+            "Wardha Road Metro Corridor",
+            "Outer Ring Road Nagpur",
+            "Amravati Road"
+          ],
+          "active_buses": 3,
+          "defects": 29,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Karnataka",
+      "capital": "Bengaluru",
+      "code": "KA",
+      "districts": [
+        {
+          "name": "Bengaluru Urban",
+          "tehsils": [
+            "Bengaluru North",
+            "Bengaluru South",
+            "Bengaluru East",
+            "Anekal",
+            "Yelahanka"
+          ],
+          "lat": 12.9716,
+          "lon": 77.5946,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road (Silk Board to Marathahalli)",
+            "Electronic City Flyover",
+            "Hebbal Flyover Junction",
+            "Hosur Road"
+          ],
+          "active_buses": 8,
+          "defects": 124,
+          "congestion": "Severe"
+        },
+        {
+          "name": "Mysuru",
+          "tehsils": [
+            "Mysuru",
+            "Hunsur",
+            "Nanjangud",
+            "T. Narasipura",
+            "K.R. Nagar"
+          ],
+          "lat": 12.2958,
+          "lon": 76.6394,
+          "zoom": 13,
+          "corridors": [
+            "Bengaluru-Mysuru Expressway (NH-275)",
+            "Ring Road Mysuru",
+            "Sayyaji Rao Road"
+          ],
+          "active_buses": 3,
+          "defects": 31,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Dharwad (Hubli-Dharwad)",
+          "tehsils": [
+            "Dharwad",
+            "Hubballi Urban",
+            "Hubballi Rural",
+            "Navalgund",
+            "Kalghatgi"
+          ],
+          "lat": 15.3647,
+          "lon": 75.124,
+          "zoom": 13,
+          "corridors": [
+            "Hubli-Dharwad BRTS Corridor",
+            "Gokul Road Industrial Spine"
+          ],
+          "active_buses": 2,
+          "defects": 22,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Uttar Pradesh",
+      "capital": "Lucknow",
+      "code": "UP",
+      "districts": [
+        {
+          "name": "Gautam Buddha Nagar (Noida)",
+          "tehsils": [
+            "Noida (Dadri)",
+            "Greater Noida",
+            "Jewar"
+          ],
+          "lat": 28.5355,
+          "lon": 77.391,
+          "zoom": 13,
+          "corridors": [
+            "Noida-Greater Noida Expressway",
+            "DND Flyway Terminal",
+            "Yamuna Expressway Mile 0-25"
+          ],
+          "active_buses": 6,
+          "defects": 65,
+          "congestion": "High"
+        },
+        {
+          "name": "Lucknow",
+          "tehsils": [
+            "Lucknow",
+            "Bakshi Ka Talab",
+            "Malihabad",
+            "Mohanlalganj",
+            "Sarojini Nagar"
+          ],
+          "lat": 26.8467,
+          "lon": 80.9462,
+          "zoom": 13,
+          "corridors": [
+            "Shaheed Path Ring Expressway",
+            "Hazratganj MG Marg",
+            "Kanpur Road Transport Corridor"
+          ],
+          "active_buses": 4,
+          "defects": 46,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Varanasi",
+          "tehsils": [
+            "Varanasi",
+            "Pindra",
+            "Raja Talab"
+          ],
+          "lat": 25.3176,
+          "lon": 82.9739,
+          "zoom": 13,
+          "corridors": [
+            "Ring Road Phase 1 & 2",
+            "Babatpur Airport Highway (NH-56)",
+            "Godowlia-Dashashwamedh Corridor"
+          ],
+          "active_buses": 3,
+          "defects": 38,
+          "congestion": "High"
+        },
+        {
+          "name": "Kanpur Nagar",
+          "tehsils": [
+            "Kanpur Sadar",
+            "Ghatampur",
+            "Bilhaur"
+          ],
+          "lat": 26.4499,
+          "lon": 80.3319,
+          "zoom": 13,
+          "corridors": [
+            "GT Road Kanpur Section",
+            "VIP Road Civil Lines",
+            "Chakeri Industrial Corridor"
+          ],
+          "active_buses": 3,
+          "defects": 52,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "state": "Tamil Nadu",
+      "capital": "Chennai",
+      "code": "TN",
+      "districts": [
+        {
+          "name": "Chennai",
+          "tehsils": [
+            "Egmore",
+            "Guindy",
+            "Mylapore",
+            "Tondiarpet",
+            "Velachery",
+            "Alandur"
+          ],
+          "lat": 13.0827,
+          "lon": 80.2707,
+          "zoom": 13,
+          "corridors": [
+            "Old Mahabalipuram Road (OMR IT Expressway)",
+            "Mount Road (Anna Salai)",
+            "Kathipara Junction Flyover"
+          ],
+          "active_buses": 6,
+          "defects": 78,
+          "congestion": "High"
+        },
+        {
+          "name": "Coimbatore",
+          "tehsils": [
+            "Coimbatore North",
+            "Coimbatore South",
+            "Pollachi",
+            "Mettupalayam",
+            "Sulur"
+          ],
+          "lat": 11.0168,
+          "lon": 76.9558,
+          "zoom": 13,
+          "corridors": [
+            "Avinashi Road Express Flyover",
+            "Trichy Road NH-81",
+            "Sathy Road"
+          ],
+          "active_buses": 3,
+          "defects": 34,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Madurai",
+          "tehsils": [
+            "Madurai North",
+            "Madurai South",
+            "Melur",
+            "Thirumangalam",
+            "Usilampatti"
+          ],
+          "lat": 9.9252,
+          "lon": 78.1198,
+          "zoom": 13,
+          "corridors": [
+            "Ring Road Madurai",
+            "Kamarajar Salai",
+            "Dindigul Bypass NH-44"
+          ],
+          "active_buses": 2,
+          "defects": 26,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Telangana",
+      "capital": "Hyderabad",
+      "code": "TS",
+      "districts": [
+        {
+          "name": "Hyderabad",
+          "tehsils": [
+            "Ameerpet",
+            "Khairatabad",
+            "Charminar",
+            "Secunderabad",
+            "Shaikpet"
+          ],
+          "lat": 17.385,
+          "lon": 78.4867,
+          "zoom": 13,
+          "corridors": [
+            "PV Narasimha Rao Expressway",
+            "Raj Bhavan Road",
+            "Inner Ring Road Mehdipatnam"
+          ],
+          "active_buses": 5,
+          "defects": 62,
+          "congestion": "High"
+        },
+        {
+          "name": "Ranga Reddy",
+          "tehsils": [
+            "Serilingampally (Gachibowli)",
+            "Rajendranagar",
+            "Ibrahimpatnam",
+            "Chevella",
+            "Maheshwaram"
+          ],
+          "lat": 17.4401,
+          "lon": 78.3489,
+          "zoom": 13,
+          "corridors": [
+            "Outer Ring Road (ORR Gachibowli-Shamshabad)",
+            "HITEC City Cyber Towers Spine",
+            "Financial District Corridor"
+          ],
+          "active_buses": 6,
+          "defects": 54,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "state": "Gujarat",
+      "capital": "Gandhinagar",
+      "code": "GJ",
+      "districts": [
+        {
+          "name": "Ahmedabad",
+          "tehsils": [
+            "Ahmedabad City",
+            "Daskroi",
+            "Sanand",
+            "Bavla",
+            "Dholka"
+          ],
+          "lat": 23.0225,
+          "lon": 72.5714,
+          "zoom": 13,
+          "corridors": [
+            "Sardar Patel Ring Road (SP Ring Road)",
+            "SG Highway (Sarkhej-Gandhinagar)",
+            "BRTS Janmarg Central Spine",
+            "Ashram Road"
+          ],
+          "active_buses": 5,
+          "defects": 49,
+          "congestion": "High"
+        },
+        {
+          "name": "Gandhinagar",
+          "tehsils": [
+            "Gandhinagar",
+            "Kalol",
+            "Dehgam",
+            "Mansa"
+          ],
+          "lat": 23.2156,
+          "lon": 72.6369,
+          "zoom": 13,
+          "corridors": [
+            "GIFT City Access Corridor",
+            "CH Road Sector 10 Secretariat",
+            "GH Road Arterial"
+          ],
+          "active_buses": 3,
+          "defects": 14,
+          "congestion": "Normal"
+        },
+        {
+          "name": "Surat",
+          "tehsils": [
+            "Surat City",
+            "Chorasi",
+            "Olpad",
+            "Kamrej",
+            "Bardoli"
+          ],
+          "lat": 21.1702,
+          "lon": 72.8311,
+          "zoom": 13,
+          "corridors": [
+            "Dumas Road Diamond Bourse Spine",
+            "Ring Road Textile Market",
+            "BRTS Udhna-Sachin Link"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "state": "West Bengal",
+      "capital": "Kolkata",
+      "code": "WB",
+      "districts": [
+        {
+          "name": "Kolkata",
+          "tehsils": [
+            "Kolkata Municipal Corp Core",
+            "Alipore",
+            "Sealdah",
+            "Shyambazar"
+          ],
+          "lat": 22.5726,
+          "lon": 88.3639,
+          "zoom": 13,
+          "corridors": [
+            "Eastern Metropolitan Bypass (EM Bypass)",
+            "AJC Bose Road Flyover",
+            "Chowringhee Jawaharlal Nehru Road",
+            "Maa Flyover"
+          ],
+          "active_buses": 6,
+          "defects": 89,
+          "congestion": "Severe"
+        },
+        {
+          "name": "North 24 Parganas (Salt Lake & New Town)",
+          "tehsils": [
+            "Bidhannagar (Salt Lake)",
+            "Rajarhat (New Town)",
+            "Barrackpore",
+            "Barasat"
+          ],
+          "lat": 22.5867,
+          "lon": 88.4178,
+          "zoom": 13,
+          "corridors": [
+            "Major Arterial Road New Town (Biswa Bangla Sarani)",
+            "Salt Lake Sector V IT Hub",
+            "VIP Road Airport Corridor"
+          ],
+          "active_buses": 5,
+          "defects": 53,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "state": "Rajasthan",
+      "capital": "Jaipur",
+      "code": "RJ",
+      "districts": [
+        {
+          "name": "Jaipur",
+          "tehsils": [
+            "Jaipur",
+            "Sanganer",
+            "Amer",
+            "Chaksu",
+            "Kotputli"
+          ],
+          "lat": 26.9124,
+          "lon": 75.7873,
+          "zoom": 13,
+          "corridors": [
+            "JLN Marg University Spine",
+            "Tonk Road (NH-52)",
+            "Ajmer Road Elevated Road",
+            "MI Road Central"
+          ],
+          "active_buses": 4,
+          "defects": 47,
+          "congestion": "High"
+        },
+        {
+          "name": "Jodhpur",
+          "tehsils": [
+            "Jodhpur",
+            "Luni",
+            "Bilara",
+            "Osian",
+            "Phalodi"
+          ],
+          "lat": 26.2389,
+          "lon": 73.0243,
+          "zoom": 13,
+          "corridors": [
+            "High Court Road",
+            "Pali Road NH-62",
+            "Residency Road"
+          ],
+          "active_buses": 2,
+          "defects": 23,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Punjab",
+      "capital": "Chandigarh",
+      "code": "PB",
+      "districts": [
+        {
+          "name": "Ludhiana",
+          "tehsils": [
+            "Ludhiana East",
+            "Ludhiana West",
+            "Jagraon",
+            "Khanna",
+            "Samrala"
+          ],
+          "lat": 30.901,
+          "lon": 75.8573,
+          "zoom": 13,
+          "corridors": [
+            "Ferozepur Road Elevated Corridor",
+            "GT Road NH-44",
+            "Gill Road Industrial Spine"
+          ],
+          "active_buses": 3,
+          "defects": 61,
+          "congestion": "High"
+        },
+        {
+          "name": "Amritsar",
+          "tehsils": [
+            "Amritsar-I",
+            "Amritsar-II",
+            "Ajnala",
+            "Baba Bakala"
+          ],
+          "lat": 31.634,
+          "lon": 74.8723,
+          "zoom": 13,
+          "corridors": [
+            "Heritage Street Golden Temple Corridor",
+            "Mall Road Amritsar",
+            "GT Road Airport Bypass"
+          ],
+          "active_buses": 3,
+          "defects": 39,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "state": "Kerala",
+      "capital": "Thiruvananthapuram",
+      "code": "KL",
+      "districts": [
+        {
+          "name": "Thiruvananthapuram",
+          "tehsils": [
+            "Thiruvananthapuram",
+            "Neyyattinkara",
+            "Nedumangad",
+            "Chirayinkeezhu",
+            "Varkala"
+          ],
+          "lat": 8.5241,
+          "lon": 76.9366,
+          "zoom": 13,
+          "corridors": [
+            "Kazhakkoottam Technopark NH-66 Elevated Highway",
+            "MG Road East Fort",
+            "Kowdiar Avenue"
+          ],
+          "active_buses": 4,
+          "defects": 41,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Ernakulam (Kochi)",
+          "tehsils": [
+            "Kanayannur (Kochi)",
+            "Kochi (Fort Kochi)",
+            "Aluva",
+            "Paravur",
+            "Kunnathunad"
+          ],
+          "lat": 9.9312,
+          "lon": 76.2673,
+          "zoom": 13,
+          "corridors": [
+            "Seaport-Airport Road",
+            "Banerji Road MG Road Spine",
+            "Kaloor-Kadavanthra Road",
+            "Kochi Bypass NH-66 Edappally"
+          ],
+          "active_buses": 5,
+          "defects": 57,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "state": "Madhya Pradesh",
+      "capital": "Bhopal",
+      "code": "MP",
+      "districts": [
+        {
+          "name": "Indore",
+          "tehsils": [
+            "Indore",
+            "Mhow (Dr. Ambedkar Nagar)",
+            "Sanwer",
+            "Depalpur"
+          ],
+          "lat": 22.7196,
+          "lon": 75.8577,
+          "zoom": 13,
+          "corridors": [
+            "AB Road BRTS i-Bus Corridor",
+            "Super Corridor TCS-Infosys Hub",
+            "Bypass Road NH-52"
+          ],
+          "active_buses": 4,
+          "defects": 33,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Bhopal",
+          "tehsils": [
+            "Huzur (Bhopal City)",
+            "Berasia",
+            "Kolar"
+          ],
+          "lat": 23.2599,
+          "lon": 77.4126,
+          "zoom": 13,
+          "corridors": [
+            "Hoshangabad Road BRTS Spine",
+            "VIP Road Upper Lake Drive",
+            "Link Road 1 & 2"
+          ],
+          "active_buses": 3,
+          "defects": 28,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Odisha",
+      "capital": "Bhubaneswar",
+      "code": "OD",
+      "districts": [
+        {
+          "name": "Khordha (Bhubaneswar)",
+          "tehsils": [
+            "Bhubaneswar",
+            "Jatni",
+            "Khordha",
+            "Balianta",
+            "Balipatna"
+          ],
+          "lat": 20.2961,
+          "lon": 85.8245,
+          "zoom": 13,
+          "corridors": [
+            "Janpath Master Canteen to Vani Vihar",
+            "Cuttack-Bhubaneswar NH-16",
+            "Infocity Chandrasekharpur Spine"
+          ],
+          "active_buses": 3,
+          "defects": 27,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "state": "Bihar",
+      "capital": "Patna",
+      "code": "BR",
+      "districts": [
+        {
+          "name": "Patna",
+          "tehsils": [
+            "Patna Sadar",
+            "Danapur",
+            "Patna City",
+            "Barh",
+            "Masaurhi",
+            "Paliganj"
+          ],
+          "lat": 25.5941,
+          "lon": 85.1376,
+          "zoom": 13,
+          "corridors": [
+            "Bailey Road (Jawaharlal Nehru Marg)",
+            "Ganga Path Marine Drive",
+            "Ashok Rajpath PMCH Corridor",
+            "Kankarbagh Main Road"
+          ],
+          "active_buses": 4,
+          "defects": 72,
+          "congestion": "Severe"
+        }
+      ]
+    },
+    {
+      "state": "Assam",
+      "capital": "Dispur (Guwahati)",
+      "code": "AS",
+      "districts": [
+        {
+          "name": "Kamrup Metropolitan (Guwahati)",
+          "tehsils": [
+            "Guwahati",
+            "Dispur",
+            "Sonapur",
+            "Azara",
+            "Chandrapur"
+          ],
+          "lat": 26.1445,
+          "lon": 91.7362,
+          "zoom": 13,
+          "corridors": [
+            "GS Road (Guwahati-Shillong Road)",
+            "RG Baruah Road (Zoo Road)",
+            "MG Road Brahmaputra Riverfront",
+            "NH-27 Jalukbari Bypass"
+          ],
+          "active_buses": 3,
+          "defects": 34,
+          "congestion": "High"
+        }
+      ]
+    },
+    {
+      "state": "Jammu & Kashmir",
+      "capital": "Srinagar (Summer) / Jammu (Winter)",
+      "code": "JK",
+      "districts": [
+        {
+          "name": "Srinagar",
+          "tehsils": [
+            "Srinagar South",
+            "Srinagar North",
+            "Pantha Chowk",
+            "Khanyar",
+            "Eidgah"
+          ],
+          "lat": 34.0837,
+          "lon": 74.7973,
+          "zoom": 13,
+          "corridors": [
+            "Foreshore Road Dal Lake",
+            "Residency Road Lal Chowk",
+            "NH-44 Bypass Pantha Chowk"
+          ],
+          "active_buses": 2,
+          "defects": 25,
+          "congestion": "Moderate"
+        },
+        {
+          "name": "Jammu",
+          "tehsils": [
+            "Jammu",
+            "Jammu South",
+            "Bahu",
+            "Akhnoor",
+            "R.S. Pura"
+          ],
+          "lat": 32.7266,
+          "lon": 74.857,
+          "zoom": 13,
+          "corridors": [
+            "Jammu-Pathankot NH-44",
+            "Bikram Chowk Flyover Spine",
+            "Bahu Fort Road"
+          ],
+          "active_buses": 2,
+          "defects": 21,
+          "congestion": "Normal"
+        }
+      ]
+    },
+    {
+      "state": "Jharkhand",
+      "capital": "Ranchi",
+      "code": "JH",
+      "districts": [
+        {
+          "name": "Ranchi",
+          "tehsils": [
+            "Ranchi Sadar",
+            "Kanke",
+            "Nagri",
+            "Namkum",
+            "Ormanjhi"
+          ],
+          "lat": 23.3441,
+          "lon": 85.3096,
+          "zoom": 13,
+          "corridors": [
+            "Main Road Albert Ekka Chowk",
+            "Harmu Bypass Road",
+            "Ranchi Ring Road NH-33"
+          ],
+          "active_buses": 3,
+          "defects": 36,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "state": "Uttarakhand",
+      "capital": "Dehradun",
+      "code": "UK",
+      "districts": [
+        {
+          "name": "Dehradun",
+          "tehsils": [
+            "Dehradun Sadar",
+            "Rishikesh",
+            "Vikasnagar",
+            "Chakrata",
+            "Doiwala"
+          ],
+          "lat": 30.3165,
+          "lon": 78.0322,
+          "zoom": 13,
+          "corridors": [
+            "Rajpur Road Clock Tower",
+            "Haridwar Road NH-7",
+            "Chakrata Road ISBT Connector"
+          ],
+          "active_buses": 2,
+          "defects": 29,
+          "congestion": "Moderate"
+        }
+      ]
+    },
+    {
+      "state": "Goa",
+      "capital": "Panaji",
+      "code": "GA",
+      "districts": [
+        {
+          "name": "North Goa",
+          "tehsils": [
+            "Tiswadi (Panaji)",
+            "Bardez (Mapusa)",
+            "Pernem",
+            "Bicholim",
+            "Sattari"
+          ],
+          "lat": 15.4909,
+          "lon": 73.8278,
+          "zoom": 13,
+          "corridors": [
+            "Atal Setu Mandovi Cable Bridge",
+            "Miramar-Dona Paula Coastal Highway",
+            "NH-66 Porvorim"
+          ],
+          "active_buses": 2,
+          "defects": 16,
+          "congestion": "Normal"
+        },
+        {
+          "name": "South Goa",
+          "tehsils": [
+            "Salcete (Margao)",
+            "Mormugao (Vasco)",
+            "Ponda",
+            "Quepem",
+            "Canacona"
+          ],
+          "lat": 15.2832,
+          "lon": 73.9862,
+          "zoom": 13,
+          "corridors": [
+            "Zuari Bridge New Corridor (NH-66)",
+            "Margao Western Bypass",
+            "Vasco Harbour Link"
+          ],
+          "active_buses": 2,
+          "defects": 14,
+          "congestion": "Normal"
+        }
+      ]
+    }
+  ]
+}

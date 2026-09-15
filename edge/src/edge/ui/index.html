@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaFlow – Edge AI Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#6366f1', dark: '#4f46e5' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .badge-online  { @apply bg-green-500/20 text-green-400 border border-green-500/30; }
+    .badge-offline { @apply bg-red-500/20   text-red-400   border border-red-500/30;   }
+    .badge-warn    { @apply bg-yellow-500/20 text-yellow-400 border border-yellow-500/30; }
+    .stat-card { @apply bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col gap-1; }
+    .evt-row   { @apply flex items-start gap-2 text-xs py-1 border-b border-gray-700 last:border-0; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+<!-- ── HEADER ───────────────────────────────────────── -->
+<header class="bg-gray-900 border-b border-gray-800 px-6 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center text-white font-bold text-sm">AI</div>
+    <div>
+      <div class="font-semibold text-sm">NovaFlow Edge AI Simulator</div>
+      <div class="text-xs text-gray-400">Urban Intelligence Platform – Onboard Bus Computer</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="conn-badge" class="text-xs px-2 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">● Disconnected</div>
+    <button onclick="toggleTheme()" class="text-xs text-gray-400 hover:text-white transition">☀ / ☾</button>
+  </div>
+</header>
+
+<div class="flex h-[calc(100vh-56px)]">
+
+  <!-- ── SIDEBAR: CONTROL PANEL ────────────────────── -->
+  <aside class="w-80 bg-gray-900 border-r border-gray-800 flex flex-col gap-0 overflow-y-auto">
+    <div class="p-4 border-b border-gray-800">
+      <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-3">Control Panel</h2>
+
+      <!-- Select Bus -->
+      <label class="block text-xs text-gray-400 mb-1">Select Bus</label>
+      <select id="sel-bus" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-3 focus:ring-2 focus:ring-brand outline-none">
+        <option value="BUS_001">Bus 001 – Route 1</option>
+        <option value="BUS_002">Bus 002 – Route 2</option>
+        <option value="BUS_003">Bus 003 – Route 3</option>
+      </select>
+
+      <!-- Select Route -->
+      <label class="block text-xs text-gray-400 mb-1">Select Route</label>
+      <select id="sel-route" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-3 focus:ring-2 focus:ring-brand outline-none">
+        <option value="ROUTE_1">Route 1 – New Delhi</option>
+        <option value="ROUTE_2">Route 2 – Mumbai</option>
+        <option value="ROUTE_3">Route 3 – Bangalore</option>
+      </select>
+
+      <!-- Select Camera -->
+      <label class="block text-xs text-gray-400 mb-1">Active Cameras</label>
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="cam-front" checked class="accent-brand" /> Front
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="cam-rear" class="accent-brand" /> Rear
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="cam-left" class="accent-brand" /> Left
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="cam-right" class="accent-brand" /> Right
+        </label>
+      </div>
+
+      <!-- Upload Video -->
+      <label class="block text-xs text-gray-400 mb-1">Upload Video (Front camera)</label>
+      <input type="file" id="video-file" accept="video/*"
+             class="block w-full text-xs text-gray-400 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 mb-1 cursor-pointer" />
+      <p class="text-xs text-gray-600 mb-3">Leave empty to use webcam (index 0)</p>
+
+      <!-- API URL -->
+      <label class="block text-xs text-gray-400 mb-1">Central API URL</label>
+      <input id="api-url" type="text" value="http://localhost:8000"
+             class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm mb-3 focus:ring-2 focus:ring-brand outline-none" />
+
+      <!-- Frame Sample Rate -->
+      <label class="block text-xs text-gray-400 mb-1">
+        Frame Sample Rate: <span id="sample-val">5</span>
+      </label>
+      <input id="sample-rate" type="range" min="1" max="30" value="5"
+             oninput="document.getElementById('sample-val').textContent=this.value"
+             class="w-full accent-brand mb-4" />
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="p-4 flex flex-col gap-2">
+      <button id="btn-start" onclick="cmdStart()"
+              class="w-full bg-brand hover:bg-brand-dark text-white rounded-lg py-2 text-sm font-semibold transition">
+        ▶  Start Processing
+      </button>
+      <div class="flex gap-2">
+        <button id="btn-pause" onclick="cmdPause()"
+                class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg py-2 text-sm font-semibold transition" disabled>
+          ⏸  Pause
+        </button>
+        <button id="btn-stop" onclick="cmdStop()"
+                class="flex-1 bg-red-700 hover:bg-red-800 text-white rounded-lg py-2 text-sm font-semibold transition" disabled>
+          ⏹  Stop
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Phase 15: Store-and-Forward Network Panel ────────────────────── -->
+    <div class="p-4 border-t border-gray-800 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xs font-semibold text-gray-300 uppercase tracking-widest">Network & Buffer</h3>
+        <span id="queue-badge" class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">0 pending</span>
+      </div>
+
+      <!-- Mandated Prompt UI Indicator Box -->
+      <div id="prompt-network-indicator" class="bg-black/60 border border-green-500/40 rounded-lg p-3 font-mono text-center select-all">
+        <div class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight">Network:</div>
+        <div class="text-base font-black text-green-400 mt-0.5 tracking-wide">ONLINE</div>
+      </div>
+
+      <!-- Network Simulation Buttons -->
+      <div class="text-[11px] text-gray-400">Simulate Network State:</div>
+      <div class="grid grid-cols-3 gap-1.5">
+        <button id="btn-net-online" onclick="setNetMode('ONLINE')"
+                class="px-2 py-1.5 rounded bg-green-950/60 hover:bg-green-900/80 text-green-400 border border-green-700/50 text-xs font-semibold transition">
+          ONLINE
+        </button>
+        <button id="btn-net-offline" onclick="setNetMode('OFFLINE')"
+                class="px-2 py-1.5 rounded bg-red-950/60 hover:bg-red-900/80 text-red-400 border border-red-700/50 text-xs font-semibold transition">
+          OFFLINE
+        </button>
+        <button id="btn-net-reconn" onclick="setNetMode('RECONNECTING')"
+                class="px-2 py-1.5 rounded bg-yellow-950/60 hover:bg-yellow-900/80 text-yellow-400 border border-yellow-700/50 text-xs font-semibold transition">
+          RECONN
+        </button>
+      </div>
+
+      <div class="flex gap-2 mt-1">
+        <button onclick="flushBuffer()"
+                class="flex-1 px-2 py-1.5 rounded bg-indigo-900/40 hover:bg-indigo-800/60 text-indigo-300 border border-indigo-700/50 text-xs font-medium transition">
+          ⚡ Drain Queue
+        </button>
+        <button onclick="injectTestEvent()"
+                class="px-2 py-1.5 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 text-xs transition" title="Inject Test Event">
+          + Test Evt
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ─────────────────────────────── -->
+  <main class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+
+    <!-- Live Stats Row -->
+    <section>
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Live Statistics</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">Camera</span>
+          <span id="stat-camera" class="text-lg font-bold text-brand">–</span>
+        </div>
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">FPS</span>
+          <span id="stat-fps" class="text-lg font-bold text-green-400">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">Inference (ms)</span>
+          <span id="stat-inf" class="text-lg font-bold text-yellow-400">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">Objects Detected</span>
+          <span id="stat-obj" class="text-lg font-bold text-cyan-400">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">Events Generated</span>
+          <span id="stat-evt" class="text-lg font-bold text-purple-400">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="text-xs text-gray-400">GPS</span>
+          <span id="stat-gps" class="text-xs font-mono text-gray-300 mt-1 leading-tight">–<br/>–</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Camera Feed Preview area -->
+    <section>
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Camera Views</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- These would be replaced with real MJPEG / HLS players in production -->
+        <div id="cam-view-FRONT" class="bg-gray-800 border border-gray-700 rounded-xl aspect-video flex flex-col items-center justify-center gap-2 relative">
+          <span class="text-2xl">📷</span>
+          <span class="text-xs text-gray-400">FRONT camera</span>
+          <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-gray-900/80 text-gray-400">FRONT</span>
+          <span id="cam-badge-FRONT" class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">OFFLINE</span>
+        </div>
+        <div id="cam-view-REAR" class="bg-gray-800 border border-gray-700 rounded-xl aspect-video flex flex-col items-center justify-center gap-2 relative">
+          <span class="text-2xl">📷</span>
+          <span class="text-xs text-gray-400">REAR camera</span>
+          <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-gray-900/80 text-gray-400">REAR</span>
+          <span id="cam-badge-REAR" class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">OFFLINE</span>
+        </div>
+        <div id="cam-view-LEFT" class="bg-gray-800 border border-gray-700 rounded-xl aspect-video flex flex-col items-center justify-center gap-2 relative">
+          <span class="text-2xl">📷</span>
+          <span class="text-xs text-gray-400">LEFT camera</span>
+          <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-gray-900/80 text-gray-400">LEFT</span>
+          <span id="cam-badge-LEFT" class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">OFFLINE</span>
+        </div>
+        <div id="cam-view-RIGHT" class="bg-gray-800 border border-gray-700 rounded-xl aspect-video flex flex-col items-center justify-center gap-2 relative">
+          <span class="text-2xl">📷</span>
+          <span class="text-xs text-gray-400">RIGHT camera</span>
+          <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-gray-900/80 text-gray-400">RIGHT</span>
+          <span id="cam-badge-RIGHT" class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">OFFLINE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Log -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Event Log</h2>
+        <button onclick="clearEvents()" class="text-xs text-gray-500 hover:text-white transition">Clear</button>
+      </div>
+      <div id="event-log" class="bg-gray-900 border border-gray-800 rounded-xl p-4 max-h-64 overflow-y-auto font-mono text-xs">
+        <p class="text-gray-500 italic">Waiting for events…</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ── JAVASCRIPT ──────────────────────────────────── -->
+<script>
+const BASE = 'http://localhost:7000';
+let ws = null;
+let isPaused = false;
+let totalEvents = 0;
+
+// Theme toggle
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+}
+
+// WebSocket connection
+function connectWS() {
+  ws = new WebSocket(`ws://localhost:7000/ws/stats`);
+
+  ws.onopen = () => {
+    document.getElementById('conn-badge').textContent = '● Connected';
+    document.getElementById('conn-badge').className =
+      'text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30';
+    document.getElementById('net-status').textContent = 'Online';
+    document.getElementById('net-bar').style.width = '100%';
+  };
+
+  ws.onmessage = (evt) => {
+    const data = JSON.parse(evt.data);
+    updateStats(data);
+    if (data.events_generated > 0) pushEventLog(data);
+  };
+
+  ws.onclose = () => {
+    document.getElementById('conn-badge').textContent = '● Disconnected';
+    document.getElementById('conn-badge').className =
+      'text-xs px-2 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30';
+    document.getElementById('net-status').textContent = 'Offline';
+    document.getElementById('net-bar').style.width = '0%';
+    setTimeout(connectWS, 3000); // auto-reconnect
+  };
+
+  ws.onerror = () => ws.close();
+}
+
+function updateStats(data) {
+  document.getElementById('stat-camera').textContent = data.camera || '–';
+  document.getElementById('stat-fps').textContent    = data.fps ?? 0;
+  document.getElementById('stat-inf').textContent    = data.inference_ms ?? 0;
+  document.getElementById('stat-obj').textContent    = data.objects_detected ?? 0;
+  document.getElementById('stat-evt').textContent    = data.events_generated ?? 0;
+
+  if (data.gps) {
+    document.getElementById('stat-gps').innerHTML =
+      `${data.gps.lat?.toFixed(5)}<br/>${data.gps.lon?.toFixed(5)}`;
+  }
+
+  if (data.network_state !== undefined) {
+    applyNetworkState({
+      state: data.network_state,
+      pending_count: data.buffered_events
+    });
+  }
+
+  // Mark active camera as online
+  const cam = data.camera;
+  if (cam) {
+    const badge = document.getElementById(`cam-badge-${cam}`);
+    if (badge) {
+      badge.textContent = 'LIVE';
+      badge.className = 'absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30';
+    }
+  }
+}
+
+function pushEventLog(data) {
+  const log = document.getElementById('event-log');
+  const empty = log.querySelector('.italic');
+  if (empty) empty.remove();
+
+  const ts = new Date().toLocaleTimeString();
+  const row = document.createElement('div');
+  row.className = 'evt-row';
+  row.innerHTML = `
+    <span class="text-gray-500">${ts}</span>
+    <span class="text-yellow-400">[${data.camera}]</span>
+    <span class="text-cyan-400">${data.objects_detected} obj</span>
+    <span class="text-purple-400">+${data.events_generated} evt</span>
+    <span class="text-green-400">GPS: ${data.gps?.lat?.toFixed(4)}, ${data.gps?.lon?.toFixed(4)}</span>
+  `;
+  log.prepend(row);
+  // Keep only last 100 rows
+  while (log.children.length > 100) log.removeChild(log.lastChild);
+}
+
+function clearEvents() {
+  const log = document.getElementById('event-log');
+  log.innerHTML = '<p class="text-gray-500 italic">Cleared.</p>';
+}
+
+// ── API calls ────────────────────────────────────────
+async function apiPost(path, body = {}) {
+  try {
+    const r = await fetch(`${BASE}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    return await r.json();
+  } catch(e) {
+    console.error(path, e);
+    return { ok: false, error: String(e) };
+  }
+}
+
+async function cmdStart() {
+  const busId  = document.getElementById('sel-bus').value;
+  const route  = document.getElementById('sel-route').value;
+  const apiUrl = document.getElementById('api-url').value;
+  const rate   = parseInt(document.getElementById('sample-rate').value);
+
+  // Build camera sources
+  const cameras = {};
+  if (document.getElementById('cam-front').checked) cameras.FRONT = "0";
+  if (document.getElementById('cam-rear').checked)  cameras.REAR  = "0";
+  if (document.getElementById('cam-left').checked)  cameras.LEFT  = "0";
+  if (document.getElementById('cam-right').checked) cameras.RIGHT = "0";
+
+  // Check for uploaded file (only affects FRONT for now)
+  const fileInput = document.getElementById('video-file');
+  // Note: actual file path cannot be accessed from browser for security reasons.
+  // In a real deployment, upload the file to the server first, then pass the path.
+  // For demo, we use webcam index 0.
+
+  const result = await apiPost('/api/simulator/start', {
+    bus_id: busId,
+    route_id: route,
+    cameras,
+    api_base_url: apiUrl,
+    frame_sample_rate: rate,
+  });
+
+  if (result.ok) {
+    document.getElementById('btn-pause').disabled = false;
+    document.getElementById('btn-stop').disabled  = false;
+    document.getElementById('btn-start').disabled = true;
+    isPaused = false;
+    // Connect WS if not already
+    if (!ws || ws.readyState !== WebSocket.OPEN) connectWS();
+  }
+  console.log('Start:', result);
+}
+
+async function cmdPause() {
+  if (!isPaused) {
+    await apiPost('/api/simulator/pause');
+    document.getElementById('btn-pause').textContent = '▶  Resume';
+    isPaused = true;
+    // Mark cameras as paused
+    ['FRONT','REAR','LEFT','RIGHT'].forEach(c => {
+      const b = document.getElementById(`cam-badge-${c}`);
+      if (b && b.textContent === 'LIVE') {
+        b.textContent = 'PAUSED';
+        b.className = 'absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30';
+      }
+    });
+  } else {
+    await apiPost('/api/simulator/resume');
+    document.getElementById('btn-pause').textContent = '⏸  Pause';
+    isPaused = false;
+  }
+}
+
+async function cmdStop() {
+  await apiPost('/api/simulator/stop');
+  document.getElementById('btn-pause').disabled = true;
+  document.getElementById('btn-stop').disabled  = true;
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-pause').textContent = '⏸  Pause';
+  isPaused = false;
+  // Reset camera badges
+  ['FRONT','REAR','LEFT','RIGHT'].forEach(c => {
+    const b = document.getElementById(`cam-badge-${c}`);
+    if (b) {
+      b.textContent = 'OFFLINE';
+      b.className = 'absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30';
+    }
+  });
+  // Reset stats
+  ['stat-fps','stat-inf','stat-obj'].forEach(id => document.getElementById(id).textContent = '0');
+  document.getElementById('stat-camera').textContent = '–';
+  document.getElementById('stat-gps').innerHTML = '–<br/>–';
+}
+
+// ── Phase 15: Network Store-and-Forward Controls ─────────────────────────────
+
+async function setNetMode(mode) {
+  const result = await apiPost('/api/simulator/network/mode', { mode });
+  if (result.ok && result.status) {
+    applyNetworkState(result.status);
+  }
+}
+
+async function flushBuffer() {
+  const result = await apiPost('/api/simulator/network/flush');
+  if (result.ok && result.status) {
+    applyNetworkState(result.status);
+  }
+}
+
+async function injectTestEvent() {
+  const result = await apiPost('/api/simulator/network/test-event', {
+    event_type: "POTHOLE_DETECTED",
+    confidence: 0.94,
+    details: { manual_test: true }
+  });
+  if (result.ok && result.network_status) {
+    applyNetworkState(result.network_status);
+  }
+}
+
+function applyNetworkState(net) {
+  if (!net) return;
+  const indBox = document.getElementById('prompt-network-indicator');
+  const qBadge = document.getElementById('queue-badge');
+  const count = net.pending_count ?? net.queue?.pending_count ?? 0;
+  if (qBadge) qBadge.textContent = `${count} pending`;
+
+  if (!indBox) return;
+
+  const st = (net.state || 'ONLINE').toUpperCase();
+  if (st === 'ONLINE') {
+    indBox.className = 'bg-black/60 border border-green-500/50 rounded-lg p-3 font-mono text-center shadow-lg shadow-green-950/20';
+    indBox.innerHTML = `
+      <div class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight">Network:</div>
+      <div class="text-base font-black text-green-400 mt-0.5 tracking-wide">ONLINE</div>
+    `;
+  } else if (st === 'RECONNECTING') {
+    indBox.className = 'bg-black/60 border border-yellow-500/50 rounded-lg p-3 font-mono text-center shadow-lg shadow-yellow-950/20';
+    indBox.innerHTML = `
+      <div class="text-xs text-yellow-500 font-bold uppercase tracking-wider leading-tight">NETWORK:</div>
+      <div class="text-base font-black text-yellow-400 mt-0.5 tracking-wide">RECONNECTING</div>
+      <div class="text-[11px] text-yellow-300/80 font-bold mt-1">${count} EVENTS BUFFERED</div>
+    `;
+  } else {
+    // OFFLINE
+    indBox.className = 'bg-black/60 border border-red-500/50 rounded-lg p-3 font-mono text-center shadow-lg shadow-red-950/20';
+    indBox.innerHTML = `
+      <div class="text-xs text-red-500 font-bold uppercase tracking-wider leading-tight">NETWORK:</div>
+      <div class="text-base font-black text-red-400 mt-0.5 tracking-wide">OFFLINE</div>
+      <div class="text-[11px] text-red-300/80 font-bold mt-1">${count} EVENTS BUFFERED</div>
+    `;
+  }
+}
+
+async function fetchNetworkStatus() {
+  try {
+    const r = await fetch(`${BASE}/api/simulator/network/status`);
+    if (r.ok) {
+      const data = await r.json();
+      applyNetworkState(data);
+    }
+  } catch(e) {
+    console.debug("Could not fetch network status:", e);
+  }
+}
+
+// Auto-connect WS and fetch initial network state on page load
+connectWS();
+fetchNetworkStatus();
+</script>
+
+</body>
+</html>
