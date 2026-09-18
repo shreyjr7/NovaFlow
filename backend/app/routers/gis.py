@@ -147,12 +147,22 @@ def _build_default_gis_events() -> List[Dict[str, Any]]:
         events = []
         for h in seeder.hazards:
             ev_type = h.get("event_type", "POTHOLE")
+            lat_val = h.get("lat")
+            lon_val = h.get("lon")
+            addr_val = h.get("address", "Monitored Corridor")
             events.append({
                 "event_id": h.get("event_id"),
                 "event_type": ev_type,
                 "layer": layer_map.get(ev_type, "potholes"),
-                "lat": h.get("lat"),
-                "lon": h.get("lon"),
+                "lat": lat_val,
+                "lon": lon_val,
+                "gps": {
+                    "lat": lat_val,
+                    "lon": lon_val,
+                    "road_segment": addr_val,
+                    "address": addr_val,
+                    "bearing_deg": 0,
+                },
                 "bus_id": h.get("bus_id", "BUS_001"),
                 "camera_id": "FRONT",
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -160,8 +170,8 @@ def _build_default_gis_events() -> List[Dict[str, Any]]:
                 "severity": h.get("severity", "HIGH"),
                 "status": h.get("status", "ACTIVE"),
                 "district": h.get("district", "Metropolitan"),
-                "road_segment": h.get("address", "Monitored Corridor"),
-                "address": h.get("address", "Monitored Corridor"),
+                "road_segment": addr_val,
+                "address": addr_val,
                 "state_code": h.get("state_code", "IN"),
                 "state_name": h.get("state_name", "India"),
                 "details": {},
@@ -182,6 +192,7 @@ MAINTENANCE_TICKETS: List[Dict[str, Any]] = []
 @router.get("/features", summary="Retrieve GeoJSON FeatureCollection with all 12 map layers")
 async def get_gis_features(
     layer: Optional[str] = Query(None, description="Comma-separated layer filter"),
+    category: Optional[str] = Query(None, description="Category filter (ROAD_DAMAGE, WATERLOGGING, TRAFFIC, PEDESTRIAN_RISK, INCIDENT, ANPR)"),
     event_type: Optional[str] = Query(None),
     severity: Optional[str] = Query(None),
     status_filter: Optional[str] = Query(None, alias="status"),
@@ -189,6 +200,7 @@ async def get_gis_features(
     route_id: Optional[str] = Query(None),
     district: Optional[str] = Query(None),
     date: Optional[str] = Query(None),
+    min_confidence: Optional[float] = Query(None, ge=0.0, le=1.0),
     db: Session = Depends(get_session),
 ):
     """
@@ -223,6 +235,7 @@ async def get_gis_features(
         if "CONGESTION" in t: return "traffic_congestion"
         if "INCIDENT" in t: return "incidents"
         if "PEDESTRIAN" in t: return "pedestrian_risk"
+        if "ANPR" in t or "PLATE" in t or "INTRUSION" in t: return "anpr_violations"
         if "TICKET" in t: return "maintenance_tickets"
         return "potholes"
 
@@ -260,6 +273,21 @@ async def get_gis_features(
         p = f["properties"]
         if active_layers and p.get("layer") not in active_layers:
             continue
+        if category and category.upper() != "ALL":
+            cat = category.upper()
+            ev_t = p.get("event_type", "").upper()
+            if cat == "ROAD_DAMAGE" and not any(k in ev_t for k in ["POTHOLE", "DAMAGE", "SIGN", "DIVIDER", "ZEBRA"]):
+                continue
+            elif cat == "WATERLOGGING" and "WATERLOG" not in ev_t:
+                continue
+            elif cat == "TRAFFIC" and "CONGESTION" not in ev_t:
+                continue
+            elif cat == "PEDESTRIAN_RISK" and "PEDESTRIAN" not in ev_t:
+                continue
+            elif cat == "INCIDENT" and "INCIDENT" not in ev_t:
+                continue
+            elif cat == "ANPR" and not any(k in ev_t for k in ["ANPR", "PLATE", "INTRUSION"]):
+                continue
         if event_type and p.get("event_type", "").upper() != event_type.upper():
             continue
         if severity and p.get("severity", "").upper() != severity.upper():
@@ -268,9 +296,13 @@ async def get_gis_features(
             continue
         if bus_id and p.get("bus_id") != bus_id:
             continue
+        if route_id and p.get("route_id") != route_id:
+            continue
         if district and p.get("district", "").upper() != district.upper():
             continue
         if date and not p.get("timestamp", "").startswith(date):
+            continue
+        if min_confidence is not None and (p.get("confidence") or 1.0) < min_confidence:
             continue
         filtered_features.append(f)
 

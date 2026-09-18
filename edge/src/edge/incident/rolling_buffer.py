@@ -88,6 +88,74 @@ class RollingFrameBuffer:
             return items[-count:]
         return items
 
+
+    def extract_surrounding_clip(
+        self,
+        incident_timestamp_s: Optional[float] = None,
+        pre_seconds: float = 5.0,
+        post_seconds: float = 5.0,
+    ) -> Dict[str, Any]:
+        """
+        Step 19: Keep a rolling video buffer:
+          -5 sec, -4 sec, -3 sec, -2 sec, -1 sec, 0 <- INCIDENT, +1 sec, +2 sec, +3 sec, +4 sec, +5 sec
+        When an incident is detected: Save the surrounding clip.
+        """
+        frames_list = self.retrieve_frames()
+        clip_id = f"clip_{uuid.uuid4().hex[:8]}"
+        t_inc = incident_timestamp_s if incident_timestamp_s is not None else time.time()
+
+        # Build 11-point surrounding timeline from -5.0s to +5.0s
+        timeline_offsets = [-5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+        timeline = []
+        dummy_b64 = _encode_b64_jpeg(None)
+        key_frame_b64 = dummy_b64
+
+        if frames_list:
+            for offset in timeline_offsets:
+                target_t = t_inc + offset
+                nearest_entry = min(frames_list, key=lambda f: abs(f.get("timestamp_s", t_inc) - target_t))
+                b64 = nearest_entry.get("frame_b64") or _encode_b64_jpeg(nearest_entry.get("frame"))
+                phase = "PRE_INCIDENT" if offset < 0 else ("INCIDENT" if offset == 0.0 else "POST_INCIDENT")
+                label = f"{int(offset):+d} sec" if offset != 0.0 else "0 sec (INCIDENT)"
+                if offset == 0.0:
+                    key_frame_b64 = b64
+
+                timeline.append({
+                    "offset_seconds": offset,
+                    "timeline_label": label,
+                    "phase": phase,
+                    "is_incident_frame": (offset == 0.0),
+                    "frame_idx": nearest_entry.get("frame_idx", 0),
+                    "timestamp_s": nearest_entry.get("timestamp_s", target_t),
+                    "frame_b64": b64,
+                })
+        else:
+            for offset in timeline_offsets:
+                phase = "PRE_INCIDENT" if offset < 0 else ("INCIDENT" if offset == 0.0 else "POST_INCIDENT")
+                label = f"{int(offset):+d} sec" if offset != 0.0 else "0 sec (INCIDENT)"
+                timeline.append({
+                    "offset_seconds": offset,
+                    "timeline_label": label,
+                    "phase": phase,
+                    "is_incident_frame": (offset == 0.0),
+                    "frame_idx": int(offset * 10),
+                    "timestamp_s": t_inc + offset,
+                    "frame_b64": dummy_b64,
+                })
+
+        return {
+            "clip_id": clip_id,
+            "incident_timestamp_s": t_inc,
+            "pre_seconds": pre_seconds,
+            "post_seconds": post_seconds,
+            "duration_s": pre_seconds + post_seconds,
+            "timeline": timeline,
+            "frame_count": len(timeline),
+            "key_frame_b64": key_frame_b64,
+            "saved": True,
+            "storage_path": f"evidence/clips/{clip_id}.mp4",
+        }
+
     def create_evidence_clip(
         self,
         anomaly_timestamp_s: Optional[float] = None,

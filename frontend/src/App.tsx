@@ -28,16 +28,18 @@ import GovernmentHeader from "./components/GovernmentHeader";
 import UnifiedSidebar from "./components/UnifiedSidebar";
 import TestingCenter from "./pages/Testing/TestingCenter";
 import DemoFlowTheater from "./pages/DemoFlow/DemoFlowTheater";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+      <div className="h-screen w-screen bg-[#16192E] text-[#16192E] flex flex-col overflow-hidden">
         <GovernmentHeader />
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden">
           <UnifiedSidebar />
-          <main className="flex-1 overflow-y-auto min-w-0">
-            <Routes>
+          <main className="flex-1 overflow-y-auto min-w-0 bg-[#EEF2F6]">
+            <ErrorBoundary fallbackTitle="Page Display Interruption">
+              <Routes>
               <Route path="/" element={<Home />} />
         <Route path="/fleet" element={<Fleet />} />
         <Route path="/fleet/:busId" element={<BusDetail />} />
@@ -75,6 +77,7 @@ const App: React.FC = () => {
         {/* Redirect any unknown path to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+            </ErrorBoundary>
           </main>
         </div>
       </div>

@@ -400,71 +400,74 @@ export const RoadDefects: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-4 md:p-6 space-y-6">
-      {/* ── Top Header & Navigation ────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-800 pb-4">
+    <div className="p-6 space-y-6 max-w-[1600px] mx-auto text-[#16192E]">
+      {/* ── Top Header & Navigation ── */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#E2E8F0] pb-4">
         <div>
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#C85A17] mb-1">
+            MUNICIPAL INFRASTRUCTURE ── PWD WORK ORDER ENGINE
+          </div>
           <div className="flex items-center gap-2">
-            <Construction className="text-amber-400" size={28} />
-            <h1 className="text-2xl font-bold tracking-tight text-white">Road Defect Management Console</h1>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            <Construction className="text-[#C85A17]" size={26} />
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#16192E]">Road Defect Management Console</h1>
+            <span className="px-2 py-0.5 text-xs font-semibold rounded bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]">
               Phase 18
             </span>
           </div>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
             Autonomous multi-bus detection consensus, 6-stage lifecycle tracking, explainable priority scoring, and post-closure watchdog.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <a
             href="/gis"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-[#16192E] border border-[#CBD5E1] shadow-sm transition"
           >
             <ExternalLink size={14} />
-            Full GIS Map
+            <span>Full GIS Map</span>
           </a>
           <button
             onClick={() => window.location.reload()}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#C85A17] hover:bg-[#B34D10] text-white shadow-sm transition cursor-pointer"
           >
             <RefreshCw size={14} />
-            Refresh
+            <span>Refresh</span>
           </button>
         </div>
       </div>
 
-      {/* ── Notification Toast ──────────────────────────────────────────────── */}
+      {/* ── Notification Toast ── */}
       {notification && (
         <div className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
-          notification.type === "warning" ? "bg-rose-950/80 border-rose-500/50 text-rose-200" :
-          notification.type === "success" ? "bg-emerald-950/80 border-emerald-500/50 text-emerald-200" :
-          "bg-blue-950/80 border-blue-500/50 text-blue-200"
+          notification.type === "warning" ? "bg-amber-50 border-amber-300 text-amber-900" :
+          notification.type === "success" ? "bg-emerald-50 border-emerald-300 text-emerald-900" :
+          "bg-blue-50 border-blue-300 text-blue-900"
         }`}>
           <div className="flex items-center gap-3">
-            {notification.type === "warning" ? <AlertOctagon size={20} className="text-rose-400" /> : <CheckCircle2 size={20} className="text-emerald-400" />}
-            <span className="text-sm font-medium">{notification.msg}</span>
+            {notification.type === "warning" ? <AlertOctagon size={20} className="text-amber-600" /> : <CheckCircle2 size={20} className="text-emerald-600" />}
+            <span className="text-xs font-semibold">{notification.msg}</span>
           </div>
-          <button onClick={() => setNotification(null)} className="text-xs hover:underline opacity-80">Dismiss</button>
+          <button onClick={() => setNotification(null)} className="text-xs hover:underline opacity-80 cursor-pointer">Dismiss</button>
         </div>
       )}
 
-      {/* ── Autonomous Post-Closure Watchdog Alert Banner ─────────────────── */}
+      {/* ── Autonomous Post-Closure Watchdog Alert Banner ── */}
       {reopenedDefects.length > 0 && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-rose-950/70 via-amber-950/50 to-gray-900 border border-rose-500/40 space-y-2">
-          <div className="flex items-center gap-2 text-rose-300 font-semibold text-sm">
-            <Flame className="text-rose-400 animate-pulse" size={18} />
+        <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-300 space-y-2">
+          <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+            <Flame className="text-amber-600 animate-pulse" size={18} />
             <span>Autonomous Watchdog Alert: {reopenedDefects.length} Ticket(s) Reopened After Repair Closure</span>
           </div>
-          <p className="text-xs text-gray-300">
-            Transit bus edge cameras continued detecting defects at sites marked as RESOLVED. Tickets were automatically placed into <strong className="text-rose-300">REOPENED UNDER REVIEW</strong> for contractor quality audit.
+          <p className="text-xs text-amber-800">
+            Transit bus edge cameras continued detecting defects at sites marked as RESOLVED. Tickets were automatically placed into <strong className="text-amber-900">REOPENED UNDER REVIEW</strong> for contractor quality audit.
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
             {reopenedDefects.map(rd => (
               <button
                 key={rd.defect_id}
                 onClick={() => setSelectedDefect(rd)}
-                className="px-2.5 py-1 text-xs rounded bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 flex items-center gap-1.5 transition"
+                className="px-2.5 py-1 text-xs rounded bg-white hover:bg-amber-100 border border-amber-300 text-amber-900 flex items-center gap-1.5 transition font-semibold"
               >
                 <span>{rd.defect_id} ({rd.road_segment})</span>
                 <ChevronRight size={12} />
@@ -474,58 +477,58 @@ export const RoadDefects: React.FC = () => {
         </div>
       )}
 
-      {/* ── 5 Metric KPI Cards ────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-3.5">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+      {/* ── 5 Metric KPI Cards (White Cards Photo 5 Style) ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#64748B] mb-1">
             <span>Total Tracked</span>
-            <Construction size={16} className="text-blue-400" />
+            <Construction size={16} className="text-[#16192E]" />
           </div>
-          <p className="text-2xl font-bold text-white">{summary.total}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">Active across city grid</p>
+          <p className="text-2xl font-extrabold text-[#16192E] font-mono">{summary.total}</p>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Active across city grid</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-3.5">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#64748B] mb-1">
             <span>Critical Priority (&gt;80)</span>
-            <Flame size={16} className="text-rose-400" />
+            <Flame size={16} className="text-rose-600" />
           </div>
-          <p className="text-2xl font-bold text-rose-400">{summary.critical}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">High safety &amp; traffic risk</p>
+          <p className="text-2xl font-extrabold text-rose-600 font-mono">{summary.critical}</p>
+          <p className="text-xs text-[#94A3B8] mt-0.5">High safety &amp; traffic risk</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-3.5">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#64748B] mb-1">
             <span>Active Work Orders</span>
-            <Wrench size={16} className="text-purple-400" />
+            <Wrench size={16} className="text-[#C85A17]" />
           </div>
-          <p className="text-2xl font-bold text-purple-400">{summary.activeRepairs}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">Assigned or Under Repair</p>
+          <p className="text-2xl font-extrabold text-[#C85A17] font-mono">{summary.activeRepairs}</p>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Assigned or Under Repair</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-3.5">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#64748B] mb-1">
             <span>Repairs Verified</span>
-            <CheckCircle2 size={16} className="text-emerald-400" />
+            <CheckCircle2 size={16} className="text-emerald-600" />
           </div>
-          <p className="text-2xl font-bold text-emerald-400">{summary.resolved}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">Compacted &amp; closed</p>
+          <p className="text-2xl font-extrabold text-emerald-600 font-mono">{summary.resolved}</p>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Compacted &amp; closed</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-3.5 col-span-2 sm:col-span-1">
-          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)] col-span-2 sm:col-span-1">
+          <div className="flex items-center justify-between text-xs text-[#64748B] mb-1">
             <span>Watchdog Reopened</span>
-            <AlertOctagon size={16} className="text-amber-400" />
+            <AlertOctagon size={16} className="text-amber-600" />
           </div>
-          <p className={`text-2xl font-bold ${summary.reopened > 0 ? "text-amber-400" : "text-gray-400"}`}>{summary.reopened}</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">Post-closure recurrences</p>
+          <p className={`text-2xl font-extrabold font-mono ${summary.reopened > 0 ? "text-amber-600" : "text-[#16192E]"}`}>{summary.reopened}</p>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Post-closure recurrences</p>
         </div>
       </div>
 
-      {/* ── Filter Toolbar & View Toggles ─────────────────────────────────── */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+      {/* ── Filter Toolbar & View Toggles ── */}
+      <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5 text-xs">
-          <span className="text-gray-400 font-medium flex items-center gap-1">
+          <span className="text-[#64748B] font-semibold flex items-center gap-1">
             <Filter size={14} /> Filters:
           </span>
 
@@ -533,7 +536,7 @@ export const RoadDefects: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={e => setSelectedStatus(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1 text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1 text-[#16192E] text-xs focus:outline-none focus:border-[#C85A17]"
           >
             <option value="all">All Lifecycle States</option>
             <option value="AI_DETECTED">AI Detected</option>
@@ -550,7 +553,7 @@ export const RoadDefects: React.FC = () => {
           <select
             value={selectedType}
             onChange={e => setSelectedType(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1 text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1 text-[#16192E] text-xs focus:outline-none focus:border-[#C85A17]"
           >
             <option value="all">All Defect Types</option>
             <option value="POTHOLE">Potholes</option>
@@ -563,7 +566,7 @@ export const RoadDefects: React.FC = () => {
           <select
             value={selectedSeverity}
             onChange={e => setSelectedSeverity(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1 text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1 text-[#16192E] text-xs focus:outline-none focus:border-[#C85A17]"
           >
             <option value="all">All Severities</option>
             <option value="CRITICAL">Critical</option>
@@ -576,7 +579,7 @@ export const RoadDefects: React.FC = () => {
           <select
             value={selectedAuthority}
             onChange={e => setSelectedAuthority(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1 text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1 text-[#16192E] text-xs focus:outline-none focus:border-[#C85A17]"
           >
             <option value="all">All Authorities</option>
             <option value="PWD">PWD (Public Works)</option>
@@ -587,22 +590,22 @@ export const RoadDefects: React.FC = () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-1 bg-gray-800 p-0.5 rounded-lg border border-gray-700 text-xs">
+        <div className="flex items-center gap-1 bg-[#F1F5F9] p-0.5 rounded-lg border border-[#CBD5E1] text-xs">
           <button
             onClick={() => setActiveTab("table")}
-            className={`px-3 py-1 rounded-md transition ${activeTab === "table" ? "bg-indigo-600 text-white font-medium" : "text-gray-400 hover:text-white"}`}
+            className={`px-3 py-1 rounded-md transition cursor-pointer ${activeTab === "table" ? "bg-[#16192E] text-white font-semibold shadow-xs" : "text-[#64748B] hover:text-[#16192E]"}`}
           >
             Table View ({filtered.length})
           </button>
           <button
             onClick={() => setActiveTab("clusters")}
-            className={`px-3 py-1 rounded-md transition ${activeTab === "clusters" ? "bg-indigo-600 text-white font-medium" : "text-gray-400 hover:text-white"}`}
+            className={`px-3 py-1 rounded-md transition cursor-pointer ${activeTab === "clusters" ? "bg-[#16192E] text-white font-semibold shadow-xs" : "text-[#64748B] hover:text-[#16192E]"}`}
           >
             Deduplicated Clusters ({canonicalClusters.length})
           </button>
           <button
             onClick={() => setActiveTab("map")}
-            className={`px-3 py-1 rounded-md transition ${activeTab === "map" ? "bg-indigo-600 text-white font-medium" : "text-gray-400 hover:text-white"}`}
+            className={`px-3 py-1 rounded-md transition cursor-pointer ${activeTab === "map" ? "bg-[#16192E] text-white font-semibold shadow-xs" : "text-[#64748B] hover:text-[#16192E]"}`}
           >
             GIS Map
           </button>
@@ -613,30 +616,30 @@ export const RoadDefects: React.FC = () => {
       {activeTab === "clusters" ? (
         <div className="space-y-4">
           {/* Deduplication Banner */}
-          <div className="bg-gray-900 border border-indigo-500/40 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+              <div className="flex items-center gap-2 text-[#C85A17] font-bold text-sm">
                 <Sparkles size={18} />
                 <span>Geospatial-Temporal Event Deduplication Engine (Phase 19)</span>
               </div>
-              <p className="text-xs text-gray-300 mt-1 max-w-2xl">
-                Combines multiple bus camera sightings within 25m into <strong>ONE CANONICAL DEFECT</strong> using PostGIS <code className="text-indigo-300">ST_DWithin</code>, road segment map matching, and Bayesian multi-bus consensus.
+              <p className="text-xs text-[#64748B] mt-1 max-w-2xl">
+                Combines multiple bus camera sightings within 25m into <strong className="text-[#16192E]">ONE CANONICAL DEFECT</strong> using PostGIS <code className="text-[#C85A17] font-mono font-semibold">ST_DWithin</code>, road segment map matching, and Bayesian multi-bus consensus.
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs bg-gray-950 p-2.5 rounded-lg border border-gray-800">
+            <div className="flex items-center gap-3 text-xs bg-[#F8FAFC] p-2.5 rounded-lg border border-[#E2E8F0]">
               <div>
-                <span className="text-gray-400 block text-[10px]">Total Raw Detections</span>
-                <span className="text-lg font-bold text-white">
+                <span className="text-[#64748B] block text-[10px] font-semibold uppercase">Total Raw Detections</span>
+                <span className="text-lg font-bold text-[#16192E]">
                   {canonicalClusters.reduce((acc, c) => acc + (c.number_of_observations || 1), 0)}
                 </span>
               </div>
-              <div className="border-l border-gray-800 pl-3">
-                <span className="text-gray-400 block text-[10px]">Canonical Defects</span>
-                <span className="text-lg font-bold text-indigo-400">{canonicalClusters.length}</span>
+              <div className="border-l border-[#E2E8F0] pl-3">
+                <span className="text-[#64748B] block text-[10px] font-semibold uppercase">Canonical Defects</span>
+                <span className="text-lg font-bold text-[#C85A17]">{canonicalClusters.length}</span>
               </div>
-              <div className="border-l border-gray-800 pl-3">
-                <span className="text-gray-400 block text-[10px]">Compression Ratio</span>
-                <span className="text-lg font-bold text-emerald-400">
+              <div className="border-l border-[#E2E8F0] pl-3">
+                <span className="text-[#64748B] block text-[10px] font-semibold uppercase">Compression Ratio</span>
+                <span className="text-lg font-bold text-emerald-600">
                   {(canonicalClusters.reduce((acc, c) => acc + (c.number_of_observations || 1), 0) / Math.max(1, canonicalClusters.length)).toFixed(1)}:1
                 </span>
               </div>
@@ -652,27 +655,27 @@ export const RoadDefects: React.FC = () => {
               return (
                 <div
                   key={cluster.canonical_id}
-                  className={`bg-gray-900 border rounded-xl p-5 space-y-3.5 transition-all ${
-                    isPothole104 ? "border-indigo-500/60 ring-1 ring-indigo-500/30" : "border-gray-800 hover:border-gray-700"
+                  className={`bg-white border rounded-xl p-5 space-y-3.5 transition-all shadow-sm ${
+                    isPothole104 ? "border-l-4 border-l-[#C85A17] border-[#CBD5E1]" : "border-[#E2E8F0] hover:border-[#CBD5E1]"
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xl font-extrabold text-white tracking-tight">{cluster.canonical_id}</span>
+                        <span className="text-lg font-bold text-[#16192E] tracking-tight">{cluster.canonical_id}</span>
                         {isPothole104 && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-50 text-[#C85A17] border border-orange-200">
                             PROMPT EXAMPLE
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-gray-400">{cluster.road_segment}</span>
+                      <span className="text-xs text-[#64748B]">{cluster.road_segment}</span>
                     </div>
                     <span
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${
                         isConfirmed
-                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                          : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
                       }`}
                     >
                       {cluster.status}
@@ -680,14 +683,14 @@ export const RoadDefects: React.FC = () => {
                   </div>
 
                   {/* Prompt-mandated Core Details */}
-                  <div className="bg-gray-950/80 rounded-lg p-3 border border-gray-800 text-xs space-y-2">
+                  <div className="bg-[#F8FAFC] rounded-lg p-3 border border-[#E2E8F0] text-xs space-y-2">
                     <div>
-                      <span className="text-gray-400 block mb-1">Detected by:</span>
+                      <span className="text-[#64748B] block mb-1 font-medium">Detected by:</span>
                       <div className="flex flex-wrap gap-1.5">
                         {cluster.detected_by.map((bus: string) => (
                           <span
                             key={bus}
-                            className="px-2 py-0.5 rounded bg-gray-800 text-gray-200 border border-gray-700 font-mono text-[11px]"
+                            className="px-2 py-0.5 rounded bg-white text-[#16192E] border border-[#CBD5E1] font-mono text-[11px]"
                           >
                             {bus}
                           </span>
@@ -695,22 +698,22 @@ export const RoadDefects: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-800">
+                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#E2E8F0]">
                       <div>
-                        <span className="text-gray-400 block text-[11px]">Observations:</span>
-                        <span className="text-base font-bold text-white font-mono">{cluster.number_of_observations}</span>
+                        <span className="text-[#64748B] block text-[11px] font-medium">Observations:</span>
+                        <span className="text-base font-bold text-[#16192E] font-mono">{cluster.number_of_observations}</span>
                       </div>
                       <div>
-                        <span className="text-gray-400 block text-[11px]">Confidence:</span>
-                        <span className="text-base font-bold text-emerald-400 font-mono">
+                        <span className="text-[#64748B] block text-[11px] font-medium">Confidence:</span>
+                        <span className="text-base font-bold text-emerald-600 font-mono">
                           {Math.round(cluster.confidence * 100)}%
                         </span>
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-gray-400 pt-1 border-t border-gray-800 flex justify-between">
-                      <span>Refined Centroid:</span>
-                      <span className="font-mono text-gray-200">{cluster.centroid.lat.toFixed(4)}, {cluster.centroid.lon.toFixed(4)}</span>
+                    <div className="text-[11px] text-[#64748B] pt-1 border-t border-[#E2E8F0] flex justify-between">
+                      <span className="font-medium">Refined Centroid:</span>
+                      <span className="font-mono text-[#16192E] font-medium">{cluster.centroid.lat.toFixed(4)}, {cluster.centroid.lon.toFixed(4)}</span>
                     </div>
                   </div>
 
@@ -718,7 +721,7 @@ export const RoadDefects: React.FC = () => {
                   <div className="flex items-center justify-between pt-1">
                     <button
                       onClick={() => setSelectedCluster(selectedCluster === cluster.canonical_id ? null : cluster.canonical_id)}
-                      className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium"
+                      className="text-xs text-[#C85A17] hover:text-[#B34F14] flex items-center gap-1 font-semibold cursor-pointer"
                     >
                       {selectedCluster === cluster.canonical_id ? "Hide Sightings Trace" : `View ${cluster.observations?.length || cluster.number_of_observations} Sightings`}
                       <ChevronRight size={14} className={selectedCluster === cluster.canonical_id ? "rotate-90 transition" : "transition"} />
@@ -769,7 +772,7 @@ export const RoadDefects: React.FC = () => {
                           type: "success",
                         });
                       }}
-                      className="px-2.5 py-1 text-xs rounded bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 flex items-center gap-1 transition"
+                      className="px-2.5 py-1 text-xs rounded bg-[#C85A17] hover:bg-[#B34F14] text-white font-semibold flex items-center gap-1 transition cursor-pointer shadow-xs"
                     >
                       <Sparkles size={12} />
                       + Test Sighting
@@ -778,17 +781,17 @@ export const RoadDefects: React.FC = () => {
 
                   {/* Expanded Sightings List */}
                   {selectedCluster === cluster.canonical_id && (
-                    <div className="mt-2 pt-2 border-t border-gray-800 space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                      <div className="text-[10px] uppercase text-gray-400 font-semibold tracking-wider">Raw Sightings Stream (ST_DWithin &le; 25m)</div>
+                    <div className="mt-2 pt-2 border-t border-[#E2E8F0] space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                      <div className="text-[10px] uppercase text-[#64748B] font-semibold tracking-wider">Raw Sightings Stream (ST_DWithin &le; 25m)</div>
                       {(cluster.observations || []).slice(0, 8).map((obs: any, idx: number) => (
-                        <div key={obs.observation_id || idx} className="p-2 rounded bg-gray-950 text-[11px] flex items-center justify-between border border-gray-800/80">
+                        <div key={obs.observation_id || idx} className="p-2 rounded bg-[#F8FAFC] text-[11px] flex items-center justify-between border border-[#E2E8F0]">
                           <div>
-                            <span className="font-semibold text-white">{obs.bus_id}</span>
-                            <span className="text-gray-400 ml-2">({obs.lat.toFixed(5)}, {obs.lon.toFixed(5)})</span>
+                            <span className="font-semibold text-[#16192E]">{obs.bus_id}</span>
+                            <span className="text-[#64748B] ml-2">({obs.lat.toFixed(5)}, {obs.lon.toFixed(5)})</span>
                           </div>
                           <div className="text-right">
-                            <span className="text-emerald-400 font-mono font-medium">{Math.round(obs.confidence * 100)}%</span>
-                            <span className="text-gray-500 ml-2 text-[10px]">{obs.distance_to_centroid_m || 1.2}m offset</span>
+                            <span className="text-emerald-600 font-mono font-medium">{Math.round(obs.confidence * 100)}%</span>
+                            <span className="text-[#64748B] ml-2 text-[10px]">{obs.distance_to_centroid_m || 1.2}m offset</span>
                           </div>
                         </div>
                       ))}
@@ -800,12 +803,12 @@ export const RoadDefects: React.FC = () => {
           </div>
         </div>
       ) : activeTab === "map" ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 h-[600px] flex flex-col">
-          <div className="mb-2 flex items-center justify-between text-xs text-gray-400">
+        <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-xl p-4 h-[600px] flex flex-col">
+          <div className="mb-2 flex items-center justify-between text-xs text-[#64748B]">
             <span>Displaying spatial defects on city coordinate grid</span>
             <span>Click marker to inspect lifecycle &amp; priority</span>
           </div>
-          <div className="flex-1 rounded-lg overflow-hidden border border-gray-800">
+          <div className="flex-1 rounded-lg overflow-hidden border border-[#E2E8F0]">
             <DefectMap
               events={filtered}
               selectedEvent={selectedDefect}
@@ -816,15 +819,15 @@ export const RoadDefects: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Defects Table (2 Cols) */}
-          <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl overflow-hidden flex flex-col">
-            <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-              <span className="text-sm font-semibold text-white">Tracked Road Defects ({filtered.length})</span>
-              <span className="text-xs text-gray-400">Sorted by Priority Score &amp; Recurrence</span>
+          <div className="lg:col-span-2 bg-white border border-[#E2E8F0] shadow-sm rounded-xl overflow-hidden flex flex-col">
+            <div className="px-5 py-3.5 border-b border-[#E2E8F0] flex items-center justify-between">
+              <span className="text-sm font-bold text-[#16192E]">Tracked Road Defects ({filtered.length})</span>
+              <span className="text-xs text-[#64748B]">Sorted by Priority Score &amp; Recurrence</span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-gray-300">
-                <thead className="bg-gray-800/50 text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+              <table className="w-full text-left text-xs text-[#16192E]">
+                <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0] font-semibold">
                   <tr>
                     <th className="py-2.5 px-3">Defect ID &amp; Type</th>
                     <th className="py-2.5 px-3">Road Segment / GPS</th>
@@ -834,16 +837,16 @@ export const RoadDefects: React.FC = () => {
                     <th className="py-2.5 px-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/60">
+                <tbody className="divide-y divide-[#E2E8F0]">
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-gray-500 text-xs">
+                      <td colSpan={6} className="py-8 text-center text-[#64748B] text-xs">
                         No defects matching current filter criteria.
                       </td>
                     </tr>
                   ) : (
                     filtered.map(defect => {
-                      const meta = CLASS_META[defect.type || defect.cls] || { label: defect.type || defect.cls, icon: CrosshairIcon, color: "text-gray-400" };
+                      const meta = CLASS_META[defect.type || defect.cls] || { label: defect.type || defect.cls, icon: CrosshairIcon, color: "text-[#64748B]" };
                       const Icon = meta.icon;
                       const isSelected = selectedDefect?.defect_id === defect.defect_id;
                       const score = defect.priority_score || 50;
@@ -853,30 +856,30 @@ export const RoadDefects: React.FC = () => {
                         <tr
                           key={defect.defect_id || defect.event_id}
                           onClick={() => setSelectedDefect(defect)}
-                          className={`hover:bg-gray-800/60 cursor-pointer transition ${isSelected ? "bg-indigo-950/30 border-l-2 border-indigo-500" : ""}`}
+                          className={`hover:bg-[#F8FAFC] cursor-pointer transition ${isSelected ? "bg-orange-50/50 border-l-4 border-[#C85A17]" : ""}`}
                         >
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-2">
-                              <div className="p-1.5 rounded bg-gray-800 border border-gray-700">
+                              <div className="p-1.5 rounded bg-[#F8FAFC] border border-[#E2E8F0]">
                                 <Icon size={16} className={meta.color} />
                               </div>
                               <div>
-                                <div className="font-mono font-semibold text-white flex items-center gap-1.5">
+                                <div className="font-mono font-semibold text-[#16192E] flex items-center gap-1.5">
                                   <span>{defect.defect_id || defect.event_id}</span>
                                   {isReopened && (
-                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200 font-bold">
                                       RECURRING
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-gray-400">{meta.label}</span>
+                                <span className="text-[11px] text-[#64748B]">{meta.label}</span>
                               </div>
                             </div>
                           </td>
 
                           <td className="py-3 px-3">
-                            <div className="text-gray-200 font-medium">{defect.road_segment}</div>
-                            <div className="text-[10px] text-gray-400">
+                            <div className="text-[#16192E] font-medium">{defect.road_segment}</div>
+                            <div className="text-[10px] text-[#64748B]">
                               {defect.gps.lat.toFixed(4)}, {defect.gps.lon.toFixed(4)}
                               {defect.gps.district ? ` • ${defect.gps.district}` : ""}
                             </div>
@@ -884,12 +887,12 @@ export const RoadDefects: React.FC = () => {
 
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-1.5">
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-800 text-gray-200 border border-gray-700">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F8FAFC] text-[#16192E] border border-[#CBD5E1]">
                                 {defect.number_of_buses_confirming || 1} bus{(defect.number_of_buses_confirming || 1) > 1 ? "es" : ""}
                               </span>
-                              <span className="text-[10px] text-gray-400">({defect.detection_count || 1} det)</span>
+                              <span className="text-[10px] text-[#64748B]">({defect.detection_count || 1} det)</span>
                             </div>
-                            <div className="text-[10px] text-gray-500 mt-0.5 truncate max-w-[120px]">
+                            <div className="text-[10px] text-[#64748B] mt-0.5 truncate max-w-[120px]">
                               {(defect.buses_confirming || [defect.bus_id]).join(", ")}
                             </div>
                           </td>
@@ -899,7 +902,7 @@ export const RoadDefects: React.FC = () => {
                               <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono ${getPriorityBadge(score)}`}>
                                 {score}
                               </span>
-                              <span className="text-[10px] text-gray-400 font-medium">
+                              <span className="text-[10px] text-[#64748B] font-medium">
                                 {defect.priority_breakdown?.priority_tier || (score >= 80 ? "CRITICAL" : score >= 60 ? "HIGH" : "MEDIUM")}
                               </span>
                             </div>
@@ -910,7 +913,7 @@ export const RoadDefects: React.FC = () => {
                               {defect.status.replace(/_/g, " ")}
                             </span>
                             {defect.maintenance_ticket && (
-                              <div className="text-[9px] text-indigo-400 font-mono mt-0.5">
+                              <div className="text-[9px] text-[#C85A17] font-mono mt-0.5 font-semibold">
                                 {defect.maintenance_ticket.ticket_id}
                               </div>
                             )}
@@ -922,7 +925,7 @@ export const RoadDefects: React.FC = () => {
                                 e.stopPropagation();
                                 setSelectedDefect(defect);
                               }}
-                              className="px-2 py-1 text-xs rounded bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition"
+                              className="px-2.5 py-1 text-xs rounded bg-white hover:bg-[#F8FAFC] text-[#16192E] border border-[#CBD5E1] font-medium transition cursor-pointer shadow-2xs"
                             >
                               Inspect
                             </button>
@@ -937,18 +940,18 @@ export const RoadDefects: React.FC = () => {
           </div>
 
           {/* Defect Inspection & Field Engineer Action Drawer (1 Col) */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col space-y-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-sm rounded-xl p-5 flex flex-col space-y-4 text-[#16192E]">
             {selectedDefect ? (
               <>
-                <div className="border-b border-gray-800 pb-3 flex items-start justify-between">
+                <div className="border-b border-[#E2E8F0] pb-3 flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold text-white font-mono">{selectedDefect.defect_id || selectedDefect.event_id}</span>
+                      <span className="text-lg font-bold text-[#16192E] font-mono">{selectedDefect.defect_id || selectedDefect.event_id}</span>
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${getPriorityBadge(selectedDefect.priority_score || 50)}`}>
                         Priority {selectedDefect.priority_score || 50}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-400 mt-0.5">{selectedDefect.label || selectedDefect.type || selectedDefect.cls}</p>
+                    <p className="text-xs text-[#64748B] mt-0.5">{selectedDefect.label || selectedDefect.type || selectedDefect.cls}</p>
                   </div>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${STATUS_BADGE[selectedDefect.status] || STATUS_BADGE.AI_DETECTED}`}>
                     {selectedDefect.status.replace(/_/g, " ")}
@@ -957,23 +960,23 @@ export const RoadDefects: React.FC = () => {
 
                 {/* Reopen / Watchdog Notice */}
                 {(selectedDefect.status === "REOPENED_UNDER_REVIEW" || (selectedDefect.reopen_count || 0) > 0) && (
-                  <div className="p-2.5 rounded-lg bg-rose-950/60 border border-rose-500/40 text-xs text-rose-200 space-y-1">
-                    <div className="font-semibold flex items-center gap-1.5 text-rose-300">
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800 space-y-1">
+                    <div className="font-semibold flex items-center gap-1.5 text-rose-700">
                       <AlertOctagon size={14} />
                       <span>Post-Closure Watchdog Reopen Flag</span>
                     </div>
-                    <p className="text-[11px] text-gray-300">
+                    <p className="text-[11px] text-[#16192E]">
                       {selectedDefect.reopen_reason || "Transit buses re-detected recurring defect signature after ticket closure."}
                     </p>
                     {selectedDefect.reopened_at && (
-                      <p className="text-[10px] text-gray-400">Reopened: {formatTs(selectedDefect.reopened_at)}</p>
+                      <p className="text-[10px] text-[#64748B]">Reopened: {formatTs(selectedDefect.reopened_at)}</p>
                     )}
                   </div>
                 )}
 
                 {/* 6-Stage Lifecycle Visual Stepper */}
                 <div>
-                  <label className="text-[11px] text-gray-400 uppercase tracking-wider font-semibold block mb-2">
+                  <label className="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold block mb-2">
                     6-Stage Lifecycle State
                   </label>
                   <div className="grid grid-cols-3 gap-1.5 text-[10px] text-center">
@@ -984,8 +987,8 @@ export const RoadDefects: React.FC = () => {
                           key={stage.id}
                           className={`p-1.5 rounded border transition ${
                             isActive
-                              ? `${stage.color} font-bold ring-1 ring-white/20`
-                              : "border-gray-800 bg-gray-950/60 text-gray-500"
+                              ? `${stage.color} font-bold ring-1 ring-[#C85A17]/30 border-[#C85A17]`
+                              : "border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B]"
                           }`}
                         >
                           {stage.label}
@@ -996,72 +999,72 @@ export const RoadDefects: React.FC = () => {
                 </div>
 
                 {/* Defect Metadata Card */}
-                <div className="bg-gray-950/80 rounded-lg p-3 border border-gray-800 text-xs space-y-2">
+                <div className="bg-[#F8FAFC] rounded-lg p-3 border border-[#E2E8F0] text-xs space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Road Segment:</span>
-                    <span className="text-white font-medium">{selectedDefect.road_segment}</span>
+                    <span className="text-[#64748B]">Road Segment:</span>
+                    <span className="text-[#16192E] font-medium">{selectedDefect.road_segment}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Coordinates:</span>
-                    <span className="text-gray-200 font-mono">{selectedDefect.gps.lat.toFixed(5)}, {selectedDefect.gps.lon.toFixed(5)}</span>
+                    <span className="text-[#64748B]">Coordinates:</span>
+                    <span className="text-[#16192E] font-mono">{selectedDefect.gps.lat.toFixed(5)}, {selectedDefect.gps.lon.toFixed(5)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">First Detected:</span>
-                    <span className="text-gray-300">{formatTs(selectedDefect.first_detected || selectedDefect.timestamp)}</span>
+                    <span className="text-[#64748B]">First Detected:</span>
+                    <span className="text-[#16192E]">{formatTs(selectedDefect.first_detected || selectedDefect.timestamp)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Last Detected:</span>
-                    <span className="text-gray-300">{formatTs(selectedDefect.last_detected || selectedDefect.timestamp)}</span>
+                    <span className="text-[#64748B]">Last Detected:</span>
+                    <span className="text-[#16192E]">{formatTs(selectedDefect.last_detected || selectedDefect.timestamp)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Confirming Buses:</span>
-                    <span className="text-indigo-400 font-semibold">{selectedDefect.number_of_buses_confirming || 1} bus fleet consensus</span>
+                    <span className="text-[#64748B]">Confirming Buses:</span>
+                    <span className="text-[#C85A17] font-semibold">{selectedDefect.number_of_buses_confirming || 1} bus fleet consensus</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Assigned Authority:</span>
-                    <span className="text-white">{selectedDefect.assigned_authority || "Unassigned"}</span>
+                    <span className="text-[#64748B]">Assigned Authority:</span>
+                    <span className="text-[#16192E] font-medium">{selectedDefect.assigned_authority || "Unassigned"}</span>
                   </div>
                   {selectedDefect.maintenance_ticket && (
-                    <div className="flex justify-between border-t border-gray-800 pt-1.5">
-                      <span className="text-gray-400">Work Order Ticket:</span>
-                      <span className="text-indigo-300 font-mono font-semibold">{selectedDefect.maintenance_ticket.ticket_id}</span>
+                    <div className="flex justify-between border-t border-[#E2E8F0] pt-1.5">
+                      <span className="text-[#64748B]">Work Order Ticket:</span>
+                      <span className="text-[#C85A17] font-mono font-semibold">{selectedDefect.maintenance_ticket.ticket_id}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Priority Breakdown (Explainable Formula) */}
                 {selectedDefect.priority_breakdown && (
-                  <div className="bg-gray-950/80 rounded-lg p-3 border border-gray-800 text-xs space-y-1.5">
-                    <div className="flex items-center justify-between text-gray-300 font-medium">
+                  <div className="bg-[#F8FAFC] rounded-lg p-3 border border-[#E2E8F0] text-xs space-y-1.5">
+                    <div className="flex items-center justify-between text-[#16192E] font-medium">
                       <span>Priority Component Breakdown</span>
-                      <span className="font-mono text-amber-400">{selectedDefect.priority_breakdown.total_priority_score}/100</span>
+                      <span className="font-mono text-[#C85A17] font-bold">{selectedDefect.priority_breakdown.total_priority_score}/100</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-1 text-[11px] text-gray-400 pt-1">
-                      <div>Severity (25%): <span className="text-gray-200">{selectedDefect.priority_breakdown.severity_score}</span></div>
-                      <div>Traffic (20%): <span className="text-gray-200">{selectedDefect.priority_breakdown.traffic_volume_score}</span></div>
-                      <div>Detections (15%): <span className="text-gray-200">{selectedDefect.priority_breakdown.detections_score}</span></div>
-                      <div>Location (15%): <span className="text-gray-200">{selectedDefect.priority_breakdown.location_importance_score}</span></div>
-                      <div>Safety Risk (15%): <span className="text-gray-200">{selectedDefect.priority_breakdown.safety_risk_score}</span></div>
-                      <div>Persistence (10%): <span className="text-gray-200">{selectedDefect.priority_breakdown.persistence_score}</span></div>
+                    <div className="grid grid-cols-2 gap-1 text-[11px] text-[#64748B] pt-1">
+                      <div>Severity (25%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.severity_score}</span></div>
+                      <div>Traffic (20%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.traffic_volume_score}</span></div>
+                      <div>Detections (15%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.detections_score}</span></div>
+                      <div>Location (15%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.location_importance_score}</span></div>
+                      <div>Safety Risk (15%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.safety_risk_score}</span></div>
+                      <div>Persistence (10%): <span className="text-[#16192E] font-medium">{selectedDefect.priority_breakdown.persistence_score}</span></div>
                     </div>
                   </div>
                 )}
 
                 {/* Repair Evidence Card (if present) */}
                 {selectedDefect.repair_evidence && (
-                  <div className="bg-emerald-950/30 rounded-lg p-3 border border-emerald-500/30 text-xs space-y-1">
-                    <div className="flex items-center justify-between text-emerald-300 font-semibold">
+                  <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-200 text-xs space-y-1">
+                    <div className="flex items-center justify-between text-emerald-800 font-semibold">
                       <span className="flex items-center gap-1.5"><ShieldCheck size={14} /> Repair Evidence Attached</span>
-                      <span className="text-[10px] font-mono text-gray-400">{selectedDefect.repair_evidence.evidence_id}</span>
+                      <span className="text-[10px] font-mono text-[#64748B]">{selectedDefect.repair_evidence.evidence_id}</span>
                     </div>
-                    <p className="text-gray-300 text-[11px]">{selectedDefect.repair_evidence.completion_notes}</p>
-                    <p className="text-[10px] text-gray-400">Engineer: {selectedDefect.repair_evidence.engineer_id} • {formatTs(selectedDefect.repair_evidence.uploaded_at)}</p>
+                    <p className="text-[#16192E] text-[11px]">{selectedDefect.repair_evidence.completion_notes}</p>
+                    <p className="text-[10px] text-[#64748B]">Engineer: {selectedDefect.repair_evidence.engineer_id} • {formatTs(selectedDefect.repair_evidence.uploaded_at)}</p>
                   </div>
                 )}
 
                 {/* Field Engineer Action Controls */}
-                <div className="space-y-2 pt-1 border-t border-gray-800">
-                  <label className="text-[11px] text-gray-400 uppercase tracking-wider font-semibold block">
+                <div className="space-y-2 pt-1 border-t border-[#E2E8F0]">
+                  <label className="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold block">
                     Field Engineer Actions
                   </label>
 
@@ -1069,7 +1072,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Confirm Button */}
                     <button
                       onClick={() => handleConfirm(selectedDefect.defect_id)}
-                      className="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium flex items-center justify-center gap-1.5 transition"
+                      className="px-3 py-2 rounded-lg bg-[#C85A17] hover:bg-[#B34F14] text-white font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <Check size={14} /> Confirm
                     </button>
@@ -1077,7 +1080,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Reject Button */}
                     <button
                       onClick={() => setActionModal("reject")}
-                      className="px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 flex items-center justify-center gap-1.5 transition"
+                      className="px-3 py-2 rounded-lg bg-white hover:bg-[#F8FAFC] text-[#64748B] border border-[#CBD5E1] font-medium flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
                     >
                       <XCircle size={14} /> Reject
                     </button>
@@ -1085,7 +1088,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Assign Button */}
                     <button
                       onClick={() => setActionModal("assign")}
-                      className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium flex items-center justify-center gap-1.5 transition"
+                      className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <Send size={14} /> Assign Ticket
                     </button>
@@ -1093,7 +1096,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Update Repair Button */}
                     <button
                       onClick={() => setActionModal("update")}
-                      className="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium flex items-center justify-center gap-1.5 transition"
+                      className="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <Wrench size={14} /> Update Repair
                     </button>
@@ -1101,7 +1104,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Upload Evidence */}
                     <button
                       onClick={() => setActionModal("evidence")}
-                      className="px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-emerald-400 border border-emerald-500/40 flex items-center justify-center gap-1.5 transition col-span-1"
+                      className="px-3 py-2 rounded-lg bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 font-medium flex items-center justify-center gap-1.5 transition col-span-1 cursor-pointer shadow-2xs"
                     >
                       <Camera size={14} /> Evidence
                     </button>
@@ -1109,7 +1112,7 @@ export const RoadDefects: React.FC = () => {
                     {/* Close Ticket */}
                     <button
                       onClick={() => handleCloseTicket(selectedDefect.defect_id)}
-                      className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center justify-center gap-1.5 transition col-span-1"
+                      className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center justify-center gap-1.5 transition col-span-1 cursor-pointer shadow-xs"
                     >
                       <CheckCircle2 size={14} /> Close Ticket
                     </button>
@@ -1119,20 +1122,20 @@ export const RoadDefects: React.FC = () => {
                   <div className="pt-2">
                     <button
                       onClick={() => handleSimulateRedetection(selectedDefect.defect_id)}
-                      className="w-full px-3 py-2 rounded-lg bg-amber-950/60 hover:bg-amber-900/60 text-amber-200 border border-amber-500/50 text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+                      className="w-full px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
-                      <Sparkles size={14} className="text-amber-400" />
+                      <Sparkles size={14} className="text-amber-600" />
                       Simulate Bus Re-detection (Test Watchdog)
                     </button>
-                    <span className="text-[10px] text-gray-500 block text-center mt-1">
+                    <span className="text-[10px] text-[#64748B] block text-center mt-1">
                       Dispatches bus detection to verify automatic ticket reopening.
                     </span>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="text-center py-16 text-gray-500 text-xs flex flex-col items-center justify-center">
-                <Construction size={32} className="text-gray-600 mb-2" />
+              <div className="text-center py-16 text-[#64748B] text-xs flex flex-col items-center justify-center">
+                <Construction size={32} className="text-[#94A3B8] mb-2" />
                 <p>Select a defect from the table or map to inspect metadata, priority breakdown, and field engineer actions.</p>
               </div>
             )}
@@ -1144,22 +1147,22 @@ export const RoadDefects: React.FC = () => {
 
       {/* 1. Assign Authority Modal */}
       {actionModal === "assign" && selectedDefect && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 max-w-md w-full space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Send size={18} className="text-blue-400" />
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+            <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
+              <Send size={18} className="text-blue-600" />
               Assign Maintenance Authority &amp; Issue Ticket
             </h3>
-            <div className="text-xs text-gray-400">
-              Assign responsible authority for <strong className="text-gray-200">{selectedDefect.defect_id}</strong> on {selectedDefect.road_segment}.
+            <div className="text-xs text-[#64748B]">
+              Assign responsible authority for <strong className="text-[#16192E]">{selectedDefect.defect_id}</strong> on {selectedDefect.road_segment}.
             </div>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-gray-400 mb-1">Assigned Municipal Authority</label>
+                <label className="block text-[#64748B] font-medium mb-1">Assigned Municipal Authority</label>
                 <select
                   value={assignAuthority}
                   onChange={e => setAssignAuthority(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg p-2.5 text-[#16192E] focus:bg-white"
                 >
                   <option value="Public Works Department (PWD)">Public Works Department (PWD)</option>
                   <option value="National Highways Authority of India (NHAI)">National Highways Authority of India (NHAI)</option>
@@ -1169,26 +1172,26 @@ export const RoadDefects: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-gray-400 mb-1">Contractor / Agency</label>
+                <label className="block text-[#64748B] font-medium mb-1">Contractor / Agency</label>
                 <input
                   type="text"
                   value={assignContractor}
                   onChange={e => setAssignContractor(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg p-2.5 text-[#16192E] focus:bg-white"
                   placeholder="Contractor name"
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-800 text-xs">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#E2E8F0] text-xs">
               <button
                 onClick={() => setActionModal(null)}
-                className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+                className="px-3.5 py-2 rounded-lg bg-white border border-[#CBD5E1] text-[#64748B] hover:bg-[#F8FAFC] font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleAssign(selectedDefect.defect_id)}
-                className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium"
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer shadow-xs"
               >
                 Issue Work Order
               </button>
@@ -1199,15 +1202,15 @@ export const RoadDefects: React.FC = () => {
 
       {/* 2. Update Repair Modal */}
       {actionModal === "update" && selectedDefect && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 max-w-md w-full space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Wrench size={18} className="text-purple-400" />
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+            <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
+              <Wrench size={18} className="text-purple-600" />
               Update Repair Progress
             </h3>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-gray-400 mb-1">Progress: {repairProgress}%</label>
+                <label className="block text-[#64748B] font-medium mb-1">Progress: {repairProgress}%</label>
                 <input
                   type="range"
                   min="0"
@@ -1215,29 +1218,29 @@ export const RoadDefects: React.FC = () => {
                   step="10"
                   value={repairProgress}
                   onChange={e => setRepairProgress(Number(e.target.value))}
-                  className="w-full accent-purple-500 cursor-pointer"
+                  className="w-full accent-purple-600 cursor-pointer"
                 />
               </div>
               <div>
-                <label className="block text-gray-400 mb-1">Field Notes</label>
+                <label className="block text-[#64748B] font-medium mb-1">Field Notes</label>
                 <textarea
                   value={repairNotes}
                   onChange={e => setRepairNotes(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg p-2.5 text-[#16192E] h-20 focus:bg-white"
                   placeholder="e.g. Surface milled, base gravel laid and compacted."
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-800 text-xs">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#E2E8F0] text-xs">
               <button
                 onClick={() => setActionModal(null)}
-                className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+                className="px-3.5 py-2 rounded-lg bg-white border border-[#CBD5E1] text-[#64748B] hover:bg-[#F8FAFC] font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleUpdateRepair(selectedDefect.defect_id)}
-                className="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium"
+                className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium cursor-pointer shadow-xs"
               >
                 Save Progress
               </button>
@@ -1248,36 +1251,36 @@ export const RoadDefects: React.FC = () => {
 
       {/* 3. Upload Repair Evidence Modal */}
       {actionModal === "evidence" && selectedDefect && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 max-w-md w-full space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Camera size={18} className="text-emerald-400" />
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+            <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
+              <Camera size={18} className="text-emerald-600" />
               Upload Repair Completion Evidence
             </h3>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-gray-400 mb-1">Repair Completion Notes</label>
+                <label className="block text-[#64748B] font-medium mb-1">Repair Completion Notes</label>
                 <textarea
                   value={evidenceNotes}
                   onChange={e => setEvidenceNotes(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg p-2.5 text-[#16192E] h-20 focus:bg-white"
                 />
               </div>
-              <div className="p-3 bg-gray-950 border border-dashed border-gray-700 rounded-lg text-center text-gray-400">
-                <Camera size={24} className="mx-auto text-gray-500 mb-1" />
+              <div className="p-3 bg-[#F8FAFC] border border-dashed border-[#CBD5E1] rounded-lg text-center text-[#64748B]">
+                <Camera size={24} className="mx-auto text-[#94A3B8] mb-1" />
                 <span className="text-[11px]">Before &amp; After Inspection Photo Attached (Simulated)</span>
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-800 text-xs">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#E2E8F0] text-xs">
               <button
                 onClick={() => setActionModal(null)}
-                className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+                className="px-3.5 py-2 rounded-lg bg-white border border-[#CBD5E1] text-[#64748B] hover:bg-[#F8FAFC] font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleUploadEvidence(selectedDefect.defect_id)}
-                className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium"
+                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium cursor-pointer shadow-xs"
               >
                 Attach Evidence
               </button>
@@ -1288,32 +1291,32 @@ export const RoadDefects: React.FC = () => {
 
       {/* 4. Reject Defect Modal */}
       {actionModal === "reject" && selectedDefect && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 max-w-md w-full space-y-4">
-            <h3 className="text-base font-bold text-rose-400 flex items-center gap-2">
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+            <h3 className="text-base font-bold text-rose-600 flex items-center gap-2">
               <XCircle size={18} />
               Reject / Dismiss Defect
             </h3>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-gray-400 mb-1">Reason for Rejection</label>
+                <label className="block text-[#64748B] font-medium mb-1">Reason for Rejection</label>
                 <textarea
                   value={rejectReason}
                   onChange={e => setRejectReason(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-white h-20"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg p-2.5 text-[#16192E] h-20 focus:bg-white"
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-gray-800 text-xs">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#E2E8F0] text-xs">
               <button
                 onClick={() => setActionModal(null)}
-                className="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+                className="px-3.5 py-2 rounded-lg bg-white border border-[#CBD5E1] text-[#64748B] hover:bg-[#F8FAFC] font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleReject(selectedDefect.defect_id)}
-                className="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium"
+                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium cursor-pointer shadow-xs"
               >
                 Confirm Rejection
               </button>

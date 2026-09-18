@@ -21,42 +21,33 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    groupName: "Command Operations",
+    groupName: "WORKSPACE",
     items: [
-      { name: "Executive Portal", path: "/", icon: LayoutDashboard, color: "text-blue-400" },
-      { name: "GIS Command Center", path: "/gis", icon: MapPin, badge: "LIVE", color: "text-emerald-400" },
-      { name: "Fleet Live (20)", path: "/fleet", icon: Bus, badge: "20", color: "text-sky-400" },
+      { name: "Dashboard", path: "/", icon: LayoutDashboard, color: "text-slate-200" },
+      { name: "Fleet Sensor Pool", path: "/fleet", icon: Bus, badge: "248", color: "text-slate-300" },
+      { name: "GIS Spatial Command", path: "/gis", icon: MapPin, badge: "LIVE", color: "text-amber-400" },
+      { name: "PWD Work Orders", path: "/road-defects", icon: Wrench, badge: "42", color: "text-slate-300" },
+      { name: "Intelligence Reports", path: "/reports", icon: FileText, color: "text-slate-300" },
     ],
   },
   {
-    groupName: "Infrastructure & PWD",
+    groupName: "INFRASTRUCTURE & SAFETY",
     items: [
-      { name: "PWD Work Orders", path: "/road-defects", icon: Wrench, badge: "42", color: "text-amber-400" },
-      { name: "Route Delay Audit", path: "/route-delay", icon: Navigation, color: "text-cyan-400" },
-      { name: "OD Corridor Matrix", path: "/od-analysis", icon: Activity, color: "text-pink-400" },
-    ],
-  },
-  {
-    groupName: "Traffic & Safety",
-    items: [
-      { name: "Traffic Speeds", path: "/traffic", icon: TrafficCone, color: "text-amber-400" },
+      { name: "Traffic Speeds", path: "/traffic", icon: TrafficCone, color: "text-slate-300" },
       { name: "Congestion Heatmap", path: "/congestion", icon: Flame, badge: "HOT", color: "text-rose-400" },
-      { name: "Incident Safety & Hit/Run", path: "/incidents", icon: AlertTriangle, badge: "ALERT", color: "text-red-400" },
-      { name: "Pedestrian Conflict", path: "/pedestrian-safety", icon: Users, color: "text-indigo-400" },
-      { name: "ANPR Plate Hotlist", path: "/anpr", icon: Camera, color: "text-teal-400" },
-      { name: "Public Citizen Portal", path: "/public", icon: ShieldCheck, color: "text-emerald-400" },
+      { name: "Incident Safety Hotlist", path: "/incidents", icon: AlertTriangle, badge: "ALERT", color: "text-red-400" },
+      { name: "Pedestrian Conflict", path: "/pedestrian-safety", icon: Users, color: "text-slate-300" },
+      { name: "ANPR Plate Hotlist", path: "/anpr", icon: Camera, color: "text-slate-300" },
+      { name: "Citizen Public Portal", path: "/public", icon: ShieldCheck, color: "text-emerald-400" },
     ],
   },
   {
-    groupName: "Intelligence & Hardware",
+    groupName: "CONFIGURATION",
     items: [
-      { name: "Urban Analytics", path: "/urban-analytics", icon: TrendingUp, color: "text-purple-400" },
-      { name: "Automated Reports", path: "/reports", icon: FileText, color: "text-indigo-400" },
-      { name: "Edge Sensor Health", path: "/camera-health", icon: Cpu, badge: "OK", color: "text-emerald-400" },
-      { name: "Evidence Custody", path: "/evidence-custody", icon: Shield, color: "text-amber-400" },
-      { name: "Offline Spool Buffer", path: "/offline-buffer", icon: HardDrive, color: "text-sky-400" },
-      { name: "Privacy & Blur", path: "/privacy", icon: ShieldAlert, color: "text-slate-400" },
-      { name: "System Diagnostic", path: "/testing", icon: CheckCircle2, color: "text-purple-400" },
+      { name: "Matching Criteria", path: "/ai-models", icon: Activity, color: "text-slate-300" },
+      { name: "System Settings", path: "/admin", icon: Shield, color: "text-slate-300" },
+      { name: "Hardware Health & Watchdog", path: "/camera-health", icon: Cpu, badge: "OK", color: "text-emerald-400" },
+      { name: "System Diagnostics", path: "/testing", icon: CheckCircle2, color: "text-slate-300" },
     ],
   },
 ];
@@ -67,23 +58,23 @@ export const UnifiedSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`bg-slate-950 border-r border-slate-800 transition-all duration-300 ease-in-out flex flex-col justify-between shrink-0 h-[calc(100vh-45px)] sticky top-[45px] z-40 ${
+      className={`bg-[#16192E] border-r border-[#232746] transition-all duration-300 ease-in-out flex flex-col justify-between shrink-0 h-full z-40 ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
       {/* Top Header / Toggle */}
-      <div className="p-3 border-b border-slate-800 flex items-center justify-between">
+      <div className="p-3 border-b border-[#232746] flex items-center justify-between">
         {!collapsed && (
           <div className="flex items-center gap-2 overflow-hidden">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             <span className="text-[11px] font-bold font-mono uppercase tracking-wider text-slate-300 truncate">
-              Unified Consoles
+              Command Directorate
             </span>
           </div>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700/60 transition mx-auto"
+          className="p-1.5 rounded-lg bg-[#1E2342] hover:bg-[#282F5A] text-slate-300 hover:text-white border border-[#2B325E] transition mx-auto cursor-pointer"
           title={collapsed ? "Expand Navigation" : "Collapse Navigation"}
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -95,7 +86,7 @@ export const UnifiedSidebar: React.FC = () => {
         {NAV_GROUPS.map((group) => (
           <div key={group.groupName} className="space-y-1">
             {!collapsed && (
-              <div className="text-[10px] font-bold font-mono tracking-wider text-slate-500 uppercase px-2 py-1">
+              <div className="text-[10px] font-bold font-mono tracking-wider text-slate-400/80 uppercase px-2 py-1">
                 {group.groupName}
               </div>
             )}
@@ -108,15 +99,15 @@ export const UnifiedSidebar: React.FC = () => {
                   to={item.path}
                   className={`flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs font-medium transition-all group ${
                     isActive
-                      ? "bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30"
-                      : "text-slate-300 hover:bg-slate-900 hover:text-white"
+                      ? "bg-[#282F5A] text-white font-bold shadow-sm ring-1 ring-slate-400/30"
+                      : "text-slate-300 hover:bg-[#1E2342] hover:text-white"
                   }`}
                   title={collapsed ? item.name : undefined}
                 >
                   <Icon
                     size={17}
                     className={`shrink-0 transition-transform group-hover:scale-110 ${
-                      isActive ? "text-white" : item.color
+                      isActive ? "text-amber-400" : item.color
                     }`}
                   />
                   {!collapsed && (
@@ -126,8 +117,8 @@ export const UnifiedSidebar: React.FC = () => {
                     <span
                       className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
                         isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-slate-800 text-slate-400 border border-slate-700"
+                          ? "bg-amber-500 text-[#16192E]"
+                          : "bg-[#1E2342] text-slate-300 border border-[#2B325E]"
                       }`}
                     >
                       {item.badge}
@@ -141,21 +132,20 @@ export const UnifiedSidebar: React.FC = () => {
       </div>
 
       {/* Bottom Global Status Indicator */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60">
+      <div className="p-3 border-t border-[#232746] bg-[#121528]">
         {!collapsed ? (
           <div className="text-[10px] text-slate-400 space-y-1">
             <div className="flex items-center justify-between">
-              <span>Sync Engine:</span>
+              <span className="text-slate-400">Sync Engine:</span>
               <span className="text-emerald-400 font-mono font-bold">100% ONLINE</span>
             </div>
-            <div className="text-[9px] text-slate-500 font-mono truncate">
-              NovaFlow Civil Command v2.6
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Platform:</span>
+              <span className="text-slate-300 font-mono font-semibold">Civil Command v2.6</span>
             </div>
           </div>
         ) : (
-          <div className="flex justify-center">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          </div>
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mx-auto" title="100% Online" />
         )}
       </div>
     </aside>

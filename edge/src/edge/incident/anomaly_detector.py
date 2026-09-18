@@ -30,6 +30,17 @@ from .anpr import NumberPlateRecognizer, AnprResult
 
 logger = logging.getLogger("edge.incident.detector")
 
+# ── Step 20: Neutral Display (No Fault Attribution) ───────────────────────────
+
+def format_neutral_display(vehicle_label: str = "Vehicle", track_id: Any = "A") -> str:
+    """
+    Step 20: Never assert legal fault or guilt.
+    Instead of 'Vehicle A is guilty', display 'Anomalous event involving Vehicle A.'
+    """
+    v_id = f"Vehicle #{track_id}" if str(track_id).isdigit() else f"Vehicle {track_id}"
+    return f"Anomalous event involving {v_id}."
+
+
 LEGAL_DISCLAIMER = (
     "Preliminary automated sensor anomaly alert. Does not determine legal fault, "
     "criminal culpability, or driver liability. Human verification required before any enforcement action."
@@ -216,11 +227,16 @@ class IncidentAnomalyDetector:
                 # Step 5: Select relevant camera
                 rel_camera = self.camera_id
 
-                # Step 6 & 7: Retrieve rolling buffer and create evidence clip
+                # Step 6 & 7: Retrieve rolling buffer and create evidence clip (Step 19)
                 clip = self.buffer.create_evidence_clip(
                     anomaly_timestamp_s=now_ts,
                     pre_frames=4,
                     post_frames=4,
+                )
+                surrounding_buffer = self.buffer.extract_surrounding_clip(
+                    incident_timestamp_s=now_ts,
+                    pre_seconds=5.0,
+                    post_seconds=5.0,
                 )
 
                 # Step 8: Run ANPR on best available frame of primary/departing vehicle
@@ -234,14 +250,19 @@ class IncidentAnomalyDetector:
                 # Step 9: Generate confidence score
                 final_confidence = round(conf, 3)
 
-                # Step 10: Send secure alert (Strictly POSSIBLE_INCIDENT)
+                # Step 10 & 20: Send secure alert (Never assert fault/guilt, display neutral text)
+                neutral_text = format_neutral_display(primary.class_name, primary.track_id)
                 event_payload = {
                     "event_id": f"inc_{uuid.uuid4().hex[:10]}",
                     "event_type": "POSSIBLE_INCIDENT",
+                    "title": neutral_text,
+                    "display_text": neutral_text,
                     "incident_category": category,
                     "verification_status": "PENDING_REVIEW",
-                    "legal_disclaimer": LEGAL_DISCLAIMER,
+                    "status": "unverified",
                     "requires_human_verification": True,
+                    "fault_attribution": "NONE (System strictly never assigns guilt or legal fault)",
+                    "legal_disclaimer": LEGAL_DISCLAIMER,
                     "confidence": final_confidence,
                     "timestamp": event_ts,
                     "location": event_gps,
@@ -254,6 +275,7 @@ class IncidentAnomalyDetector:
                     },
                     "anpr": anpr_res.to_dict(),
                     "evidence_clip": clip,
+                    "surrounding_buffer": surrounding_buffer,
                     "is_hit_and_run": (category == "HIT_AND_RUN_SIGNATURE"),
                 }
 
@@ -266,3 +288,35 @@ class IncidentAnomalyDetector:
                 break  # one incident event per frame window
 
         return events
+
+
+    @staticmethod
+    def to_standard_dict(event: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Step 20 & Phase 3 Step 5: Canonical 10-key standard event representation.
+        Sent for human verification without determining fault.
+        """
+        eid = event.get("event_id", "inc_0001")
+        std_id = eid if eid.startswith("EVT-") else f"EVT-{eid[:8]}"
+        loc = event.get("location", {})
+        lat = loc.get("lat", 28.6139)
+        lon = loc.get("lon", 77.2090)
+        route_id = loc.get("road_segment", "R-01")
+
+        return {
+            "eventId": std_id,
+            "type": "incident",
+            "confidence": round(float(event.get("confidence", 0.90)), 3),
+            "latitude": round(float(lat), 6),
+            "longitude": round(float(lon), 6),
+            "timestamp": event.get("timestamp", datetime.now(timezone.utc).isoformat()),
+            "busId": event.get("bus_id", "BUS-102"),
+            "routeId": route_id,
+            "severity": "high",
+            "status": "unverified",
+            "details": {
+                "display_text": event.get("display_text", "Anomalous event involving vehicle."),
+                "requires_human_verification": True,
+                "fault_attributed": False,
+            },
+        }

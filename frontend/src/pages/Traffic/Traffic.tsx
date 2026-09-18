@@ -100,27 +100,27 @@ const SPEED_HISTORY: { time: string; car: number; two_wheeler: number; bus: numb
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const VEHICLE_COLORS: Record<string, string> = {
-  car:         "#6366f1",
-  bus:         "#22d3ee",
-  truck:       "#f97316",
-  two_wheeler: "#a78bfa",
-  van:         "#34d399",
+  car:         "#3b82f6",
+  bus:         "#0ea5e9",
+  truck:       "#ea580c",
+  two_wheeler: "#8b5cf6",
+  van:         "#10b981",
 };
 
-const DENSITY_COLORS = { low: "#22c55e", medium: "#f59e0b", high: "#ef4444" };
+const DENSITY_COLORS = { low: "#16a34a", medium: "#d97706", high: "#dc2626" };
 
 function DensityBar({ score, level }: { score: number; level: string }) {
-  const color = DENSITY_COLORS[level as keyof typeof DENSITY_COLORS] ?? "#6b7280";
+  const color = DENSITY_COLORS[level as keyof typeof DENSITY_COLORS] ?? "#64748b";
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-xs">
-        <span className="text-gray-400">Density</span>
+        <span className="text-[#64748B]">Density</span>
         <span style={{ color }} className="font-semibold capitalize">{level}</span>
       </div>
-      <div className="w-full bg-gray-700 rounded-full h-2">
+      <div className="w-full bg-[#E2E8F0] rounded-full h-2">
         <div className="h-2 rounded-full transition-all" style={{ width: `${Math.round(score * 100)}%`, backgroundColor: color }} />
       </div>
-      <div className="text-right text-xs text-gray-500">{Math.round(score * 100)}%</div>
+      <div className="text-right text-xs text-[#64748B]">{Math.round(score * 100)}%</div>
     </div>
   );
 }
@@ -134,16 +134,16 @@ interface StatCardProps {
   trend?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, sub, icon: Icon, color = "text-indigo-400", trend }) => (
-  <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+const StatCard: React.FC<StatCardProps> = ({ title, value, sub, icon: Icon, color = "text-[#C85A17]", trend }) => (
+  <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-sm">
     <div className="flex items-center justify-between mb-2">
-      <span className="text-xs text-gray-400">{title}</span>
+      <span className="text-xs font-medium text-[#64748B]">{title}</span>
       <Icon size={16} className={color} />
     </div>
-    <p className={`text-2xl font-bold ${color}`}>{value}</p>
-    {sub && <p className="text-xs text-gray-500 mt-1">{sub}</p>}
+    <p className="text-2xl font-bold text-[#16192E] tracking-tight">{value}</p>
+    {sub && <p className="text-xs text-[#64748B] mt-1">{sub}</p>}
     {trend !== undefined && (
-      <p className={`text-xs mt-1 ${trend >= 0 ? "text-green-400" : "text-red-400"}`}>
+      <p className={`text-xs mt-1 font-medium ${trend >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
         {trend >= 0 ? "▲" : "▼"} {Math.abs(trend)}% vs last hr
       </p>
     )}
@@ -199,26 +199,26 @@ const Traffic: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-6 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-6 space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Activity size={26} className="text-indigo-400" />
+          <h1 className="text-2xl font-bold text-[#16192E] tracking-tight flex items-center gap-2">
+            <Activity size={26} className="text-[#C85A17]" />
             Vehicle Detection &amp; Tracking
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-[#64748B] mt-1">
             ByteTrack multi-object tracking · Counting lines · Speed estimation · Density analysis
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-xs px-2 py-1 rounded-full border ${liveMode ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-gray-700 text-gray-400 border-gray-600"}`}>
+          <span className={`text-xs px-2.5 py-1 rounded-full font-medium border ${liveMode ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-100 text-[#64748B] border-[#CBD5E1]"}`}>
             {liveMode ? "● LIVE" : "⏸ PAUSED"}
           </span>
           <button
             onClick={() => setLiveMode(l => !l)}
-            className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition"
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg hover:bg-[#F8FAFC] text-[#16192E] font-medium shadow-2xs transition"
           >
             <RefreshCw size={12} /> {liveMode ? "Pause" : "Resume"}
           </button>
@@ -226,70 +226,76 @@ const Traffic: React.FC = () => {
       </div>
 
       {/* ── Camera selector ─────────────────────────────────────────────── */}
-      <div className="flex items-center gap-2">
-        <Camera size={14} className="text-gray-500" />
-        <span className="text-xs text-gray-500">Camera:</span>
+      <div className="flex items-center gap-2 flex-wrap">
+        <Camera size={14} className="text-[#64748B]" />
+        <span className="text-xs font-medium text-[#64748B]">Camera:</span>
         {["FRONT", "REAR", "LEFT", "RIGHT"].map(cam => (
           <button
             key={cam}
             onClick={() => setActiveCam(cam)}
-            className={`text-xs px-3 py-1 rounded-lg border transition ${
+            className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition ${
               activeCam === cam
-                ? "bg-indigo-600 border-indigo-500 text-white"
-                : "bg-gray-800 border-gray-700 text-gray-400 hover:text-white"
+                ? "bg-[#16192E] border-[#16192E] text-white shadow-xs"
+                : "bg-white border-[#CBD5E1] text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
             }`}
           >
             {cam}
           </button>
         ))}
-        <span className="ml-2 text-xs text-gray-600">
-          Active Tracks: <span className="text-indigo-400 font-bold">{snap.active_tracks}</span>
+        <span className="ml-2 text-xs text-[#64748B]">
+          Active Tracks: <span className="text-[#C85A17] font-bold">{snap.active_tracks}</span>
         </span>
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-        <StatCard title="Total Vehicles"  value={snap.counts.total}        icon={TrendingUp} color="text-white"       sub="cumulative" />
-        <StatCard title="Cars"            value={snap.counts.car}          icon={Car}        color="text-indigo-400" />
-        <StatCard title="Two-Wheelers"    value={snap.counts.two_wheeler}  icon={Bike}       color="text-purple-400" />
-        <StatCard title="Buses"           value={snap.counts.bus}          icon={Bus}        color="text-cyan-400"   />
-        <StatCard title="Trucks"          value={snap.counts.truck}        icon={Truck}      color="text-orange-400" />
-        <StatCard title="Avg Speed"       value={`${snap.avg_speed_kmh.all} km/h`} icon={Gauge} color="text-green-400" sub="all vehicles" />
-        <StatCard title="Active Tracks"   value={snap.active_tracks}       icon={CircleDot}  color="text-yellow-400" sub="ByteTrack IDs" />
+        <StatCard title="Total Vehicles"  value={snap.counts.total}        icon={TrendingUp} color="text-[#C85A17]"       sub="cumulative" />
+        <StatCard title="Cars"            value={snap.counts.car}          icon={Car}        color="text-blue-600" />
+        <StatCard title="Two-Wheelers"    value={snap.counts.two_wheeler}  icon={Bike}       color="text-purple-600" />
+        <StatCard title="Buses"           value={snap.counts.bus}          icon={Bus}        color="text-cyan-600"   />
+        <StatCard title="Trucks"          value={snap.counts.truck}        icon={Truck}      color="text-orange-600" />
+        <StatCard title="Avg Speed"       value={`${snap.avg_speed_kmh.all} km/h`} icon={Gauge} color="text-emerald-600" sub="all vehicles" />
+        <StatCard title="Active Tracks"   value={snap.active_tracks}       icon={CircleDot}  color="text-amber-600" sub="ByteTrack IDs" />
       </div>
 
       {/* ── Charts Row 1 ─────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Vehicle composition pie */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-            <Layers size={15} className="text-indigo-400" /> Vehicle Composition
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+            <Layers size={15} className="text-[#C85A17]" /> Vehicle Composition
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={90}
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={85}
                    paddingAngle={3} dataKey="value">
                 {pieData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
               </Pie>
-              <Tooltip formatter={(v: number) => [v.toLocaleString(), ""]} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                formatter={(v: number) => [v.toLocaleString(), ""]}
+              />
               <Legend iconType="circle" iconSize={8}
-                formatter={(value) => <span className="text-xs text-gray-400">{value}</span>} />
+                formatter={(value) => <span className="text-xs text-[#64748B] font-medium">{value}</span>} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
         {/* Average speed per class bar */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-            <Gauge size={15} className="text-green-400" /> Avg Speed by Class (km/h)
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+            <Gauge size={15} className="text-emerald-600" /> Avg Speed by Class (km/h)
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={speedBarData} barSize={24}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9ca3af" }} />
-              <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} unit=" km/h" domain={[0, 80]} />
-              <Tooltip formatter={(v: number) => [`${v} km/h`, "Speed"]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#64748B" }} />
+              <YAxis tick={{ fontSize: 10, fill: "#64748B" }} unit=" km/h" domain={[0, 80]} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                formatter={(v: number) => [`${v} km/h`, "Speed"]}
+              />
               <Bar dataKey="speed" radius={[4, 4, 0, 0]}>
                 {speedBarData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
               </Bar>
@@ -298,22 +304,22 @@ const Traffic: React.FC = () => {
         </div>
 
         {/* Density panel */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-            <BarChart3 size={15} className="text-yellow-400" /> Lane Density
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+            <BarChart3 size={15} className="text-[#C85A17]" /> Lane Density
           </h3>
           {snap.density.map(region => (
             <div key={region.name} className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-gray-300">{region.name.replace("_", " ")}</span>
-                <span className="text-xs text-gray-500">{region.total} vehicles</span>
+                <span className="text-xs font-semibold text-[#16192E]">{region.name.replace("_", " ")}</span>
+                <span className="text-xs font-medium text-[#64748B]">{region.total} vehicles</span>
               </div>
               <DensityBar score={region.density_score} level={region.density_level} />
               <div className="mt-3 grid grid-cols-3 gap-2">
                 {Object.entries(region.occupancy).filter(([k]) => k !== "total").map(([cls, cnt]) => (
-                  <div key={cls} className="text-center">
-                    <p className="text-xs text-gray-500 capitalize">{cls.replace("_", " ")}</p>
-                    <p className="text-sm font-bold" style={{ color: VEHICLE_COLORS[cls] ?? "#9ca3af" }}>{cnt}</p>
+                  <div key={cls} className="text-center bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-2">
+                    <p className="text-[11px] font-medium text-[#64748B] capitalize">{cls.replace("_", " ")}</p>
+                    <p className="text-sm font-bold" style={{ color: VEHICLE_COLORS[cls] ?? "#64748b" }}>{cnt}</p>
                   </div>
                 ))}
               </div>
@@ -326,17 +332,19 @@ const Traffic: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Speed history line chart */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-            <Wind size={15} className="text-blue-400" /> Speed History (km/h)
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+            <Wind size={15} className="text-[#C85A17]" /> Speed History (km/h)
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={speedHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" tick={{ fontSize: 9, fill: "#6b7280" }} interval={4} />
-              <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} unit=" km/h" domain={[0, 90]} />
-              <Tooltip />
-              <Legend iconSize={8} formatter={(v) => <span className="text-xs text-gray-400">{v}</span>} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <XAxis dataKey="time" tick={{ fontSize: 9, fill: "#64748B" }} interval={4} />
+              <YAxis tick={{ fontSize: 10, fill: "#64748B" }} unit=" km/h" domain={[0, 90]} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+              />
+              <Legend iconSize={8} formatter={(v) => <span className="text-xs text-[#64748B] font-medium">{v}</span>} />
               <Line type="monotone" dataKey="car"        stroke={VEHICLE_COLORS.car}        strokeWidth={2} dot={false} />
               <Line type="monotone" dataKey="two_wheeler" stroke={VEHICLE_COLORS.two_wheeler} strokeWidth={2} dot={false} name="Two-Wheeler" />
               <Line type="monotone" dataKey="bus"        stroke={VEHICLE_COLORS.bus}        strokeWidth={2} dot={false} />
@@ -346,36 +354,38 @@ const Traffic: React.FC = () => {
         </div>
 
         {/* Total vehicle count area chart */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-            <TrendingUp size={15} className="text-indigo-400" /> Vehicle Count Over Time
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+            <TrendingUp size={15} className="text-[#C85A17]" /> Vehicle Count Over Time
           </h3>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={countHistory}>
               <defs>
                 <linearGradient id="countGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#6366f1" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                  <stop offset="5%"  stopColor="#C85A17" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#C85A17" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" tick={{ fontSize: 9, fill: "#6b7280" }} interval={4} />
-              <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} />
-              <Tooltip />
-              <Area type="monotone" dataKey="total" stroke="#6366f1" fill="url(#countGrad)"
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <XAxis dataKey="time" tick={{ fontSize: 9, fill: "#64748B" }} interval={4} />
+              <YAxis tick={{ fontSize: 10, fill: "#64748B" }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "8px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+              />
+              <Area type="monotone" dataKey="total" stroke="#C85A17" fill="url(#countGrad)"
                     strokeWidth={2} dot={false} name="Total Vehicles" />
             </AreaChart>
           </ResponsiveContainer>
           {countHistory.length === 0 && (
-            <p className="text-center text-gray-600 text-xs -mt-24">Waiting for live data…</p>
+            <p className="text-center text-[#64748B] text-xs -mt-24">Waiting for live data…</p>
           )}
         </div>
       </div>
 
       {/* ── Counting Lines summary ────────────────────────────────────────── */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-        <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-          <ArrowRight size={15} className="text-orange-400" /> Counting Line Summary
+      <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
+        <h3 className="text-sm font-bold text-[#16192E] mb-4 flex items-center gap-2">
+          <ArrowRight size={15} className="text-[#C85A17]" /> Counting Line Summary
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {["Line_A", "Line_B"].map(line => {
@@ -388,18 +398,18 @@ const Traffic: React.FC = () => {
             };
             const total = Object.values(randomCounts).reduce((a, b) => a + b, 0);
             return (
-              <div key={line} className="bg-gray-800/60 border border-gray-700 rounded-lg p-4">
+              <div key={line} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-gray-200">{line.replace("_", " ")}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                  <span className="text-sm font-semibold text-[#16192E]">{line.replace("_", " ")}</span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-50 text-[#C85A17] border border-orange-200 font-semibold">
                     Total: {total}
                   </span>
                 </div>
                 <div className="grid grid-cols-5 gap-2">
                   {Object.entries(randomCounts).map(([cls, cnt]) => (
-                    <div key={cls} className="text-center">
-                      <p className="text-xs text-gray-500 capitalize">{cls.replace("_", " ").slice(0,4)}</p>
-                      <p className="text-sm font-bold" style={{ color: VEHICLE_COLORS[cls] ?? "#9ca3af" }}>{cnt}</p>
+                    <div key={cls} className="text-center bg-white border border-[#E2E8F0] rounded p-2">
+                      <p className="text-[11px] text-[#64748B] font-medium capitalize">{cls.replace("_", " ").slice(0,4)}</p>
+                      <p className="text-sm font-bold" style={{ color: VEHICLE_COLORS[cls] ?? "#64748b" }}>{cnt}</p>
                     </div>
                   ))}
                 </div>
@@ -410,24 +420,24 @@ const Traffic: React.FC = () => {
       </div>
 
       {/* ── Track ID info footer ──────────────────────────────────────────── */}
-      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 flex flex-wrap gap-6 text-xs text-gray-500">
+      <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 flex flex-wrap gap-6 text-xs text-[#64748B] shadow-sm">
         <div>
-          <span className="text-gray-400 font-medium">Tracker: </span>ByteTrack (IoU + Hungarian matching)
+          <span className="text-[#16192E] font-semibold">Tracker: </span>ByteTrack (IoU + Hungarian matching)
         </div>
         <div>
-          <span className="text-gray-400 font-medium">Min hits to confirm: </span>3 frames
+          <span className="text-[#16192E] font-semibold">Min hits to confirm: </span>3 frames
         </div>
         <div>
-          <span className="text-gray-400 font-medium">Max age (lost): </span>30 frames
+          <span className="text-[#16192E] font-semibold">Max age (lost): </span>30 frames
         </div>
         <div>
-          <span className="text-gray-400 font-medium">Boundary margin: </span>8 px
+          <span className="text-[#16192E] font-semibold">Boundary margin: </span>8 px
         </div>
         <div>
-          <span className="text-gray-400 font-medium">Speed mode: </span>Pixel-scale (45 px/m)
+          <span className="text-[#16192E] font-semibold">Speed mode: </span>Pixel-scale (45 px/m)
         </div>
         <div>
-          <span className="text-gray-400 font-medium">Counting lines: </span>Line_A (60%), Line_B (40%)
+          <span className="text-[#16192E] font-semibold">Counting lines: </span>Line_A (60%), Line_B (40%)
         </div>
       </div>
 

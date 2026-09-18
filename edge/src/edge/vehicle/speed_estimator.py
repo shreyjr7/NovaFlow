@@ -1,20 +1,12 @@
 """
-Vehicle Tracking – Speed Estimator
-====================================
+Vehicle Tracking – Speed Estimator (Phase 5 - Step 14)
+======================================================
 Estimates vehicle speed (km/h) from track centroid displacement across frames.
 
 Two estimation strategies
 --------------------------
-PIXEL_SCALE   – simplest: pixels/frame × calibration_scale → km/h
-               Works well when approximate road width is known and camera
-               mounting height is roughly fixed (e.g. front/rear bus camera).
-
-HOMOGRAPHY    – accurate: 4-point ground-plane homography maps pixel coords
-               to real-world metric coords.
-               Requires pre-calibration (4 known ground reference points).
-
-For the hackathon demo, PIXEL_SCALE is the default.
-Homography parameters can be loaded from a YAML config file.
+PIXEL_SCALE   – pixels/frame × calibration_scale → km/h
+HOMOGRAPHY    – 4-point ground-plane homography maps pixel coords to metric coords.
 """
 
 from __future__ import annotations
@@ -24,7 +16,7 @@ import math
 from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import numpy as np
@@ -49,19 +41,7 @@ class SpeedRecord:
 
 class SpeedEstimator:
     """
-    Estimates per-track vehicle speed from centroid trajectories.
-
-    Parameters
-    ----------
-    fps            : video frames per second (used if source FPS known)
-    sample_rate    : pipeline frame sample rate (every Nth frame processed)
-    pixels_per_meter : calibration – how many pixels equal 1 metre at road level
-                       Typical front-cam @ 4m height: ~35–60 px/m depending on lens.
-    mode           : EstimationMode (PIXEL_SCALE or HOMOGRAPHY)
-    homography_src : 4 source pixel points for homography (if mode=HOMOGRAPHY)
-    homography_dst : 4 destination real-world points in metres
-    smooth_window  : EMA window for speed smoothing
-    min_track_len  : minimum centroid history length before estimating speed
+    Step 14: Estimates per-track vehicle speed from centroid trajectories.
     """
 
     def __init__(
@@ -73,7 +53,7 @@ class SpeedEstimator:
         homography_src:   Optional[List[List[float]]] = None,
         homography_dst:   Optional[List[List[float]]] = None,
         smooth_window:    int   = 10,
-        min_track_len:    int   = 5,
+        min_track_len:    int   = 3,
     ):
         self._fps              = fps
         self._sample_rate      = sample_rate
@@ -81,32 +61,26 @@ class SpeedEstimator:
         self._mode             = mode
         self._smooth_window    = smooth_window
         self._min_track_len    = min_track_len
-        self._ema: Dict[int, float] = {}   # track_id → current EMA speed
+        self._ema: Dict[int, float] = {}   # track_id -> current EMA speed
 
         # Homography matrix (computed once if src/dst provided)
         self._H: Optional[Any] = None
         if mode == EstimationMode.HOMOGRAPHY and homography_src and homography_dst:
             try:
                 import cv2
-                src = np.array(homography_src, dtype=np.float32)
-                dst = np.array(homography_dst, dtype=np.float32)
-                self._H, _ = cv2.findHomography(src, dst)
-                logger.info("Homography matrix computed successfully.")
+                if np is not None:
+                    src = np.array(homography_src, dtype=np.float32)
+                    dst = np.array(homography_dst, dtype=np.float32)
+                    self._H, _ = cv2.findHomography(src, dst)
+                    logger.info("Homography matrix computed successfully.")
             except Exception as e:
                 logger.warning(f"Homography setup failed ({e}) – falling back to PIXEL_SCALE.")
                 self._mode = EstimationMode.PIXEL_SCALE
 
-    def estimate(self, track) -> Optional[float]:
+    def estimate(self, track: Any) -> Optional[float]:
         """
         Estimate the current speed for a Track object.
-
-        Parameters
-        ----------
-        track : a Track instance (has .track_id, .centroids, .label)
-
-        Returns
-        -------
-        Smoothed speed in km/h, or None if track history is too short.
+        Returns smoothed speed in km/h, or None if track history is too short.
         """
         if len(track.centroids) < self._min_track_len:
             return None
@@ -120,8 +94,8 @@ class SpeedEstimator:
         else:
             speed_kmh = self._speed_pixel_scale(c1, c2)
 
-        # Clamp to plausible urban speed range
-        speed_kmh = max(0.0, min(speed_kmh, 120.0))
+        # Clamp to plausible urban speed range (0 to 140 km/h)
+        speed_kmh = max(0.0, min(speed_kmh, 140.0))
 
         # Exponential moving average smoothing
         alpha = 2.0 / (self._smooth_window + 1)
@@ -139,30 +113,31 @@ class SpeedEstimator:
 
     # ── Private helpers ────────────────────────────────────────────────────────
 
-    def _speed_pixel_scale(self, c1: np.ndarray, c2: np.ndarray) -> float:
-        """Pixel displacement → speed using pixel-per-metre calibration."""
-        # Effective seconds per processed frame = sample_rate / fps
+    def _speed_pixel_scale(self, c1: Any, c2: Any) -> float:
+        """Pixel displacement -> speed using pixel-per-metre calibration."""
         dt_sec = self._sample_rate / self._fps
         if dt_sec <= 0:
             return 0.0
-        dist_px   = float(np.linalg.norm(c2 - c1))
-        dist_m    = dist_px / self._ppm
-        speed_ms  = dist_m / dt_sec
-        return speed_ms * 3.6   # m/s → km/h
-
-    def _speed_homography(self, c1: np.ndarray, c2: np.ndarray) -> float:
-        """Map centroids to ground plane via homography, then compute speed."""
-        def _transform(pt: np.ndarray) -> np.ndarray:
-            p = np.array([[[pt[0], pt[1]]]], dtype=np.float32)
-            import cv2
-            t = cv2.perspectiveTransform(p, self._H)
-            return t[0][0]
-
-        dt_sec   = self._sample_rate / self._fps
-        if dt_sec <= 0:
-            return 0.0
-        w1 = _transform(c1)
-        w2 = _transform(c2)
-        dist_m   = float(np.linalg.norm(w2 - w1))
+        dx = float(c2[0] - c1[0])
+        dy = float(c2[1] - c1[1])
+        dist_px = math.sqrt(dx * dx + dy * dy)
+        dist_m = dist_px / max(1.0, self._ppm)
         speed_ms = dist_m / dt_sec
-        return speed_ms * 3.6
+        return speed_ms * 3.6   # m/s -> km/h
+
+    def _speed_homography(self, c1: Any, c2: Any) -> float:
+        """Map centroids to ground plane via homography, then compute speed."""
+        try:
+            import cv2
+            p = np.array([[[float(c1[0]), float(c1[1])]], [[float(c2[0]), float(c2[1])]]], dtype=np.float32)
+            t = cv2.perspectiveTransform(p, self._H)
+            w1, w2 = t[0][0], t[1][0]
+            dx = float(w2[0] - w1[0])
+            dy = float(w2[1] - w1[1])
+            dist_m = math.sqrt(dx * dx + dy * dy)
+            dt_sec = self._sample_rate / self._fps
+            if dt_sec <= 0:
+                return 0.0
+            return (dist_m / dt_sec) * 3.6
+        except Exception:
+            return self._speed_pixel_scale(c1, c2)

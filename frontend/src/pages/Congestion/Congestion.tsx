@@ -293,10 +293,10 @@ const INITIAL_SEGMENTS: RoadSegmentData[] = [
 ];
 
 const SEVERITY_BADGES: Record<string, { bg: string; text: string; border: string; label: string }> = {
-  LOW:    { bg: "bg-emerald-950/70", text: "text-emerald-400", border: "border-emerald-700/60", label: "Low (Green)" },
-  MEDIUM: { bg: "bg-yellow-950/70",  text: "text-yellow-400",  border: "border-yellow-700/60",  label: "Moderate (Yellow)" },
-  HIGH:   { bg: "bg-orange-950/70",  text: "text-orange-400",  border: "border-orange-700/60",  label: "High (Orange)" },
-  SEVERE: { bg: "bg-red-950/70",     text: "text-red-400",     border: "border-red-700/60",     label: "Severe (Red)" },
+  LOW:    { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", label: "Low (Green)" },
+  MEDIUM: { bg: "bg-amber-50",  text: "text-amber-800",  border: "border-amber-200",  label: "Moderate (Yellow)" },
+  HIGH:   { bg: "bg-orange-50",  text: "text-orange-800",  border: "border-orange-200",  label: "High (Orange)" },
+  SEVERE: { bg: "bg-rose-50",     text: "text-rose-700",     border: "border-rose-200",     label: "Severe (Red)" },
 };
 
 export const Congestion: React.FC = () => {
@@ -447,24 +447,24 @@ export const Congestion: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ── Top Header ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="p-2 bg-red-950/60 border border-red-800/50 rounded-xl text-red-400">
+            <span className="p-2 bg-orange-50 border border-orange-200 rounded-xl text-[#C85A17]">
               <Flame className="w-5 h-5 animate-pulse" />
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-white">
-                  Traffic Congestion Analytics & Heatmap
+                <h1 className="text-2xl font-bold tracking-tight text-[#16192E]">
+                  Traffic Congestion Analytics &amp; Heatmap
                 </h1>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#16192E] text-white shadow-xs">
                   PHASE 20
                 </span>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Live thermal GIS corridor mapping, historical diurnal peak hours, route delay overhead, and Top 10 bottlenecks
               </p>
             </div>
@@ -473,15 +473,15 @@ export const Congestion: React.FC = () => {
 
         {/* Global Controls: Cities & Live Refresh */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-1 flex items-center">
+          <div className="bg-white border border-[#CBD5E1] rounded-xl p-1 flex items-center shadow-2xs">
             {["All", "Delhi", "Mumbai", "Bangalore"].map((city) => (
               <button
                 key={city}
                 onClick={() => setSelectedCity(city)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   selectedCity === city
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                    ? "bg-[#16192E] text-white shadow-xs"
+                    : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
                 }`}
               >
                 {city === "All" ? "All Metros" : city}
@@ -492,28 +492,28 @@ export const Congestion: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 text-xs rounded-xl font-medium transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-indigo-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#C85A17]" : "text-[#64748B]"}`} />
             <span>{isRefreshing ? "Syncing..." : "Sync Live"}</span>
           </button>
 
           <a
             href="/od-analysis"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-950/60 border border-indigo-800/60 hover:bg-indigo-900 text-indigo-300 text-xs rounded-xl font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
             <span>Origin-Destination (Phase 21)</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#64748B]" />
           </a>
         </div>
       </div>
 
       {/* ── Heatmap Multi-Tier Filters Bar (Prompt Requirement) ──────────────── */}
-      <div className="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {/* Date Range Filters */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-gray-400 mr-1 font-semibold uppercase tracking-wider">
-            <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="flex items-center gap-1.5 text-xs text-[#64748B] mr-1 font-semibold uppercase tracking-wider">
+            <Calendar className="w-3.5 h-3.5 text-[#C85A17]" />
             <span>Date Range:</span>
           </div>
           {[
@@ -527,8 +527,8 @@ export const Congestion: React.FC = () => {
               onClick={() => setDateRange(d.id as any)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                 dateRange === d.id
-                  ? "bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-md font-bold"
-                  : "bg-gray-800/80 text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+                  ? "bg-[#C85A17] text-white shadow-xs font-bold"
+                  : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
               }`}
             >
               {d.label}
@@ -538,8 +538,8 @@ export const Congestion: React.FC = () => {
 
         {/* Time of Day Filters */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-gray-400 mr-1 font-semibold uppercase tracking-wider">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+          <div className="flex items-center gap-1.5 text-xs text-[#64748B] mr-1 font-semibold uppercase tracking-wider">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
             <span>Time of Day:</span>
           </div>
           {[
@@ -556,8 +556,8 @@ export const Congestion: React.FC = () => {
                 onClick={() => setTimeOfDay(t.id as any)}
                 className={`flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                   timeOfDay === t.id
-                    ? "bg-amber-600 text-white shadow-md font-bold"
-                    : "bg-gray-800/80 text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+                    ? "bg-[#16192E] text-white shadow-xs font-bold"
+                    : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
                 }`}
               >
                 <Icon className="w-3 h-3" />
@@ -571,152 +571,154 @@ export const Congestion: React.FC = () => {
       {/* ── Key Performance Indicators (6 Cards) ─────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5">
         {/* 1. Network Congestion Score */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Congestion Score</span>
-            <span className="p-1 bg-amber-950/60 border border-amber-700/40 rounded-lg text-amber-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Congestion Score</span>
+            <span className="p-1 bg-amber-50 border border-amber-200 rounded-lg text-amber-700">
               <Gauge className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold font-mono text-amber-400">{avgScore}</span>
-            <span className="text-[11px] text-gray-500">/ 100</span>
+            <span className="text-2xl font-bold font-mono text-[#16192E]">{avgScore}</span>
+            <span className="text-[11px] text-[#64748B]">/ 100</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">Weighted corridor index</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">Weighted corridor index</div>
         </div>
 
         {/* 2. Average Speed */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Average Speed</span>
-            <span className="p-1 bg-blue-950/60 border border-blue-700/40 rounded-lg text-blue-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Average Speed</span>
+            <span className="p-1 bg-blue-50 border border-blue-200 rounded-lg text-blue-700">
               <Activity className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold font-mono text-blue-400">{avgSpeed}</span>
-            <span className="text-[11px] text-gray-500">km/h</span>
+            <span className="text-2xl font-bold font-mono text-[#16192E]">{avgSpeed}</span>
+            <span className="text-[11px] text-[#64748B]">km/h</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">Across monitored corridors</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">Across monitored corridors</div>
         </div>
 
         {/* 3. Vehicle Density */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Vehicle Density</span>
-            <span className="p-1 bg-orange-950/60 border border-orange-700/40 rounded-lg text-orange-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Vehicle Density</span>
+            <span className="p-1 bg-orange-50 border border-orange-200 rounded-lg text-[#C85A17]">
               <Car className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold font-mono text-orange-400">{avgDensity}%</span>
-            <span className="text-[11px] text-gray-500">Occupancy</span>
+            <span className="text-2xl font-bold font-mono text-[#16192E]">{avgDensity}%</span>
+            <span className="text-[11px] text-[#64748B]">Occupancy</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">Road capacity saturation</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">Road capacity saturation</div>
         </div>
 
         {/* 4. Route Delay */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Avg Route Delay</span>
-            <span className="p-1 bg-red-950/60 border border-red-700/40 rounded-lg text-red-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Avg Route Delay</span>
+            <span className="p-1 bg-rose-50 border border-rose-200 rounded-lg text-rose-700">
               <ArrowDownRight className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold font-mono text-red-400">+{avgRouteDelay}</span>
-            <span className="text-[11px] text-gray-500">min/trip</span>
+            <span className="text-2xl font-bold font-mono text-rose-600">+{avgRouteDelay}</span>
+            <span className="text-[11px] text-[#64748B]">min/trip</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">Loss vs free-flow conditions</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">Loss vs free-flow conditions</div>
         </div>
 
         {/* 5. Peak Hours Window */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Peak Hours</span>
-            <span className="p-1 bg-purple-950/60 border border-purple-700/40 rounded-lg text-purple-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Peak Hours</span>
+            <span className="p-1 bg-purple-50 border border-purple-200 rounded-lg text-purple-700">
               <Clock className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2">
-            <span className="text-xs font-bold font-mono text-purple-300 block">08:30 - 10:30</span>
-            <span className="text-xs font-bold font-mono text-purple-300 block">18:00 - 20:30</span>
+            <span className="text-xs font-bold font-mono text-[#16192E] block">08:30 - 10:30</span>
+            <span className="text-xs font-bold font-mono text-[#16192E] block">18:00 - 20:30</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">AM & PM rush windows</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">AM &amp; PM rush windows</div>
         </div>
 
         {/* 6. Active Bottlenecks */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-gray-400">Active Bottlenecks</span>
-            <span className="p-1 bg-red-950/60 border border-red-800/40 rounded-lg text-red-400">
+            <span className="text-[11px] font-semibold text-[#64748B]">Active Bottlenecks</span>
+            <span className="p-1 bg-rose-50 border border-rose-200 rounded-lg text-rose-700">
               <ShieldAlert className="w-3.5 h-3.5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold font-mono text-red-400">{activeBottlenecks.length}</span>
-            <span className="text-[11px] text-red-400/80 font-medium">Corridors</span>
+            <span className="text-2xl font-bold font-mono text-rose-600">{activeBottlenecks.length}</span>
+            <span className="text-[11px] text-rose-700 font-medium">Corridors</span>
           </div>
-          <div className="mt-1 text-[10px] text-gray-500">Severe traffic choke points</div>
+          <div className="mt-1 text-[10px] text-[#64748B]">Severe traffic choke points</div>
         </div>
       </div>
 
       {/* ── Central GIS Map & Thermal Heatmap Section ────────────────────────── */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
+      <div className="space-y-2 bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-indigo-400" />
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-300">
-              Live GIS Road Corridor & Congestion Heatmap
+            <MapPin className="w-4 h-4 text-[#C85A17]" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#16192E]">
+              Live GIS Road Corridor &amp; Congestion Heatmap
             </h2>
-            <div className="flex items-center gap-1 text-[11px] bg-gray-900 px-2.5 py-0.5 rounded-full border border-gray-800">
-              <span className="text-emerald-400 font-bold">Green: Low</span> •{" "}
-              <span className="text-yellow-400 font-bold">Yellow: Moderate</span> •{" "}
-              <span className="text-orange-400 font-bold">Orange: High</span> •{" "}
-              <span className="text-red-400 font-bold">Red: Severe</span>
+            <div className="flex items-center gap-1.5 text-[11px] bg-[#F8FAFC] px-2.5 py-0.5 rounded-full border border-[#E2E8F0]">
+              <span className="text-emerald-700 font-semibold">Green: Low</span> •{" "}
+              <span className="text-amber-700 font-semibold">Yellow: Moderate</span> •{" "}
+              <span className="text-orange-700 font-semibold">Orange: High</span> •{" "}
+              <span className="text-rose-700 font-semibold">Red: Severe</span>
             </div>
           </div>
-          <span className="text-xs text-gray-500">
-            Filters: <strong className="text-gray-300 capitalize">{dateRange.replace(/_/g, " ")}</strong> | <strong className="text-gray-300 capitalize">{timeOfDay}</strong> • Synced: {lastRefreshed}
+          <span className="text-xs text-[#64748B]">
+            Filters: <strong className="text-[#16192E] capitalize">{dateRange.replace(/_/g, " ")}</strong> | <strong className="text-[#16192E] capitalize">{timeOfDay}</strong> • Synced: {lastRefreshed}
           </span>
         </div>
 
-        <CongestionMap
-          segments={filteredSegments}
-          heatmapPoints={heatmapPoints}
-          selectedCity={selectedCity}
-          height="540px"
-        />
+        <div className="rounded-xl overflow-hidden border border-[#E2E8F0]">
+          <CongestionMap
+            segments={filteredSegments}
+            heatmapPoints={heatmapPoints}
+            selectedCity={selectedCity}
+            height="540px"
+          />
+        </div>
       </div>
 
       {/* ── Top 10 Congested Road Segments Table (Prompt Requirement) ────────── */}
-      <div className="bg-gray-900/90 border border-gray-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+            <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-600" />
               Top 10 Congested Road Segments
             </h3>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Ranked by real-time congestion score, speed deficit, and commuter route delay overhead
             </p>
           </div>
 
           <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-3 top-3" />
+            <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-3" />
             <input
               type="text"
               placeholder="Search segment or city..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none focus:border-[#16192E]"
             />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider text-[10px] border-b border-gray-800">
+        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+          <table className="w-full text-left text-xs text-[#16192E]">
+            <thead className="bg-[#F8FAFC] text-[#64748B] uppercase tracking-wider text-[10px] border-b border-[#E2E8F0] font-semibold">
               <tr>
                 <th className="py-2.5 px-3">Rank</th>
                 <th className="py-2.5 px-3">Corridor Name</th>
@@ -729,34 +731,34 @@ export const Congestion: React.FC = () => {
                 <th className="py-2.5 px-3">Peak Hours Window</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800/60 font-mono">
+            <tbody className="divide-y divide-[#E2E8F0] font-mono">
               {displayedTopSegments.slice(0, 10).map((seg) => {
                 const badge = SEVERITY_BADGES[seg.severity] || SEVERITY_BADGES["MEDIUM"];
                 return (
-                  <tr key={seg.segment_id} className="hover:bg-gray-800/40 transition-colors">
-                    <td className="py-3 px-3 font-bold text-gray-200">
-                      <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] ${
-                        seg.rank === 1 ? "bg-red-500/20 text-red-400 border border-red-500/40" :
-                        seg.rank <= 3 ? "bg-orange-500/20 text-orange-400 border border-orange-500/40" :
-                        "bg-gray-800 text-gray-300"
+                  <tr key={seg.segment_id} className="hover:bg-[#F8FAFC] transition-colors">
+                    <td className="py-3 px-3 font-bold text-[#16192E]">
+                      <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold ${
+                        seg.rank === 1 ? "bg-rose-50 text-rose-700 border border-rose-200" :
+                        seg.rank <= 3 ? "bg-orange-50 text-orange-700 border border-orange-200" :
+                        "bg-[#F1F5F9] text-[#64748B]"
                       }`}>
                         #{seg.rank}
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-sans font-medium text-white">
+                    <td className="py-3 px-3 font-sans font-medium text-[#16192E]">
                       <div>{seg.name}</div>
-                      <div className="text-[10px] text-gray-500 font-mono">{seg.segment_id} • {seg.road_type}</div>
+                      <div className="text-[10px] text-[#64748B] font-mono">{seg.segment_id} • {seg.road_type}</div>
                     </td>
-                    <td className="py-3 px-3 font-sans text-gray-400">{seg.city}</td>
+                    <td className="py-3 px-3 font-sans text-[#64748B]">{seg.city}</td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-sm">{seg.congestion_score.toFixed(1)}</span>
-                        <div className="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                        <span className="font-bold text-[#16192E] text-sm">{seg.congestion_score.toFixed(1)}</span>
+                        <div className="w-16 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
                           <div
                             className={`h-full ${
-                              seg.severity === "SEVERE" ? "bg-red-500" :
+                              seg.severity === "SEVERE" ? "bg-rose-500" :
                               seg.severity === "HIGH" ? "bg-orange-500" :
-                              seg.severity === "MEDIUM" ? "bg-yellow-500" : "bg-emerald-500"
+                              seg.severity === "MEDIUM" ? "bg-amber-500" : "bg-emerald-500"
                             }`}
                             style={{ width: `${seg.congestion_score}%` }}
                           />
@@ -769,17 +771,17 @@ export const Congestion: React.FC = () => {
                       </span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-red-400 font-bold">{seg.current_speed.toFixed(1)} km/h</span>{" "}
-                      <span className="text-[10px] text-gray-500 font-sans">(Base: {seg.baseline_speed.toFixed(0)})</span>
+                      <span className="text-rose-600 font-bold">{seg.current_speed.toFixed(1)} km/h</span>{" "}
+                      <span className="text-[10px] text-[#64748B] font-sans">(Base: {seg.baseline_speed.toFixed(0)})</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-amber-400 font-bold">{(seg.density * 100).toFixed(0)}%</span>
-                      <span className="text-[10px] text-gray-500 block font-sans">{seg.active_vehicles} veh/corridor</span>
+                      <span className="text-amber-700 font-bold">{(seg.density * 100).toFixed(0)}%</span>
+                      <span className="text-[10px] text-[#64748B] block font-sans">{seg.active_vehicles} veh/corridor</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-red-400 font-bold text-sm">+{seg.route_delay_minutes.toFixed(1)} min</span>
+                      <span className="text-rose-600 font-bold text-sm">+{seg.route_delay_minutes.toFixed(1)} min</span>
                     </td>
-                    <td className="py-3 px-3 font-sans text-[11px] text-gray-400">
+                    <td className="py-3 px-3 font-sans text-[11px] text-[#64748B]">
                       {seg.peak_hours}
                     </td>
                   </tr>
@@ -793,14 +795,14 @@ export const Congestion: React.FC = () => {
       {/* ── Analytical Visualizations Grid ───────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 1. 24-Hour Diurnal Congestion & Speed Curve */}
-        <div className="lg:col-span-2 bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-indigo-400" />
-                24-Hour Diurnal Congestion Curve vs Speed (AM & PM Peak Windows)
+              <h3 className="text-sm font-bold text-[#16192E] flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#C85A17]" />
+                24-Hour Diurnal Congestion Curve vs Speed (AM &amp; PM Peak Windows)
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Hourly congestion score spikes align with morning office inbound (08:30-10:30) and evening return (18:00-20:30)
               </p>
             </div>
@@ -810,20 +812,20 @@ export const Congestion: React.FC = () => {
               <AreaChart data={diurnalData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                 <defs>
                   <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.35} />
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0} />
                   </linearGradient>
                   <linearGradient id="speedGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35} />
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="hour" stroke="#6b7280" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                <XAxis dataKey="hour" stroke="#94A3B8" tick={{ fontSize: 11, fill: "#64748B" }} />
+                <YAxis stroke="#94A3B8" tick={{ fontSize: 11, fill: "#64748B" }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "0.75rem", fontSize: "12px" }}
-                  itemStyle={{ color: "#e5e7eb" }}
+                  contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "0.75rem", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                  itemStyle={{ color: "#16192E" }}
                 />
                 <Area type="monotone" dataKey="congestion_score" name="Congestion Score" stroke="#ef4444" strokeWidth={2.5} fillOpacity={1} fill="url(#scoreGrad)" />
                 <Area type="monotone" dataKey="average_speed_kmh" name="Average Speed (km/h)" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#speedGrad)" />
@@ -833,13 +835,13 @@ export const Congestion: React.FC = () => {
         </div>
 
         {/* 2. Congestion Severity Breakdown Donut */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
           <div className="mb-2">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Activity className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-sm font-bold text-[#16192E] flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#C85A17]" />
               Network Congestion Breakdown
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Proportion of road corridors by color severity
             </p>
           </div>
@@ -860,10 +862,10 @@ export const Congestion: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "0.75rem", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "0.75rem", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                 />
                 <Legend
-                  formatter={(val) => <span className="text-xs text-gray-300">{val}</span>}
+                  formatter={(val) => <span className="text-xs font-medium text-[#64748B]">{val}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>

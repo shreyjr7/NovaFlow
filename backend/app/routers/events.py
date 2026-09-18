@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, status
+from pydantic import BaseModel
 from sqlmodel import Session, col, desc, select
 
 from ..config.settings import Settings
@@ -143,6 +144,78 @@ async def ingest_event(
 
     logger.debug(f"Ingested event {body.event_id} ({body.event_type}) -> stream msg {msg_id}")
 
+    # Persist directly to DB so GET /events/{id} is immediately consistent
+    try:
+        import json
+        from ..database.session import engine
+        from ..models.ingested_event import IngestedEvent
+        with Session(engine) as db_sess:
+            existing = db_sess.exec(select(IngestedEvent).where(IngestedEvent.event_id == body.event_id)).first()
+            if not existing:
+                e_type = body.event_type.value if hasattr(body.event_type, "value") else str(body.event_type)
+                e_sev = body.severity.value if hasattr(body.severity, "value") else str(body.severity)
+                db_event = IngestedEvent(
+                    event_id=body.event_id,
+                    idempotency_key=idemp_key or f"idemp_{body.event_id}",
+                    event_type=e_type,
+                    severity=e_sev,
+                    confidence=float(body.confidence),
+                    gps_lat=float(body.gps.lat if body.gps else 0.0),
+                    gps_lon=float(body.gps.lon if body.gps else 0.0),
+                    road_segment=str(body.road_segment or "UNKNOWN"),
+                    bus_id=str(body.bus_id or "BUS_001"),
+                    camera_id=str(body.camera_id or "FRONT"),
+                    metadata_json=json.dumps(body.model_dump(), default=str),
+                    status="PENDING",
+                )
+                db_sess.add(db_event)
+                db_sess.commit()
+    except Exception as db_err:
+        logger.warning(f"Sync DB persistence in ingest: {db_err}")
+
+    return EventIngestResponse(
+            status="DUPLICATE_IGNORED",
+            event_id=body.event_id,
+            idempotency_key=idemp_key,
+            stream_message_id=None,
+            queued_at=envelope["queued_at"],
+            duplicate=True,
+            message=f"Duplicate event ignored. Original: {orig_id}",
+        )
+
+    # 3. Queue Insertion (Redis Streams / In-Memory Stream)
+    queue = get_message_queue_provider()
+    msg_id = queue.publish(STREAM_NAME, envelope)
+    _total_queued_counter += 1
+
+    logger.debug(f"Ingested event {body.event_id} ({body.event_type}) -> stream msg {msg_id}")
+
+    # Persist directly to DB so GET /events/{id} is immediately consistent
+    try:
+        from ..database.session import engine
+        from ..models.ingested_event import IngestedEvent
+        with Session(engine) as db_sess:
+            existing = db_sess.exec(select(IngestedEvent).where(IngestedEvent.event_id == body.event_id)).first()
+            if not existing:
+                db_event = IngestedEvent(
+                    event_id=body.event_id,
+                    event_type=body.event_type.value if hasattr(body.event_type, "value") else str(body.event_type),
+                    severity=body.severity.value if hasattr(body.severity, "value") else str(body.severity),
+                    confidence=body.confidence,
+                    gps_latitude=body.gps.lat if body.gps else 0.0,
+                    gps_longitude=body.gps.lon if body.gps else 0.0,
+                    road_segment=body.road_segment,
+                    bus_id=body.bus_id,
+                    camera_id=body.camera_id,
+                    idempotency_key=idemp_key,
+                    metadata_json=body.model_dump(),
+                    status="PENDING",
+                )
+                db_sess.add(db_event)
+                db_sess.commit()
+    except Exception as db_err:
+        logger.debug(f"Sync DB persistence in ingest: {db_err}")
+
     return EventIngestResponse(
         status="QUEUED",
         event_id=body.event_id,
@@ -225,3 +298,221 @@ async def get_event_status_by_idempotency_key(
     if not evt:
         raise HTTPException(status_code=404, detail="Event not found for this idempotency key")
     return evt.model_dump()
+
+
+# ── Phase 3: Standardized Event Schema & Lifecycle State Machine Endpoints ──
+
+@router.get("/standard", summary="List events in Phase 3 canonical standardized format")
+async def list_standard_events(
+    event_type: Optional[str] = Query(None, alias="type"),
+    bus_id: Optional[str] = Query(None, alias="busId"),
+    status_filter: Optional[str] = Query(None, alias="status"),
+    limit: int = Query(100, ge=1, le=1000),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_session),
+):
+    """
+    Step 5 Standardized Event Endpoint:
+    Returns events strictly mapped into the canonical format:
+    {
+      "eventId": "EVT-00124",
+      "type": "pothole",
+      "confidence": 0.94,
+      "latitude": 28.6139,
+      "longitude": 77.2090,
+      "timestamp": "...",
+      "busId": "BUS-102",
+      "routeId": "R-12",
+      "severity": "high",
+      "status": "unverified"
+    }
+    """
+    query = select(IngestedEvent)
+    if event_type:
+        query = query.where(IngestedEvent.event_type == event_type.upper())
+    if bus_id:
+        query = query.where(IngestedEvent.bus_id == bus_id)
+    if status_filter:
+        query = query.where(IngestedEvent.status == status_filter.lower())
+
+    query = query.order_by(desc(IngestedEvent.timestamp)).offset(offset).limit(limit)
+    records = db.exec(query).all()
+
+    return {
+        "count": len(records),
+        "limit": limit,
+        "offset": offset,
+        "events": [r.to_standard_dict() for r in records],
+    }
+
+
+class StatusTransitionRequest(BaseModel):
+    target_status: str
+    actor: Optional[str] = "OPERATOR_COMMAND_CENTER"
+    reason: Optional[str] = None
+    work_order_id: Optional[str] = None
+
+
+@router.post("/{event_id}/status", summary="Transition event status via lifecycle state machine")
+async def update_event_status_endpoint(
+    event_id: str,
+    req: StatusTransitionRequest,
+    db: Session = Depends(get_session),
+):
+    """
+    Step 6 Event Status State Machine:
+    Transitions event between:
+      UNVERIFIED -> CONFIRMED -> UNDER_REPAIR -> RESOLVED
+      or DISMISSED.
+    Rejects illegal or skipping transitions with HTTP 400 Bad Request.
+    """
+    from ..services.event_state_machine import execute_status_transition
+
+    try:
+        res = execute_status_transition(
+            event_id=event_id,
+            target_status=req.target_status,
+            session=db,
+            actor=req.actor or "OPERATOR_COMMAND_CENTER",
+            reason=req.reason,
+            work_order_id=req.work_order_id,
+        )
+        return res
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/{event_id}/lifecycle", summary="Inspect event status lifecycle and allowed transitions")
+async def get_event_lifecycle_endpoint(
+    event_id: str,
+    db: Session = Depends(get_session),
+):
+    """
+    Returns the current lifecycle status, permissible next transitions, and transition audit history.
+    """
+    from ..services.event_state_machine import get_allowed_transitions
+
+    stmt = select(IngestedEvent).where(
+        (IngestedEvent.event_id == event_id) | (IngestedEvent.idempotency_key == event_id)
+    )
+    evt = db.exec(stmt).first()
+    if not evt:
+        raise HTTPException(status_code=404, detail=f"Event '{event_id}' not found.")
+
+    current_status = evt.status or "unverified"
+    metadata = evt.get_metadata()
+
+    return {
+        "eventId": evt.event_id,
+        "currentStatus": current_status.lower(),
+        "allowedNextTransitions": get_allowed_transitions(current_status),
+        "lifecycleHistory": metadata.get("lifecycle_history", []),
+        "lastUpdated": metadata.get("last_updated_at", evt.timestamp.isoformat() if evt.timestamp else ""),
+        "lastActor": metadata.get("last_actor", "SYSTEM"),
+    }
+
+
+class EventPatchRequest(BaseModel):
+    status: Optional[str] = None
+    severity: Optional[str] = None
+    confidence: Optional[float] = None
+    verified_by: Optional[str] = None
+    notes: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+
+@router.get("/{event_id}", summary="Get single event by eventId or UUID (Step 24)")
+async def get_event_by_id(
+    event_id: str,
+    db: Session = Depends(get_session),
+):
+    """
+    Retrieves full details of a single event by event_id (e.g. EVT-00124) or UUID.
+    """
+    stmt = select(IngestedEvent).where(
+        (IngestedEvent.event_id == event_id) |
+        (IngestedEvent.idempotency_key == event_id)
+    )
+    evt = db.exec(stmt).first()
+    if not evt:
+        try:
+            from uuid import UUID
+            u = UUID(event_id)
+            evt = db.exec(select(IngestedEvent).where(IngestedEvent.id == u)).first()
+        except Exception:
+            pass
+    if not evt:
+        raise HTTPException(status_code=404, detail=f"Event '{event_id}' not found")
+
+    doc = evt.model_dump()
+    doc["standard"] = evt.to_standard_dict()
+    return doc
+
+
+@router.patch("/{event_id}", summary="Partial update of event attributes (Step 24)")
+async def patch_event_by_id(
+    event_id: str,
+    patch: EventPatchRequest,
+    db: Session = Depends(get_session),
+):
+    """
+    Updates event status, severity, verification notes, or metadata.
+    Transitions status through the lifecycle state machine.
+    """
+    import json
+    stmt = select(IngestedEvent).where(
+        (IngestedEvent.event_id == event_id) |
+        (IngestedEvent.idempotency_key == event_id)
+    )
+    evt = db.exec(stmt).first()
+    if not evt:
+        try:
+            from uuid import UUID
+            u = UUID(event_id)
+            evt = db.exec(select(IngestedEvent).where(IngestedEvent.id == u)).first()
+        except Exception:
+            pass
+    if not evt:
+        raise HTTPException(status_code=404, detail=f"Event '{event_id}' not found")
+
+    if patch.status and patch.status.lower() != (evt.status or "").lower():
+        from ..services.event_state_machine import execute_status_transition
+        try:
+            execute_status_transition(
+                event_id=evt.event_id,
+                target_status=patch.status,
+                session=db,
+                actor=patch.verified_by or "OPERATOR",
+                reason=patch.notes,
+            )
+            db.refresh(evt)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    if patch.severity:
+        evt.severity = patch.severity.lower()
+    if patch.confidence is not None:
+        evt.confidence = patch.confidence
+
+    meta = evt.get_metadata()
+    if patch.notes:
+        meta["patch_notes"] = patch.notes
+    if patch.verified_by:
+        meta["last_verified_by"] = patch.verified_by
+        meta["last_verified_at"] = datetime.now(timezone.utc).isoformat()
+    if patch.metadata:
+        meta.update(patch.metadata)
+
+    evt.metadata_json = json.dumps(meta)
+    db.add(evt)
+    db.commit()
+    db.refresh(evt)
+
+    return {
+        "ok": True,
+        "eventId": evt.event_id,
+        "status": evt.status,
+        "severity": evt.severity,
+        "confidence": evt.confidence,
+        "event": evt.to_standard_dict(),
+    }

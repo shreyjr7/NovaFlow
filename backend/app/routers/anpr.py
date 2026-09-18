@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from edge.anpr.pipeline import AnprPipeline, HUMAN_VERIFICATION_NOTICE
+from edge.anpr.pipeline import AnprPipeline, AnprState, PlateState, HUMAN_VERIFICATION_NOTICE
 from edge.anpr.format_validator import PlateFormatValidator
 
 router = APIRouter()
@@ -305,7 +305,19 @@ async def list_anpr_records(
     items = list(_ANPR_DB.values())
 
     if state:
-        items = [i for i in items if i.get("state") == state.upper()]
+        st_upper = state.upper()
+        aliases = {
+            "READABLE": {"READABLE", "PLATE_RECOGNIZED"},
+            "PLATE_RECOGNIZED": {"READABLE", "PLATE_RECOGNIZED"},
+            "PLATE_DETECTED": {"PLATE_DETECTED"},
+            "LOW_CONFIDENCE": {"LOW_CONFIDENCE"},
+            "UNREADABLE": {"UNREADABLE", "NOT_READABLE"},
+            "NOT_READABLE": {"UNREADABLE", "NOT_READABLE"},
+            "NO_PLATE_VISIBLE": {"NO_PLATE_VISIBLE", "NOT_PRESENT"},
+            "NOT_PRESENT": {"NO_PLATE_VISIBLE", "NOT_PRESENT"},
+        }
+        allowed = aliases.get(st_upper, {st_upper})
+        items = [i for i in items if i.get("state") in allowed]
     if quarantined is not None:
         items = [i for i in items if i.get("quarantined") == quarantined]
     if bus_id:
@@ -412,10 +424,11 @@ async def get_anpr_stats():
 
     all_items = list(_ANPR_DB.values())
     total = len(all_items)
-    readable = sum(1 for i in all_items if i.get("state") == "READABLE")
-    low_conf = sum(1 for i in all_items if i.get("state") == "LOW_CONFIDENCE")
-    not_readable = sum(1 for i in all_items if i.get("state") == "NOT_READABLE")
-    not_present = sum(1 for i in all_items if i.get("state") == "NOT_PRESENT")
+    readable = sum(1 for i in all_items if i.get("state") in ("READABLE", "PLATE_RECOGNIZED"))
+    low_conf = sum(1 for i in all_items if i.get("state") in ("LOW_CONFIDENCE", "LOW CONFIDENCE"))
+    not_readable = sum(1 for i in all_items if i.get("state") in ("NOT_READABLE", "UNREADABLE"))
+    not_present = sum(1 for i in all_items if i.get("state") in ("NOT_PRESENT", "NO_PLATE_VISIBLE"))
+    plate_detected = sum(1 for i in all_items if i.get("state") in ("PLATE_DETECTED", "PLATE DETECTED"))
     quarantined = sum(1 for i in all_items if i.get("quarantined", False))
 
     confs = [i.get("confidence", 0.0) for i in all_items if i.get("state") != "NOT_PRESENT"]
@@ -430,9 +443,13 @@ async def get_anpr_stats():
     return {
         "total_scanned": total,
         "readable_count": readable,
+        "plate_recognized_count": readable,
         "low_confidence_count": low_conf,
         "not_readable_count": not_readable,
+        "unreadable_count": not_readable,
         "not_present_count": not_present,
+        "no_plate_visible_count": not_present,
+        "plate_detected_count": plate_detected,
         "quarantined_count": quarantined,
         "readability_rate_pct": readability_rate,
         "average_confidence": avg_conf,

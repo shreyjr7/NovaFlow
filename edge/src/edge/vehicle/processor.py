@@ -114,8 +114,8 @@ class VehicleProcessor:
         raw_detections = self._detector.detect(frame)
 
         # ── Tracking ──────────────────────────────────────────────────────────
-        frame_w = frame.shape[1] if frame is not None else 1280
-        frame_h = frame.shape[0] if frame is not None else 720
+        frame_w = frame.shape[1] if (frame is not None and hasattr(frame, "shape")) else 1280
+        frame_h = frame.shape[0] if (frame is not None and hasattr(frame, "shape")) else 720
         confirmed_tracks = self._tracker.update(raw_detections, frame_w=frame_w, frame_h=frame_h)
 
         # ── Speed estimation ───────────────────────────────────────────────────

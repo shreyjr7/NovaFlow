@@ -56,13 +56,29 @@ class EventDetector:
               gps: Dict[str, float], detections: List[Dict],
               frame_b64: Optional[str] = None, extra: Optional[Dict] = None) -> Dict[str, Any]:
         self._last_fired[event_type] = time.time()
+        evt_id = f"EVT-{str(uuid.uuid4())[:8].upper()}"
+        lat = float(gps.get("lat", 28.6139))
+        lon = float(gps.get("lon", 77.2090))
+        ts_now = datetime.now(timezone.utc).isoformat()
+        sev = "high" if event_type in ("pothole", "incident", "waterlogging") else "medium"
+
         return {
-            "event_id": str(uuid.uuid4()),
+            # Step 5 canonical format
+            "eventId": evt_id,
+            "type": event_type,
+            "confidence": round(confidence, 3),
+            "latitude": round(lat, 6),
+            "longitude": round(lon, 6),
+            "timestamp": ts_now,
+            "busId": self._bus_id,
+            "routeId": (extra or {}).get("route_id", "R-01"),
+            "severity": sev,
+            "status": "unverified",
+            # Additional context
+            "event_id": evt_id,
             "event_type": event_type,
             "bus_id": self._bus_id,
             "camera_position": self._camera_position,
-            "confidence": round(confidence, 3),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
             "gps": gps,
             "detections": detections,
             "frame_b64": frame_b64,

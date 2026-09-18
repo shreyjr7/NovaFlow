@@ -37,6 +37,9 @@ from .routers.ai_models import router as ai_models_router
 from .routers.testing_framework import router as testing_framework_router
 from .routers.demo_environment import router as demo_environment_router
 from .routers.demo_flow import router as demo_flow_router
+from .routers.buses_api import router as buses_api_router
+from .routers.routes_api import router as routes_api_router
+from .routers.analytics_api import router as analytics_api_router
 from .services.demo_seeder_service import get_demo_seeder_service
 from .services.event_processor import get_event_processor
 
@@ -93,6 +96,12 @@ app.include_router(ai_models_router, prefix="/api/v1/ai-models", tags=["ai-model
 app.include_router(testing_framework_router, prefix="/api/v1/testing", tags=["testing"])
 app.include_router(demo_environment_router, prefix="/api/v1/demo", tags=["demo-environment"])
 app.include_router(demo_flow_router, prefix="/api/v1/demo-flow", tags=["demo-flow"])
+
+# ── Step 24 Basic Structure: Root-level & Versioned Core API Endpoints ──────
+app.include_router(events.router, prefix="/events", tags=["events-root"])
+app.include_router(buses_api_router, prefix="/buses", tags=["buses-root"])
+app.include_router(routes_api_router, prefix="/routes", tags=["routes-root"])
+app.include_router(analytics_api_router, prefix="/analytics", tags=["analytics-root"])
 
 # Startup / shutdown events
 @app.on_event("startup")

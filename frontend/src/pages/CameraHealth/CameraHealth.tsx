@@ -107,15 +107,15 @@ export const CameraHealth: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "HEALTHY":
-        return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+        return "bg-emerald-50 text-emerald-700 border border-emerald-200";
       case "WARNING":
-        return "bg-amber-500/20 text-amber-300 border-amber-500/30";
+        return "bg-amber-50 text-amber-700 border border-amber-200";
       case "DEGRADED":
-        return "bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse";
+        return "bg-rose-50 text-rose-700 border border-rose-200 animate-pulse";
       case "OFFLINE":
-        return "bg-slate-700 text-slate-300 border-slate-600";
+        return "bg-gray-100 text-gray-600 border border-gray-200";
       default:
-        return "bg-slate-800 text-slate-400";
+        return "bg-gray-100 text-gray-500 border border-gray-200";
     }
   };
 
@@ -124,22 +124,19 @@ export const CameraHealth: React.FC = () => {
   const haltedCount = cameras.filter((c) => c.unreliable_detections_halted).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-cyan-400">
+            <div className="p-2.5 bg-blue-50 border border-blue-200 rounded-2xl text-blue-700 shadow-2xs">
               <Camera size={24} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
-                Camera & Edge Device Health
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  Phase 25
-                </span>
+              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-3">
+                Camera &amp; Edge Device Health
               </h1>
-              <p className="text-sm text-slate-400">
+              <p className="text-xs sm:text-sm text-[#64748B]">
                 Continuous diagnostics for optical lens quality, frame rate, thermal metrics, and automatic fail-safe ticketing.
               </p>
             </div>
@@ -148,14 +145,14 @@ export const CameraHealth: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchHealthData}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sm font-medium transition"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] text-xs font-semibold text-[#16192E] shadow-2xs transition-all"
           >
-            <RefreshCw size={15} />
+            <RefreshCw size={14} className="text-[#C85A17]" />
             Refresh Telemetry
           </button>
           <a
             href="/"
-            className="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition"
+            className="px-3.5 py-2 rounded-xl bg-[#C85A17] hover:bg-[#B34F14] text-white text-xs font-semibold shadow-sm transition-all"
           >
             &larr; Main Hub
           </a>
@@ -163,28 +160,28 @@ export const CameraHealth: React.FC = () => {
       </div>
 
       {/* Critical Rule Banner */}
-      <div className="p-4 rounded-xl bg-gradient-to-r from-rose-950/40 via-slate-900 to-slate-900 border border-rose-500/40 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-rose-500/20 text-rose-400">
-            <ShieldAlert size={22} />
+      <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-900">
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-xl bg-rose-100 text-rose-700 shrink-0 mt-0.5">
+            <ShieldAlert size={20} />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-rose-300">
+            <h4 className="text-sm font-bold text-rose-950">
               Critical Fail-Safe: Dirty or Obstructed Lens Guardrail
             </h4>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="text-xs text-rose-800 mt-0.5 leading-relaxed">
               If an edge camera is dirty or obstructed: <strong>Do NOT silently continue producing unreliable detections</strong>. The system immediately marks <strong>CAMERA DEGRADED</strong>, halts downstream inference, and spawns an automated maintenance ticket.
             </p>
           </div>
         </div>
-        <span className="text-xs font-mono text-rose-400 bg-rose-500/10 px-3 py-1 rounded border border-rose-500/30 hidden sm:inline">
+        <span className="text-[10px] font-mono font-bold text-rose-700 bg-white px-3 py-1 rounded-full border border-rose-200 shrink-0">
           FAIL-SAFE ARMED
         </span>
       </div>
 
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="p-3 bg-rose-600 text-white text-sm rounded-lg flex items-center justify-between shadow-lg animate-fade-in">
+        <div className="p-3 bg-rose-600 text-white text-sm rounded-xl flex items-center justify-between shadow-lg animate-fade-in">
           <span className="font-semibold flex items-center gap-2">
             <AlertOctagon size={18} />
             {toastMsg}
@@ -197,43 +194,43 @@ export const CameraHealth: React.FC = () => {
 
       {/* KPI Diagnostic Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-          <div className="text-xs font-medium text-slate-400">Total Monitored Nodes</div>
-          <div className="text-2xl font-bold text-white mt-1">{cameras.length}</div>
-          <div className="text-xs text-emerald-400 mt-1 flex items-center gap-1">
-            <CheckCircle2 size={12} /> {healthyCount} Healthy & Operational
+        <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm">
+          <div className="text-xs font-semibold text-[#64748B]">Total Monitored Nodes</div>
+          <div className="text-2xl font-extrabold text-[#16192E] mt-1">{cameras.length}</div>
+          <div className="text-xs text-emerald-700 mt-1 flex items-center gap-1 font-medium">
+            <CheckCircle2 size={12} /> {healthyCount} Healthy &amp; Operational
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-          <div className="text-xs font-medium text-slate-400">Degraded Optical Sensors</div>
-          <div className="text-2xl font-bold text-rose-400 mt-1">{degradedCount}</div>
-          <div className="text-xs text-rose-400/80 mt-1">Obstructed or severe blur</div>
+        <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm">
+          <div className="text-xs font-semibold text-rose-700">Degraded Optical Sensors</div>
+          <div className="text-2xl font-extrabold text-rose-700 mt-1">{degradedCount}</div>
+          <div className="text-xs text-[#64748B] mt-1">Obstructed or severe blur</div>
         </div>
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-          <div className="text-xs font-medium text-slate-400">Detections Halted (Fail-Safe)</div>
-          <div className="text-2xl font-bold text-amber-400 mt-1">{haltedCount}</div>
-          <div className="text-xs text-amber-400/80 mt-1">Protecting AI data integrity</div>
+        <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm">
+          <div className="text-xs font-semibold text-amber-700">Detections Halted (Fail-Safe)</div>
+          <div className="text-2xl font-extrabold text-amber-700 mt-1">{haltedCount}</div>
+          <div className="text-xs text-[#64748B] mt-1">Protecting AI data integrity</div>
         </div>
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-          <div className="text-xs font-medium text-slate-400">Auto Maintenance Tickets</div>
-          <div className="text-2xl font-bold text-cyan-400 mt-1">{tickets.length}</div>
-          <div className="text-xs text-cyan-400/80 mt-1 flex items-center gap-1">
-            <Wrench size={12} /> Cleaning & realignment
+        <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm">
+          <div className="text-xs font-semibold text-blue-700">Auto Maintenance Tickets</div>
+          <div className="text-2xl font-extrabold text-blue-700 mt-1">{tickets.length}</div>
+          <div className="text-xs text-[#64748B] mt-1 flex items-center gap-1">
+            <Wrench size={12} /> Cleaning &amp; realignment
           </div>
         </div>
       </div>
 
       {/* Status Filter Buttons */}
-      <div className="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
-        <span className="text-xs text-slate-400 font-medium px-2">Filter State:</span>
+      <div className="flex flex-wrap items-center gap-2 bg-white p-3 rounded-2xl border border-[#E2E8F0] shadow-sm">
+        <span className="text-xs text-[#64748B] font-semibold px-2">Filter State:</span>
         {["ALL", "HEALTHY", "WARNING", "DEGRADED", "OFFLINE"].map((st) => (
           <button
             key={st}
             onClick={() => setStatusFilter(st)}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition ${
+            className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
               statusFilter === st
-                ? "bg-slate-700 text-white border border-slate-600 shadow"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-[#16192E] text-white shadow-xs"
+                : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
             }`}
           >
             {st}
@@ -246,66 +243,65 @@ export const CameraHealth: React.FC = () => {
         {filteredCameras.map((cam) => {
           const isDegraded = cam.camera_status === "DEGRADED";
           const isWarning = cam.camera_status === "WARNING";
-          const isOffline = cam.camera_status === "OFFLINE";
 
           return (
             <div
               key={cam.camera_id}
-              className={`p-5 rounded-xl border bg-slate-900/90 transition space-y-4 ${
+              className={`p-5 rounded-2xl border bg-white shadow-sm transition-all space-y-4 ${
                 isDegraded
-                  ? "border-rose-500/50 shadow-rose-950/20"
+                  ? "border-rose-300 ring-1 ring-rose-200"
                   : isWarning
-                  ? "border-amber-500/40 shadow-amber-950/20"
-                  : "border-slate-800"
+                  ? "border-amber-300 ring-1 ring-amber-200"
+                  : "border-[#E2E8F0]"
               }`}
             >
               {/* Card Header */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[#E2E8F0] pb-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-base">{cam.camera_id}</span>
-                    <span className={`text-xs px-2.5 py-0.5 rounded border font-bold uppercase ${getStatusBadge(cam.camera_status)}`}>
+                    <span className="font-bold text-[#16192E] text-base">{cam.camera_id}</span>
+                    <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${getStatusBadge(cam.camera_status)}`}>
                       {cam.camera_status}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-400 mt-0.5">
-                    {cam.camera_name} • Bus: <strong className="text-indigo-400">{cam.bus_id}</strong>
+                  <div className="text-xs text-[#64748B] mt-0.5">
+                    {cam.camera_name} &bull; Bus: <strong className="text-[#C85A17]">{cam.bus_id}</strong>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-slate-400 font-mono">
+                  <div className="text-xs text-[#64748B] font-mono">
                     Heartbeat: {cam.last_heartbeat.slice(11, 19)} UTC
                   </div>
-                  <div className="text-xs text-slate-500">{cam.network_status} ({cam.network_latency_ms} ms)</div>
+                  <div className="text-xs text-[#64748B]">{cam.network_status} ({cam.network_latency_ms} ms)</div>
                 </div>
               </div>
 
               {/* Optical Diagnostics Strip */}
               <div className="space-y-2">
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Camera size={13} className="text-cyan-400" /> Optical Sensor Health
+                <div className="text-xs font-bold text-[#64748B] uppercase tracking-wider flex items-center gap-1.5">
+                  <Camera size={13} className="text-[#C85A17]" /> Optical Sensor Health
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <div className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
-                    <div className="text-xs text-slate-400">Stream FPS</div>
-                    <div className="text-sm font-bold text-white mt-0.5">
-                      {cam.fps} <span className="text-xs text-slate-500">/ {cam.target_fps}</span>
+                  <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[10px] uppercase font-bold text-[#64748B]">Stream FPS</div>
+                    <div className="text-sm font-bold text-[#16192E] mt-0.5">
+                      {cam.fps} <span className="text-xs font-normal text-[#64748B]">/ {cam.target_fps}</span>
                     </div>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
-                    <div className="text-xs text-slate-400">Blur Score</div>
-                    <div className="text-sm font-bold text-white mt-0.5">
-                      {cam.blur_score} <span className="text-xs text-slate-500">var(∇²)</span>
+                  <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[10px] uppercase font-bold text-[#64748B]">Blur Score</div>
+                    <div className="text-sm font-bold text-[#16192E] mt-0.5">
+                      {cam.blur_score} <span className="text-xs font-normal text-[#64748B]">var(∇²)</span>
                     </div>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
-                    <div className="text-xs text-slate-400">Brightness</div>
-                    <div className="text-sm font-bold text-white mt-0.5">{cam.brightness} / 255</div>
+                  <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[10px] uppercase font-bold text-[#64748B]">Brightness</div>
+                    <div className="text-sm font-bold text-[#16192E] mt-0.5">{cam.brightness} / 255</div>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
-                    <div className="text-xs text-slate-400">Lens Obstruction</div>
-                    <div className={`text-sm font-bold mt-0.5 ${cam.lens_obstruction_pct >= 25 ? "text-rose-400" : "text-white"}`}>
+                  <div className="p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[10px] uppercase font-bold text-[#64748B]">Lens Obstruction</div>
+                    <div className={`text-sm font-bold mt-0.5 ${cam.lens_obstruction_pct >= 25 ? "text-rose-700" : "text-[#16192E]"}`}>
                       {cam.lens_obstruction_pct}%
                     </div>
                   </div>
@@ -314,29 +310,29 @@ export const CameraHealth: React.FC = () => {
 
               {/* Edge Node Hardware Telemetry */}
               <div className="space-y-2">
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Cpu size={13} className="text-indigo-400" /> Edge Computing Diagnostics
+                <div className="text-xs font-bold text-[#64748B] uppercase tracking-wider flex items-center gap-1.5">
+                  <Cpu size={13} className="text-blue-600" /> Edge Computing Diagnostics
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
-                  <div className="p-2 rounded bg-slate-950/50 border border-slate-800/80">
-                    <div className="text-slate-400">CPU Usage</div>
-                    <div className="font-mono font-bold text-slate-200 mt-0.5">{cam.cpu_usage_pct}%</div>
+                  <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[#64748B] text-[10px]">CPU Usage</div>
+                    <div className="font-mono font-bold text-[#16192E] mt-0.5">{cam.cpu_usage_pct}%</div>
                   </div>
-                  <div className="p-2 rounded bg-slate-950/50 border border-slate-800/80">
-                    <div className="text-slate-400">GPU Usage</div>
-                    <div className="font-mono font-bold text-slate-200 mt-0.5">{cam.gpu_usage_pct}%</div>
+                  <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[#64748B] text-[10px]">GPU Usage</div>
+                    <div className="font-mono font-bold text-[#16192E] mt-0.5">{cam.gpu_usage_pct}%</div>
                   </div>
-                  <div className="p-2 rounded bg-slate-950/50 border border-slate-800/80">
-                    <div className="text-slate-400">RAM Usage</div>
-                    <div className="font-mono font-bold text-slate-200 mt-0.5">{cam.ram_usage_pct}%</div>
+                  <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[#64748B] text-[10px]">RAM Usage</div>
+                    <div className="font-mono font-bold text-[#16192E] mt-0.5">{cam.ram_usage_pct}%</div>
                   </div>
-                  <div className="p-2 rounded bg-slate-950/50 border border-slate-800/80">
-                    <div className="text-slate-400">Storage</div>
-                    <div className="font-mono font-bold text-slate-200 mt-0.5">{cam.storage_usage_pct}%</div>
+                  <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[#64748B] text-[10px]">Storage</div>
+                    <div className="font-mono font-bold text-[#16192E] mt-0.5">{cam.storage_usage_pct}%</div>
                   </div>
-                  <div className="p-2 rounded bg-slate-950/50 border border-slate-800/80">
-                    <div className="text-slate-400">Temperature</div>
-                    <div className={`font-mono font-bold mt-0.5 ${cam.temperature_celsius > 65 ? "text-amber-400" : "text-slate-200"}`}>
+                  <div className="p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                    <div className="text-[#64748B] text-[10px]">Temperature</div>
+                    <div className={`font-mono font-bold mt-0.5 ${cam.temperature_celsius > 65 ? "text-amber-700" : "text-[#16192E]"}`}>
                       {cam.temperature_celsius}°C
                     </div>
                   </div>
@@ -345,15 +341,15 @@ export const CameraHealth: React.FC = () => {
 
               {/* Fail-Safe Guardrail Status Badge */}
               {cam.unreliable_detections_halted && (
-                <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <EyeOff size={16} className="text-rose-400 flex-shrink-0" />
+                    <EyeOff size={16} className="text-rose-700 flex-shrink-0" />
                     <span>
                       <strong>CAMERA DEGRADED:</strong> Unreliable detections halted to protect platform data integrity.
                     </span>
                   </div>
                   {cam.active_maintenance_ticket_id && (
-                    <span className="font-mono text-xs bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30">
+                    <span className="font-mono text-xs bg-rose-100 text-rose-800 px-2 py-0.5 rounded border border-rose-200">
                       {cam.active_maintenance_ticket_id}
                     </span>
                   )}
@@ -361,14 +357,14 @@ export const CameraHealth: React.FC = () => {
               )}
 
               {/* Interactive Simulation Action */}
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-500">
+              <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between">
+                <span className="text-xs text-[#64748B]">
                   {cam.camera_status === "HEALTHY" ? "Optical feed verified healthy" : "Requires maintenance bay review"}
                 </span>
                 {cam.camera_status !== "DEGRADED" && (
                   <button
                     onClick={() => handleSimulateObstruction(cam.camera_id)}
-                    className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-rose-300 border border-rose-500/30 transition flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-xs font-semibold text-rose-700 border border-rose-200 shadow-2xs transition-all flex items-center gap-1.5"
                   >
                     <Droplets size={13} />
                     Simulate Obstructed / Dirty Lens
@@ -381,47 +377,47 @@ export const CameraHealth: React.FC = () => {
       </div>
 
       {/* Automated Maintenance Tickets Log */}
-      <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2 font-bold text-white text-base">
-            <Wrench size={18} className="text-indigo-400" />
+      <div className="p-5 rounded-2xl border border-[#E2E8F0] bg-white shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+          <div className="flex items-center gap-2 font-bold text-[#16192E] text-base">
+            <Wrench size={18} className="text-[#C85A17]" />
             Automatic Optical Maintenance Tickets ({tickets.length})
           </div>
-          <span className="text-xs text-slate-400">Triggered automatically by dirty/obstructed lens fail-safe</span>
+          <span className="text-xs text-[#64748B]">Triggered automatically by dirty/obstructed lens fail-safe</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="text-slate-400 border-b border-slate-800">
+        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+          <table className="w-full text-left text-xs text-[#16192E]">
+            <thead className="bg-[#F8FAFC] text-[#64748B] border-b border-[#E2E8F0] uppercase text-[10px]">
               <tr>
-                <th className="pb-2">Ticket ID</th>
-                <th className="pb-2">Camera</th>
-                <th className="pb-2">Bus</th>
-                <th className="pb-2">Issue</th>
-                <th className="pb-2">Severity</th>
-                <th className="pb-2">Reason</th>
-                <th className="pb-2">Detections</th>
-                <th className="pb-2">Status</th>
+                <th className="py-2.5 px-3">Ticket ID</th>
+                <th className="py-2.5 px-3">Camera</th>
+                <th className="py-2.5 px-3">Bus</th>
+                <th className="py-2.5 px-3">Issue</th>
+                <th className="py-2.5 px-3">Severity</th>
+                <th className="py-2.5 px-3">Reason</th>
+                <th className="py-2.5 px-3">Detections</th>
+                <th className="py-2.5 px-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-medium">
+            <tbody className="divide-y divide-[#E2E8F0] font-medium">
               {tickets.map((t) => (
-                <tr key={t.ticket_id} className="text-slate-300 hover:bg-slate-800/30">
-                  <td className="py-2.5 font-mono text-indigo-400">{t.ticket_id}</td>
-                  <td className="py-2.5">{t.camera_id}</td>
-                  <td className="py-2.5 font-bold">{t.bus_id}</td>
-                  <td className="py-2.5">{t.issue_type}</td>
-                  <td className="py-2.5">
-                    <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold">
+                <tr key={t.ticket_id} className="hover:bg-[#F8FAFC] transition-colors">
+                  <td className="py-2.5 px-3 font-mono text-[#C85A17] font-semibold">{t.ticket_id}</td>
+                  <td className="py-2.5 px-3">{t.camera_id}</td>
+                  <td className="py-2.5 px-3 font-bold">{t.bus_id}</td>
+                  <td className="py-2.5 px-3">{t.issue_type}</td>
+                  <td className="py-2.5 px-3">
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-rose-50 text-rose-700 border border-rose-200 font-bold">
                       {t.severity}
                     </span>
                   </td>
-                  <td className="py-2.5 text-slate-400 max-w-xs truncate">{t.reason}</td>
-                  <td className="py-2.5">
-                    <span className="text-rose-400 font-semibold">HALTED</span>
+                  <td className="py-2.5 px-3 text-[#64748B] max-w-xs truncate">{t.reason}</td>
+                  <td className="py-2.5 px-3">
+                    <span className="text-rose-700 font-semibold">HALTED</span>
                   </td>
-                  <td className="py-2.5">
-                    <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                  <td className="py-2.5 px-3">
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 border border-blue-200 font-bold">
                       {t.status}
                     </span>
                   </td>

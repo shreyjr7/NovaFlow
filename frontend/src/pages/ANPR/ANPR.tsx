@@ -352,19 +352,19 @@ export const ANPR: React.FC = () => {
   const unreadableCount = records.filter((r) => r.state === "NOT_READABLE" || r.state === "NOT_PRESENT").length;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ── Header & Navigation ────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-emerald-950/60 border border-emerald-800/50 rounded-xl text-emerald-400">
+            <span className="p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700">
               <Car className="w-5 h-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
                 Automatic Number Plate Recognition (ANPR)
               </h1>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Indian vehicle registration recognition, planar perspective rectification, and human verification gate
               </p>
             </div>
@@ -373,36 +373,36 @@ export const ANPR: React.FC = () => {
 
         {/* Global Navigation Links */}
         <div className="flex flex-wrap items-center gap-2">
-          <nav className="flex items-center space-x-1 text-xs bg-gray-900 border border-gray-800 rounded-xl p-1">
-            <a href="/" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Home</a>
-            <a href="/fleet" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Fleet</a>
-            <a href="/road-defects" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Defects</a>
-            <a href="/traffic" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Traffic</a>
-            <a href="/congestion" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Congestion</a>
-            <a href="/pedestrian-safety" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Pedestrian</a>
-            <a href="/incidents" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Incidents</a>
-            <span className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-semibold">ANPR</span>
+          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs">
+            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Home</a>
+            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Fleet</a>
+            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Defects</a>
+            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Traffic</a>
+            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Congestion</a>
+            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Pedestrian</a>
+            <a href="/incidents" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Incidents</a>
+            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs">ANPR</span>
           </nav>
 
           <button
             onClick={fetchRecords}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 text-xs rounded-xl font-medium transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-emerald-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#C85A17]" : "text-[#64748B]"}`} />
             <span>{isRefreshing ? "Syncing..." : "Sync Live"}</span>
           </button>
         </div>
       </div>
 
       {/* ── Strict Quarantine Guardrail Banner ───────────────────────────────── */}
-      <div className="bg-amber-950/30 border border-amber-800/40 rounded-2xl p-4 flex items-start gap-3 text-xs text-amber-200">
-        <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-amber-900 shadow-sm">
+        <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-semibold text-white block">
+          <span className="font-bold text-amber-950 block">
             Strict Publication Guardrail — Never Automatically Publish Low-Confidence Plates
           </span>
-          <p className="text-amber-300 leading-relaxed text-[11px]">
+          <p className="text-amber-800 leading-relaxed text-[11px]">
             In strict compliance with evidentiary standards, plates with confidence below threshold (&lt;0.85), character ambiguity, or severe blur are quarantined. They are designated as <strong>LOW_CONFIDENCE</strong> or <strong>NOT_READABLE</strong> with an immutable requirement: <strong>"Human verification required"</strong>. These records remain blocked from external dissemination or enforcement actions until an authorized officer reviews the raw frame, confirms the transcription, and manually signs off.
           </p>
         </div>
@@ -411,77 +411,77 @@ export const ANPR: React.FC = () => {
       {/* ── 4 Primary KPI Cards ──────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Scanned */}
-        <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-4">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400 font-medium">Total Plates Scanned</span>
-            <span className="p-1.5 bg-blue-950/60 border border-blue-800/40 text-blue-400 rounded-lg">
+            <span className="text-xs text-[#64748B] font-semibold">Total Plates Scanned</span>
+            <span className="p-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg">
               <Car className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-white">{totalScanned}</span>
-            <span className="text-[11px] text-gray-400">Total Analyzed</span>
+            <span className="text-2xl font-bold text-[#16192E]">{totalScanned}</span>
+            <span className="text-[11px] text-[#64748B] font-medium">Total Analyzed</span>
           </div>
-          <p className="text-[10px] text-gray-500 mt-1">Multi-frame sharpest candidate selection</p>
+          <p className="text-[10px] text-[#64748B] mt-1">Multi-frame sharpest candidate selection</p>
         </div>
 
         {/* Verified Readable */}
-        <div className="bg-emerald-950/20 border border-emerald-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-emerald-300 font-medium">Verified Readable</span>
-            <span className="p-1.5 bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 rounded-lg">
+            <span className="text-xs text-emerald-800 font-semibold">Verified Readable</span>
+            <span className="p-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg">
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-300">{readableCount}</span>
-            <span className="text-[11px] text-emerald-400/80">
+            <span className="text-2xl font-bold text-emerald-700">{readableCount}</span>
+            <span className="text-[11px] text-emerald-800/80 font-medium">
               {((readableCount / Math.max(1, totalScanned)) * 100).toFixed(1)}% auto-published
             </span>
           </div>
-          <p className="text-[10px] text-emerald-400/70 mt-1">Confidence &ge; 0.85 + Indian RTO validated</p>
+          <p className="text-[10px] text-emerald-700 mt-1">Confidence &ge; 0.85 + Indian RTO validated</p>
         </div>
 
         {/* Quarantined Low-Confidence */}
-        <div className="bg-amber-950/20 border border-amber-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-amber-300 font-medium">Quarantined Plates</span>
+            <span className="text-xs text-amber-800 font-semibold">Quarantined Plates</span>
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-300">{quarantinedCount}</span>
-            <span className="text-[11px] text-amber-400/80">Human verification required</span>
+            <span className="text-2xl font-bold text-amber-700">{quarantinedCount}</span>
+            <span className="text-[11px] text-amber-800/80 font-medium">Human verification required</span>
           </div>
-          <p className="text-[10px] text-amber-400/70 mt-1">Automated publishing blocked</p>
+          <p className="text-[10px] text-amber-700 mt-1">Automated publishing blocked</p>
         </div>
 
         {/* Unreadable / Missing */}
-        <div className="bg-rose-950/20 border border-rose-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-rose-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-rose-300 font-medium">Unreadable / Not Present</span>
-            <span className="p-1.5 bg-rose-950/60 border border-rose-800/40 text-rose-400 rounded-lg">
+            <span className="text-xs text-rose-800 font-semibold">Unreadable / Not Present</span>
+            <span className="p-1.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg">
               <XCircle className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-rose-300">{unreadableCount}</span>
-            <span className="text-[11px] text-rose-400/80">Severely obscured</span>
+            <span className="text-2xl font-bold text-rose-700">{unreadableCount}</span>
+            <span className="text-[11px] text-rose-800/80 font-medium">Severely obscured</span>
           </div>
-          <p className="text-[10px] text-rose-400/70 mt-1">Plate missing or blur index &lt; 30</p>
+          <p className="text-[10px] text-rose-700 mt-1">Plate missing or blur index &lt; 30</p>
         </div>
       </div>
 
       {/* ── Interactive 8-Stage Pipeline Flow Visualizer ─────────────────────── */}
-      <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-4 space-y-3">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-white flex items-center gap-2">
-            <Layers className="w-4 h-4 text-emerald-400" />
+          <span className="text-xs font-bold text-[#16192E] flex items-center gap-2">
+            <Layers className="w-4 h-4 text-[#C85A17]" />
             Autonomous Vehicle Registration Recognition Pipeline
           </span>
-          <span className="text-[10px] text-gray-400">
+          <span className="text-[10px] text-[#64748B]">
             Edge-native execution on onboard bus compute
           </span>
         </div>
@@ -490,16 +490,16 @@ export const ANPR: React.FC = () => {
           {PIPELINE_STAGES.map((st, i) => (
             <div
               key={st.id}
-              className="p-2.5 rounded-xl border bg-gray-950/60 border-gray-800/80 flex flex-col justify-between hover:border-emerald-500/40 transition-colors"
+              className="p-2.5 rounded-xl border bg-[#F8FAFC] border-[#E2E8F0] flex flex-col justify-between hover:border-[#CBD5E1] transition-colors"
             >
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[9px] font-bold text-emerald-400">STAGE {st.id}</span>
-                  {i < 7 && <ArrowRight className="w-2.5 h-2.5 text-gray-600 hidden lg:block" />}
+                  <span className="text-[9px] font-bold text-[#C85A17]">STAGE {st.id}</span>
+                  {i < 7 && <ArrowRight className="w-2.5 h-2.5 text-[#94A3B8] hidden lg:block" />}
                 </div>
-                <div className="text-[11px] font-semibold text-gray-200">{st.name}</div>
+                <div className="text-[11px] font-bold text-[#16192E]">{st.name}</div>
               </div>
-              <p className="text-[9px] text-gray-400 mt-1 leading-tight">{st.desc}</p>
+              <p className="text-[9px] text-[#64748B] mt-1 leading-tight">{st.desc}</p>
             </div>
           ))}
         </div>
@@ -509,19 +509,19 @@ export const ANPR: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* ── Left Column: Records Feed & Filters (5 cols) ───────────────────── */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-3.5 space-y-3">
+          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-3.5 space-y-3 shadow-sm">
             {/* Search Input */}
-            <div className="flex items-center gap-2 bg-gray-950 border border-gray-800 rounded-xl px-3 py-1.5">
-              <Search className="w-4 h-4 text-gray-500" />
+            <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl px-3 py-1.5">
+              <Search className="w-4 h-4 text-[#94A3B8]" />
               <input
                 type="text"
                 placeholder="Search plate (e.g. DL 01), record ID, or bus..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent text-xs text-gray-200 placeholder-gray-500 focus:outline-none w-full"
+                className="bg-transparent text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none w-full"
               />
               {searchTerm && (
-                <button onClick={() => setSearchTerm("")} className="text-gray-500 hover:text-gray-300">
+                <button onClick={() => setSearchTerm("")} className="text-[#94A3B8] hover:text-[#16192E]">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -542,10 +542,8 @@ export const ANPR: React.FC = () => {
                   onClick={() => setStateFilter(pill.id)}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                     stateFilter === pill.id
-                      ? pill.id === "QUARANTINED"
-                        ? "bg-amber-600 text-white"
-                        : "bg-emerald-600 text-white"
-                      : "bg-gray-800/60 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                      ? "bg-[#16192E] text-white shadow-xs font-semibold"
+                      : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
                   }`}
                 >
                   {pill.label}
@@ -557,9 +555,9 @@ export const ANPR: React.FC = () => {
           {/* Records List */}
           <div className="space-y-2.5 max-h-[680px] overflow-y-auto pr-1">
             {displayedRecords.length === 0 ? (
-              <div className="p-8 text-center bg-gray-900/40 border border-gray-800/60 rounded-2xl">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-60" />
-                <p className="text-xs text-gray-400">No ANPR records match your filter</p>
+              <div className="p-8 text-center bg-white border border-[#E2E8F0] rounded-2xl shadow-sm">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto mb-2 opacity-60" />
+                <p className="text-xs text-[#64748B]">No ANPR records match your filter</p>
               </div>
             ) : (
               displayedRecords.map((rec) => {
@@ -575,8 +573,8 @@ export const ANPR: React.FC = () => {
                     onClick={() => setSelectedRecord(rec)}
                     className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-gray-900 border-emerald-500/70 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-500/40"
-                        : "bg-gray-900/60 border-gray-800/70 hover:bg-gray-900 hover:border-gray-700"
+                        ? "bg-orange-50/50 border-[#C85A17] shadow-sm ring-1 ring-[#C85A17]/40"
+                        : "bg-white border-[#E2E8F0] hover:bg-[#F8FAFC] shadow-sm"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -584,25 +582,25 @@ export const ANPR: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                             isReadable
-                              ? "bg-emerald-950/80 text-emerald-300 border border-emerald-800/60"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                               : isLow
-                              ? "bg-amber-950/80 text-amber-300 border border-amber-800/60 animate-pulse"
+                              ? "bg-amber-50 text-amber-800 border border-amber-200"
                               : isUnreadable
-                              ? "bg-rose-950/80 text-rose-300 border border-rose-800/60"
-                              : "bg-gray-800 text-gray-400 border border-gray-700"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
+                              : "bg-slate-100 text-[#64748B] border border-slate-200"
                           }`}
                         >
                           {rec.state.replace(/_/g, " ")}
                         </span>
 
                         {rec.quarantined && (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
                             <Lock className="w-2.5 h-2.5" /> Quarantined
                           </span>
                         )}
                       </div>
 
-                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                      <span className="text-[10px] text-[#64748B] flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {new Date(rec.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </span>
@@ -610,26 +608,26 @@ export const ANPR: React.FC = () => {
 
                     <div className="mt-2.5 flex items-center justify-between">
                       <div>
-                        <div className="font-mono text-sm font-bold text-white tracking-wide">
+                        <div className="font-mono text-sm font-bold text-[#16192E] tracking-wide">
                           {rec.registration_number}
                         </div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">
+                        <div className="text-[11px] text-[#64748B] mt-0.5">
                           Bus {rec.bus_id} ({rec.camera_id}) • {rec.format_details?.state_name || "Regional Authority"}
                         </div>
                       </div>
 
                       <div className="text-right">
-                        <div className="text-xs font-bold text-emerald-400">
+                        <div className="text-xs font-bold text-[#C85A17]">
                           {(rec.confidence * 100).toFixed(0)}% Conf
                         </div>
-                        <div className="text-[9px] text-gray-500 font-mono">
+                        <div className="text-[9px] text-[#64748B] font-mono">
                           {rec.evidence_reference.slice(0, 14)}...
                         </div>
                       </div>
                     </div>
 
                     {rec.human_verification_required && (
-                      <div className="mt-2 pt-2 border-t border-gray-800/60 flex items-center gap-1 text-[10px] text-amber-400">
+                      <div className="mt-2 pt-2 border-t border-[#E2E8F0] flex items-center gap-1 text-[10px] text-amber-700 font-medium">
                         <AlertTriangle className="w-3 h-3 shrink-0" />
                         <span>{rec.verification_notice}</span>
                       </div>
@@ -644,35 +642,35 @@ export const ANPR: React.FC = () => {
         {/* ── Right Column: Verification Inspector & Evidence Detail (7 cols) ── */}
         <div className="lg:col-span-7 space-y-4">
           {selectedRecord ? (
-            <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-5 space-y-5">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 space-y-5 shadow-sm">
               {/* Header Info */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-800/80 pb-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3.5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-white">
+                    <h2 className="text-base font-bold text-[#16192E]">
                       ANPR Evidence Inspector — {selectedRecord.record_id}
                     </h2>
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
                         selectedRecord.state === "READABLE"
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : selectedRecord.state === "LOW_CONFIDENCE"
-                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                          : "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                          ? "bg-amber-50 text-amber-800 border border-amber-200"
+                          : "bg-rose-50 text-rose-700 border border-rose-200"
                       }`}
                     >
                       {selectedRecord.state.replace(/_/g, " ")}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-gray-500" />
+                  <p className="text-xs text-[#64748B] mt-0.5 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-[#64748B]" />
                     {selectedRecord.gps.address || "Road Segment"} • GPS: {selectedRecord.gps.lat.toFixed(4)}, {selectedRecord.gps.lon.toFixed(4)}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">Overall Confidence</div>
-                  <div className="text-lg font-extrabold text-emerald-400">
+                  <div className="text-xs text-[#64748B] font-medium">Overall Confidence</div>
+                  <div className="text-lg font-extrabold text-[#C85A17]">
                     {(selectedRecord.confidence * 100).toFixed(1)}%
                   </div>
                 </div>
@@ -680,15 +678,15 @@ export const ANPR: React.FC = () => {
 
               {/* ── Perspective-Corrected Plate Crop ──────────────────────────── */}
               <div className="space-y-2">
-                <span className="text-xs font-semibold text-gray-300 flex items-center justify-between">
+                <span className="text-xs font-bold text-[#16192E] flex items-center justify-between">
                   <span>Perspective-Rectified Plate Crop (Standard 320×80 Planar Projection)</span>
-                  <span className="text-[10px] font-mono text-gray-500">
+                  <span className="text-[10px] font-mono text-[#64748B]">
                     Laplacian Sharpness: {selectedRecord.sharpness_score?.toFixed(1) || "120.0"}
                   </span>
                 </span>
 
-                <div className="bg-gray-950 border border-gray-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="w-full max-w-[320px] rounded-lg overflow-hidden border border-gray-700 shadow-md">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="w-full max-w-[320px] rounded-lg overflow-hidden border border-[#CBD5E1] shadow-sm">
                     <img
                       src={selectedRecord.perspective_crop_b64}
                       alt="Perspective Rectified Plate"
@@ -697,21 +695,21 @@ export const ANPR: React.FC = () => {
                   </div>
 
                   <div className="text-xs space-y-1.5 w-full">
-                    <div className="flex justify-between border-b border-gray-800 pb-1">
-                      <span className="text-gray-400">State / Authority:</span>
-                      <span className="text-white font-medium">{selectedRecord.format_details?.state_name || "Official State"}</span>
+                    <div className="flex justify-between border-b border-[#E2E8F0] pb-1">
+                      <span className="text-[#64748B]">State / Authority:</span>
+                      <span className="text-[#16192E] font-semibold">{selectedRecord.format_details?.state_name || "Official State"}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-800 pb-1">
-                      <span className="text-gray-400">Format Standard:</span>
-                      <span className="text-emerald-400 font-mono text-[11px]">{selectedRecord.format_details?.format_type || "STANDARD_RTO"}</span>
+                    <div className="flex justify-between border-b border-[#E2E8F0] pb-1">
+                      <span className="text-[#64748B]">Format Standard:</span>
+                      <span className="text-emerald-700 font-mono text-[11px] font-semibold">{selectedRecord.format_details?.format_type || "STANDARD_RTO"}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-800 pb-1">
-                      <span className="text-gray-400">Evidence Hash:</span>
-                      <span className="text-gray-300 font-mono text-[10px]">{selectedRecord.evidence_reference}</span>
+                    <div className="flex justify-between border-b border-[#E2E8F0] pb-1">
+                      <span className="text-[#64748B]">Evidence Hash:</span>
+                      <span className="text-[#16192E] font-mono text-[10px]">{selectedRecord.evidence_reference}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Camera / Bus:</span>
-                      <span className="text-gray-200">{selectedRecord.camera_id} CAM • {selectedRecord.bus_id}</span>
+                      <span className="text-[#64748B]">Camera / Bus:</span>
+                      <span className="text-[#16192E] font-medium">{selectedRecord.camera_id} CAM • {selectedRecord.bus_id}</span>
                     </div>
                   </div>
                 </div>
@@ -720,7 +718,7 @@ export const ANPR: React.FC = () => {
               {/* ── Character-Level Confidence Breakdown ──────────────────────── */}
               {selectedRecord.character_confs && selectedRecord.character_confs.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-semibold text-gray-300 block">
+                  <span className="text-xs font-bold text-[#16192E] block">
                     Optical Character Recognition (OCR) Confidence Breakdown
                   </span>
                   <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
@@ -729,8 +727,8 @@ export const ANPR: React.FC = () => {
                         key={idx}
                         className={`p-2 rounded-lg border text-center ${
                           c.confidence >= 0.85
-                            ? "bg-emerald-950/30 border-emerald-800/40 text-emerald-300"
-                            : "bg-amber-950/40 border-amber-800/50 text-amber-300 ring-1 ring-amber-500/50"
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-800 font-bold"
+                            : "bg-amber-50 border-amber-200 text-amber-800 ring-1 ring-amber-400 font-bold"
                         }`}
                       >
                         <div className="font-mono text-base font-bold">{c.char}</div>
@@ -742,31 +740,31 @@ export const ANPR: React.FC = () => {
               )}
 
               {/* ── Human Verification & Sign-off Panel ───────────────────────── */}
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-4 space-y-3">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                    <FileCheck2 className="w-4 h-4 text-emerald-400" />
-                    Human Verification & Manual Correction Gate
+                  <span className="text-xs font-bold text-[#16192E] flex items-center gap-1.5">
+                    <FileCheck2 className="w-4 h-4 text-[#C85A17]" />
+                    Human Verification &amp; Manual Correction Gate
                   </span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-[#64748B]">
                     Mandatory for quarantined plates
                   </span>
                 </div>
 
                 {selectedRecord.verified_by && (
-                  <div className="p-3 bg-gray-900 border border-gray-800 rounded-lg text-xs space-y-1">
-                    <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                  <div className="p-3 bg-white border border-[#E2E8F0] rounded-lg text-xs space-y-1 shadow-2xs">
+                    <div className="text-[10px] text-[#64748B] flex items-center justify-between">
                       <span>Verified by: <strong>{selectedRecord.verified_by}</strong></span>
                       <span>{selectedRecord.verified_at ? new Date(selectedRecord.verified_at).toLocaleString() : ""}</span>
                     </div>
-                    <p className="text-gray-200 text-[11px] italic">"{selectedRecord.officer_notes}"</p>
+                    <p className="text-[#16192E] text-[11px] italic">"{selectedRecord.officer_notes}"</p>
                   </div>
                 )}
 
                 <div className="space-y-2.5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label className="text-[10px] text-gray-400 block mb-1">
+                      <label className="text-[10px] font-semibold text-[#64748B] block mb-1">
                         Verified Registration Number (Indian Standard Format)
                       </label>
                       <input
@@ -774,29 +772,29 @@ export const ANPR: React.FC = () => {
                         value={editedPlate}
                         onChange={(e) => setEditedPlate(e.target.value.toUpperCase())}
                         placeholder="e.g. DL 01 AB 1234"
-                        className="w-full bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-white focus:outline-none focus:border-emerald-500 uppercase tracking-wider"
+                        className="w-full bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-[#16192E] focus:outline-none focus:border-[#16192E] uppercase tracking-wider"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-gray-400 block mb-1">Safety Officer ID</label>
+                      <label className="text-[10px] font-semibold text-[#64748B] block mb-1">Safety Officer ID</label>
                       <input
                         type="text"
                         value={officerId}
                         onChange={(e) => setOfficerId(e.target.value)}
                         placeholder="e.g. officer_delhi_01"
-                        className="w-full bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1.5 text-xs text-[#16192E] focus:outline-none focus:border-[#16192E]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-gray-400 block mb-1">Officer Observations & Evidentiary Notes</label>
+                    <label className="text-[10px] font-semibold text-[#64748B] block mb-1">Officer Observations &amp; Evidentiary Notes</label>
                     <textarea
                       rows={2}
                       value={officerNotes}
                       onChange={(e) => setOfficerNotes(e.target.value)}
                       placeholder="Add inspection notes (e.g. verified plate visually against raw video frame, resolved optical ambiguity between 8 and B...)"
-                      className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                      className="w-full bg-white border border-[#CBD5E1] rounded-lg p-2 text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none focus:border-[#16192E]"
                     />
                   </div>
                 </div>
@@ -806,26 +804,26 @@ export const ANPR: React.FC = () => {
                   <button
                     onClick={() => handleVerify("REJECT")}
                     disabled={isSubmitting}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] rounded-xl text-xs font-semibold shadow-2xs transition-all disabled:opacity-50"
                   >
-                    <XCircle className="w-4 h-4 text-rose-400" />
+                    <XCircle className="w-4 h-4 text-rose-600" />
                     <span>Mark Unreadable</span>
                   </button>
 
                   <button
                     onClick={() => handleVerify(editedPlate !== selectedRecord.registration_number ? "EDIT" : "APPROVE")}
                     disabled={isSubmitting}
-                    className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-950/30 transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-1.5 bg-[#C85A17] hover:bg-[#B34F14] text-white rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Verify & Approve Plate</span>
+                    <span>Verify &amp; Approve Plate</span>
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-12 text-center bg-gray-900/40 border border-gray-800/60 rounded-2xl">
-              <p className="text-xs text-gray-400">Select an ANPR record from the list to inspect</p>
+            <div className="p-12 text-center bg-white border border-[#E2E8F0] rounded-2xl shadow-sm">
+              <p className="text-xs text-[#64748B]">Select an ANPR record from the list to inspect</p>
             </div>
           )}
         </div>

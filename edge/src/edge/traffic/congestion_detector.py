@@ -37,6 +37,28 @@ from .road_segment_manager import ROAD_SEGMENTS, RoadSegment, _SEGMENT_BY_ID
 
 logger = logging.getLogger("traffic.congestion_detector")
 
+# ── Step 15: Bottleneck Decision Formulation ─────────────────────────────────
+
+def check_bottleneck_condition(
+    density: float,
+    average_speed: float,
+    vehicle_count: int,
+    density_threshold: float = 0.55,
+    low_speed_threshold: float = 18.0,
+    min_vehicles: int = 3,
+) -> bool:
+    """
+    Step 15: Bottleneck Formulation
+      HIGH DENSITY + LOW SPEED -> BOTTLENECK
+
+    Guard:
+      vehicle_count >= min_vehicles (prevents single slow vehicle false positives).
+    """
+    if vehicle_count < min_vehicles:
+        return False
+    return (density >= density_threshold) and (average_speed <= low_speed_threshold)
+
+
 
 class Severity(str, Enum):
     LOW = "LOW"
@@ -72,6 +94,24 @@ class CongestionEvent:
     is_bottleneck:    bool  = False
     bus_id:           Optional[str] = None
     camera_id:        Optional[str] = None
+
+    def to_standard_dict(self) -> Dict[str, Any]:
+        """Step 15: Canonical Phase 3 10-key standard event representation."""
+        lat = self.location.get("lat", 28.6139) if isinstance(self.location, dict) else 28.6139
+        lon = self.location.get("lon", 77.2090) if isinstance(self.location, dict) else 77.2090
+        eid = self.event_id if self.event_id.startswith("EVT-") else f"EVT-{self.event_id[:8]}"
+        return {
+            "eventId": eid,
+            "type": "bottleneck",
+            "confidence": min(1.0, max(0.65, round(self.congestion_score / 100.0, 2))),
+            "latitude": round(lat, 6),
+            "longitude": round(lon, 6),
+            "timestamp": self.timestamp,
+            "busId": self.bus_id or "BUS-102",
+            "routeId": self.road_segment or "R-12",
+            "severity": self.severity.lower(),
+            "status": "unverified",
+        }
 
     def to_dict(self) -> Dict[str, Any]:
         return {

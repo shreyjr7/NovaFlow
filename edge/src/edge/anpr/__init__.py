@@ -14,6 +14,10 @@ from .perspective import PerspectiveCorrector, order_points
 from .pipeline import (
     AnprPipeline,
     AnprRecord,
+    AnprState,
+    PlateState,
+    PlateNumberStr,
+    PIPELINE_STAGES,
     HUMAN_VERIFICATION_NOTICE,
     compute_frame_sharpness,
 )
@@ -28,6 +32,10 @@ __all__ = [
     "order_points",
     "AnprPipeline",
     "AnprRecord",
+    "AnprState",
+    "PlateState",
+    "PlateNumberStr",
+    "PIPELINE_STAGES",
     "HUMAN_VERIFICATION_NOTICE",
     "compute_frame_sharpness",
 ]

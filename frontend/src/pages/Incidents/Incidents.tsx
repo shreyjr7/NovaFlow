@@ -456,19 +456,19 @@ export const Incidents: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ── Top Header & Navigation ────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-rose-950/60 border border-rose-800/50 rounded-xl text-rose-400">
+            <span className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-700">
               <AlertOctagon className="w-5 h-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                Incident & Hit-and-Run Anomaly Intelligence
+              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
+                Incident &amp; Hit-and-Run Anomaly Intelligence
               </h1>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Compound physical trajectory analysis, rolling evidentiary buffer, ANPR, and human-in-the-loop review
               </p>
             </div>
@@ -477,35 +477,35 @@ export const Incidents: React.FC = () => {
 
         {/* Global Navigation Links */}
         <div className="flex flex-wrap items-center gap-2">
-          <nav className="flex items-center space-x-1 text-xs bg-gray-900 border border-gray-800 rounded-xl p-1">
-            <a href="/" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Home</a>
-            <a href="/fleet" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Fleet</a>
-            <a href="/road-defects" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Defects</a>
-            <a href="/traffic" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Traffic</a>
-            <a href="/congestion" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Congestion</a>
-            <a href="/pedestrian-safety" className="px-2.5 py-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">Pedestrian</a>
-            <span className="px-2.5 py-1 bg-rose-600 text-white rounded-lg font-semibold">Incidents</span>
+          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs">
+            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Home</a>
+            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Fleet</a>
+            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Defects</a>
+            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Traffic</a>
+            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Congestion</a>
+            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Pedestrian</a>
+            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs">Incidents</span>
           </nav>
 
           <button
             onClick={fetchIncidents}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 text-xs rounded-xl font-medium transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-rose-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#C85A17]" : "text-[#64748B]"}`} />
             <span>{isRefreshing ? "Syncing..." : "Sync Live"}</span>
           </button>
         </div>
       </div>
 
       {/* ── Strict Legal & Ethical AI Compliance Notice ──────────────────────── */}
-      <div className="bg-rose-950/30 border border-rose-800/40 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-200">
-        <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-800 shadow-sm">
+        <ShieldAlert className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-semibold text-white block">
-            Legal & Ethical Guardrails — Non-Fault Sensor Proxy Architecture
+          <span className="font-bold text-rose-900 block">
+            Legal &amp; Ethical Guardrails — Non-Fault Sensor Proxy Architecture
           </span>
-          <p className="text-rose-300 leading-relaxed text-[11px]">
+          <p className="text-rose-700 leading-relaxed text-[11px]">
             In strict compliance with statutory jurisprudence and ethical AI standards, this system <strong>does not determine legal fault, assert criminal culpability, or confirm crimes</strong>. Every event emitted by edge camera nodes is strictly designated as a <strong>POSSIBLE INCIDENT</strong> based on explainable physical sensor signals (sudden deceleration, heading deviation, trajectory discontinuity, vehicle interaction, and departure signatures). Solitary hard braking is explicitly suppressed. <strong>Human verification is strictly mandatory before any enforcement or legal action can be initiated.</strong>
           </p>
         </div>
@@ -514,64 +514,64 @@ export const Incidents: React.FC = () => {
       {/* ── KPI Summary Cards ────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Anomalies */}
-        <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-4">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400 font-medium">Total Sensor Anomalies</span>
-            <span className="p-1.5 bg-blue-950/60 border border-blue-800/40 text-blue-400 rounded-lg">
+            <span className="text-xs text-[#64748B] font-semibold">Total Sensor Anomalies</span>
+            <span className="p-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg">
               <AlertTriangle className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-white">{totalAnomalies}</span>
-            <span className="text-[11px] text-gray-400">POSSIBLE INCIDENTS</span>
+            <span className="text-2xl font-bold text-[#16192E]">{totalAnomalies}</span>
+            <span className="text-[11px] text-[#64748B] font-medium">POSSIBLE INCIDENTS</span>
           </div>
-          <p className="text-[10px] text-gray-500 mt-1">Multi-signal compound triggers</p>
+          <p className="text-[10px] text-[#64748B] mt-1">Multi-signal compound triggers</p>
         </div>
 
         {/* Pending Human Review */}
-        <div className="bg-amber-950/20 border border-amber-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-amber-300 font-medium">Pending Human Review</span>
+            <span className="text-xs text-amber-800 font-semibold">Pending Human Review</span>
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-amber-300">{pendingReview}</span>
-            <span className="text-[11px] text-amber-400/80">Require verification</span>
+            <span className="text-2xl font-bold text-amber-700">{pendingReview}</span>
+            <span className="text-[11px] text-amber-800/80 font-medium">Require verification</span>
           </div>
-          <p className="text-[10px] text-amber-400/70 mt-1">Enforcement blocked until signed</p>
+          <p className="text-[10px] text-amber-700 mt-1">Enforcement blocked until signed</p>
         </div>
 
         {/* Verified Incidents */}
-        <div className="bg-emerald-950/20 border border-emerald-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-emerald-300 font-medium">Verified Incidents</span>
-            <span className="p-1.5 bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 rounded-lg">
+            <span className="text-xs text-emerald-800 font-semibold">Verified Incidents</span>
+            <span className="p-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg">
               <CheckCircle2 className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-300">{verifiedCount}</span>
-            <span className="text-[11px] text-emerald-400/80">Officer validated</span>
+            <span className="text-2xl font-bold text-emerald-700">{verifiedCount}</span>
+            <span className="text-[11px] text-emerald-800/80 font-medium">Officer validated</span>
           </div>
-          <p className="text-[10px] text-emerald-400/70 mt-1">Forwarded to operations dispatch</p>
+          <p className="text-[10px] text-emerald-700 mt-1">Forwarded to operations dispatch</p>
         </div>
 
         {/* Hit-and-Run Signatures */}
-        <div className="bg-rose-950/20 border border-rose-800/40 rounded-2xl p-4">
+        <div className="bg-white border border-rose-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-rose-300 font-medium">Hit-and-Run Signatures</span>
-            <span className="p-1.5 bg-rose-950/60 border border-rose-800/40 text-rose-400 rounded-lg">
+            <span className="text-xs text-rose-800 font-semibold">Hit-and-Run Signatures</span>
+            <span className="p-1.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg">
               <AlertOctagon className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-rose-300">{hitAndRunCount}</span>
-            <span className="text-[11px] text-rose-400/80">ANPR extracted</span>
+            <span className="text-2xl font-bold text-rose-700">{hitAndRunCount}</span>
+            <span className="text-[11px] text-rose-800/80 font-medium">ANPR extracted</span>
           </div>
-          <p className="text-[10px] text-rose-400/70 mt-1">Departure signature confirmed</p>
+          <p className="text-[10px] text-rose-700 mt-1">Departure signature confirmed</p>
         </div>
       </div>
 
@@ -580,18 +580,18 @@ export const Incidents: React.FC = () => {
         {/* ── Left Column: Incident List & Filters (5 cols) ───────────────────── */}
         <div className="lg:col-span-5 space-y-4">
           {/* Filter Bar */}
-          <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-3.5 space-y-3">
-            <div className="flex items-center gap-2 bg-gray-950 border border-gray-800 rounded-xl px-3 py-1.5">
-              <Search className="w-4 h-4 text-gray-500" />
+          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-3.5 space-y-3 shadow-sm">
+            <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl px-3 py-1.5">
+              <Search className="w-4 h-4 text-[#94A3B8]" />
               <input
                 type="text"
                 placeholder="Search by event ID, bus, plate, or road..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent text-xs text-gray-200 placeholder-gray-500 focus:outline-none w-full"
+                className="bg-transparent text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none w-full"
               />
               {searchTerm && (
-                <button onClick={() => setSearchTerm("")} className="text-gray-500 hover:text-gray-300">
+                <button onClick={() => setSearchTerm("")} className="text-[#94A3B8] hover:text-[#16192E]">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -599,7 +599,7 @@ export const Incidents: React.FC = () => {
 
             {/* Status Pills */}
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[10px] text-gray-500 font-medium mr-1">Status:</span>
+              <span className="text-[10px] text-[#64748B] font-semibold mr-1">Status:</span>
               {[
                 { id: "ALL", label: "All" },
                 { id: "PENDING_REVIEW", label: "Pending Review" },
@@ -611,8 +611,8 @@ export const Incidents: React.FC = () => {
                   onClick={() => setStatusFilter(s.id)}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                     statusFilter === s.id
-                      ? "bg-rose-600 text-white"
-                      : "bg-gray-800/60 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                      ? "bg-[#16192E] text-white shadow-xs"
+                      : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
                   }`}
                 >
                   {s.label}
@@ -622,7 +622,7 @@ export const Incidents: React.FC = () => {
 
             {/* Category Pills */}
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[10px] text-gray-500 font-medium mr-1">Type:</span>
+              <span className="text-[10px] text-[#64748B] font-semibold mr-1">Type:</span>
               {[
                 { id: "ALL", label: "All Types" },
                 { id: "HIT_AND_RUN_SIGNATURE", label: "Hit & Run" },
@@ -634,8 +634,8 @@ export const Incidents: React.FC = () => {
                   onClick={() => setCategoryFilter(c.id)}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                     categoryFilter === c.id
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-800/60 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                      ? "bg-[#C85A17] text-white shadow-xs font-semibold"
+                      : "bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] hover:bg-[#EEF2F6] border border-[#E2E8F0]"
                   }`}
                 >
                   {c.label}
@@ -647,9 +647,9 @@ export const Incidents: React.FC = () => {
           {/* Incident List */}
           <div className="space-y-2.5 max-h-[700px] overflow-y-auto pr-1">
             {displayedIncidents.length === 0 ? (
-              <div className="p-8 text-center bg-gray-900/40 border border-gray-800/60 rounded-2xl">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-60" />
-                <p className="text-xs text-gray-400">No incident alerts match your filter criteria</p>
+              <div className="p-8 text-center bg-white border border-[#E2E8F0] rounded-2xl shadow-sm">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto mb-2 opacity-60" />
+                <p className="text-xs text-[#64748B]">No incident alerts match your filter criteria</p>
               </div>
             ) : (
               displayedIncidents.map((inc) => {
@@ -668,8 +668,8 @@ export const Incidents: React.FC = () => {
                     }}
                     className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-gray-900 border-rose-500/70 shadow-lg shadow-rose-950/20 ring-1 ring-rose-500/40"
-                        : "bg-gray-900/60 border-gray-800/70 hover:bg-gray-900 hover:border-gray-700"
+                        ? "bg-orange-50/50 border-[#C85A17] shadow-sm ring-1 ring-[#C85A17]/40"
+                        : "bg-white border-[#E2E8F0] hover:bg-[#F8FAFC] shadow-sm"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -677,10 +677,10 @@ export const Incidents: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                             inc.incident_category === "HIT_AND_RUN_SIGNATURE"
-                              ? "bg-red-950/80 text-red-300 border border-red-800/60"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
                               : inc.incident_category === "COLLISION_RISK"
-                              ? "bg-amber-950/80 text-amber-300 border border-amber-800/60"
-                              : "bg-blue-950/80 text-blue-300 border border-blue-800/60"
+                              ? "bg-amber-50 text-amber-800 border border-amber-200"
+                              : "bg-blue-50 text-blue-800 border border-blue-200"
                           }`}
                         >
                           {inc.incident_category.replace(/_/g, " ")}
@@ -689,31 +689,31 @@ export const Incidents: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-md text-[10px] font-medium ${
                             isPending
-                              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                              ? "bg-amber-50 text-amber-800 border border-amber-200"
                               : isVerified
-                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                              : "bg-gray-700/40 text-gray-400 border border-gray-600/30"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              : "bg-slate-100 text-[#64748B] border border-slate-200"
                           }`}
                         >
                           {inc.verification_status.replace(/_/g, " ")}
                         </span>
                       </div>
 
-                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                      <span className="text-[10px] text-[#64748B] flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {new Date(inc.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
 
                     <div className="mt-2.5">
-                      <div className="text-xs font-semibold text-white flex items-center justify-between">
+                      <div className="text-xs font-bold text-[#16192E] flex items-center justify-between">
                         <span>{inc.location.address || inc.location.road_segment || "Urban Corridor"}</span>
-                        <span className="text-[11px] font-bold text-rose-400">{(inc.confidence * 100).toFixed(0)}% Conf</span>
+                        <span className="text-[11px] font-bold text-[#C85A17]">{(inc.confidence * 100).toFixed(0)}% Conf</span>
                       </div>
-                      <div className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-3">
+                      <div className="text-[11px] text-[#64748B] mt-0.5 flex items-center gap-3">
                         <span>Bus {inc.bus_id} ({inc.camera_id} CAM)</span>
                         {inc.anpr && (
-                          <span className="font-mono text-gray-200 bg-gray-800 px-1.5 py-0.2 rounded text-[10px]">
+                          <span className="font-mono text-[#16192E] font-semibold bg-[#F8FAFC] border border-[#CBD5E1] px-1.5 py-0.5 rounded text-[10px]">
                             {inc.anpr.plate_number}
                           </span>
                         )}
@@ -721,12 +721,12 @@ export const Incidents: React.FC = () => {
                     </div>
 
                     {/* Quick Trigger summary */}
-                    <div className="mt-2 pt-2 border-t border-gray-800/60 flex flex-wrap gap-1 text-[10px]">
+                    <div className="mt-2 pt-2 border-t border-[#E2E8F0] flex flex-wrap gap-1 text-[10px]">
                       {Object.values(inc.explainable_signals || {})
                         .filter((s) => s.triggered)
                         .slice(0, 3)
                         .map((s) => (
-                          <span key={s.name} className="bg-gray-800/80 text-gray-300 px-1.5 py-0.5 rounded">
+                          <span key={s.name} className="bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0] px-1.5 py-0.5 rounded font-medium">
                             {s.name.replace(/_/g, " ")}
                           </span>
                         ))}
@@ -741,34 +741,34 @@ export const Incidents: React.FC = () => {
         {/* ── Right Column: Human Reviewer & Evidence Inspector (7 cols) ──────── */}
         <div className="lg:col-span-7 space-y-4">
           {selectedIncident ? (
-            <div className="bg-gray-900/80 border border-gray-800/80 rounded-2xl p-5 space-y-5">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 space-y-5 shadow-sm">
               {/* Header Info */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-800/80 pb-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3.5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-white">
+                    <h2 className="text-base font-bold text-[#16192E]">
                       Evidence Inspector — {selectedIncident.event_id}
                     </h2>
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
                         selectedIncident.verification_status === "PENDING_REVIEW"
-                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                          ? "bg-amber-50 text-amber-800 border border-amber-200"
                           : selectedIncident.verification_status === "VERIFIED_INCIDENT"
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                          : "bg-gray-700/30 text-gray-400 border border-gray-600/30"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-slate-100 text-[#64748B] border border-slate-200"
                       }`}
                     >
                       {selectedIncident.verification_status.replace(/_/g, " ")}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-[#64748B] mt-0.5">
                     {selectedIncident.location.address || "Urban Road Segment"} • Timestamp: {new Date(selectedIncident.timestamp).toLocaleString()}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">Sensor Confidence</div>
-                  <div className="text-lg font-extrabold text-rose-400">
+                  <div className="text-xs text-[#64748B] font-medium">Sensor Confidence</div>
+                  <div className="text-lg font-extrabold text-[#C85A17]">
                     {(selectedIncident.confidence * 100).toFixed(1)}%
                   </div>
                 </div>
@@ -777,21 +777,21 @@ export const Incidents: React.FC = () => {
               {/* ── Multi-frame Evidence Sequence Player ───────────────────────── */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-indigo-400" />
+                  <span className="text-xs font-bold text-[#16192E] flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-[#C85A17]" />
                     Multi-Frame Evidence Sequence ({selectedIncident.evidence_clip?.duration_s || 2.0}s rolling window)
                   </span>
                   <button
                     onClick={() => setIsPlayingClip(!isPlayingClip)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-medium rounded-lg text-gray-200 transition-colors"
+                    className="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-xs font-medium rounded-lg text-[#16192E] shadow-2xs transition-colors"
                   >
-                    {isPlayingClip ? <Pause className="w-3.5 h-3.5 text-amber-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
+                    {isPlayingClip ? <Pause className="w-3.5 h-3.5 text-amber-600" /> : <Play className="w-3.5 h-3.5 text-emerald-600" />}
                     <span>{isPlayingClip ? "Pause Sequence" : "Play Sequence"}</span>
                   </button>
                 </div>
 
                 {/* Video Player Display */}
-                <div className="relative aspect-video bg-gray-950 rounded-xl overflow-hidden border border-gray-800 flex items-center justify-center">
+                <div className="relative aspect-video bg-[#0F172A] rounded-xl overflow-hidden border border-[#CBD5E1] flex items-center justify-center shadow-inner">
                   {selectedIncident.evidence_clip?.frames && selectedIncident.evidence_clip.frames.length > 0 ? (
                     <img
                       src={selectedIncident.evidence_clip.frames[activeFrameIdx]?.frame_b64 || selectedIncident.evidence_clip.key_frame_b64}
@@ -799,7 +799,7 @@ export const Incidents: React.FC = () => {
                       className="w-full h-full object-contain"
                     />
                   ) : (
-                    <div className="text-gray-500 text-xs">No video frames buffered</div>
+                    <div className="text-gray-400 text-xs">No video frames buffered</div>
                   )}
 
                   {/* Active Frame Phase Badge Overlay */}
@@ -819,7 +819,7 @@ export const Incidents: React.FC = () => {
                   </div>
 
                   {/* Camera & Bus stamp */}
-                  <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm border border-gray-700 px-2.5 py-1 rounded-lg text-[10px] font-mono text-gray-300">
+                  <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm border border-gray-700 px-2.5 py-1 rounded-lg text-[10px] font-mono text-gray-200">
                     BUS: {selectedIncident.bus_id} | CAM: {selectedIncident.camera_id} | GPS: {selectedIncident.location.lat.toFixed(4)}, {selectedIncident.location.lon.toFixed(4)}
                   </div>
                 </div>
@@ -833,14 +833,14 @@ export const Incidents: React.FC = () => {
                         setActiveFrameIdx(idx);
                         setIsPlayingClip(false);
                       }}
-                      className={`p-1.5 rounded-xl border text-left transition-all ${
+                      className={`p-2 rounded-xl border text-left transition-all ${
                         activeFrameIdx === idx
-                          ? "bg-indigo-950/40 border-indigo-500 ring-1 ring-indigo-500"
-                          : "bg-gray-950/40 border-gray-800 hover:border-gray-700"
+                          ? "bg-orange-50 border-[#C85A17] ring-1 ring-[#C85A17]"
+                          : "bg-[#F8FAFC] border-[#E2E8F0] hover:bg-slate-100"
                       }`}
                     >
-                      <div className="text-[10px] font-bold text-gray-300">{frm.phase}</div>
-                      <div className="text-[9px] text-gray-500">T{idx === 0 ? "-0.8s" : idx === 1 ? "=0.0s (Apex)" : "+0.8s"}</div>
+                      <div className="text-[10px] font-bold text-[#16192E]">{frm.phase}</div>
+                      <div className="text-[9px] text-[#64748B]">T{idx === 0 ? "-0.8s" : idx === 1 ? "=0.0s (Apex)" : "+0.8s"}</div>
                     </button>
                   ))}
                 </div>
@@ -848,20 +848,20 @@ export const Incidents: React.FC = () => {
 
               {/* ── ANPR License Plate Card ────────────────────────────────────── */}
               {selectedIncident.anpr && (
-                <div className="bg-gray-950 border border-gray-800 rounded-xl p-3.5 space-y-2.5">
+                <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                      <Car className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs font-bold text-[#16192E] flex items-center gap-1.5">
+                      <Car className="w-4 h-4 text-[#C85A17]" />
                       Automatic Number Plate Recognition (ANPR)
                     </span>
-                    <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-2 py-0.5 rounded">
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
                       {(selectedIncident.anpr.confidence * 100).toFixed(1)}% OCR Match
                     </span>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     {/* Visual Plate Badge */}
-                    <div className="shrink-0 max-w-[240px] w-full shadow-md rounded-lg overflow-hidden border border-gray-700">
+                    <div className="shrink-0 max-w-[240px] w-full shadow-sm rounded-lg overflow-hidden border border-[#CBD5E1]">
                       <img
                         src={selectedIncident.anpr.plate_crop_b64}
                         alt="ANPR Plate Crop"
@@ -871,17 +871,17 @@ export const Incidents: React.FC = () => {
 
                     {/* Plate metadata */}
                     <div className="text-xs space-y-1 w-full">
-                      <div className="flex justify-between border-b border-gray-800 pb-1">
-                        <span className="text-gray-400">Registration:</span>
-                        <span className="font-mono font-bold text-white text-sm">{selectedIncident.anpr.plate_number}</span>
+                      <div className="flex justify-between border-b border-[#E2E8F0] pb-1">
+                        <span className="text-[#64748B]">Registration:</span>
+                        <span className="font-mono font-bold text-[#16192E] text-sm">{selectedIncident.anpr.plate_number}</span>
                       </div>
-                      <div className="flex justify-between border-b border-gray-800 pb-1">
-                        <span className="text-gray-400">Target Vehicle:</span>
-                        <span className="text-gray-200 capitalize">{selectedIncident.anpr.vehicle_class}</span>
+                      <div className="flex justify-between border-b border-[#E2E8F0] pb-1">
+                        <span className="text-[#64748B]">Target Vehicle:</span>
+                        <span className="text-[#16192E] font-medium capitalize">{selectedIncident.anpr.vehicle_class}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">RTO Jurisdiction:</span>
-                        <span className="text-gray-200">{selectedIncident.anpr.state_code} State Transport Authority</span>
+                        <span className="text-[#64748B]">RTO Jurisdiction:</span>
+                        <span className="text-[#16192E] font-medium">{selectedIncident.anpr.state_code} State Transport Authority</span>
                       </div>
                     </div>
                   </div>
@@ -890,9 +890,9 @@ export const Incidents: React.FC = () => {
 
               {/* ── 7 Explainable Trajectory Signals Checklist ─────────────────── */}
               <div className="space-y-2.5">
-                <h3 className="text-xs font-semibold text-gray-300 flex items-center justify-between">
+                <h3 className="text-xs font-bold text-[#16192E] flex items-center justify-between">
                   <span>Explainable Physical Trajectory Signals</span>
-                  <span className="text-[10px] text-gray-500 font-normal">Compound trigger verified</span>
+                  <span className="text-[10px] text-[#64748B] font-normal">Compound trigger verified</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -901,22 +901,22 @@ export const Incidents: React.FC = () => {
                       key={sig.name}
                       className={`p-2.5 rounded-xl border flex items-start gap-2.5 text-xs ${
                         sig.triggered
-                          ? "bg-rose-950/20 border-rose-800/40 text-rose-200"
-                          : "bg-gray-950/40 border-gray-800/50 text-gray-400"
+                          ? "bg-rose-50/70 border-rose-200 text-rose-900"
+                          : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
                       }`}
                     >
                       <span
                         className={`p-1 rounded-md shrink-0 mt-0.5 ${
-                          sig.triggered ? "bg-rose-900/60 text-rose-300" : "bg-gray-800 text-gray-500"
+                          sig.triggered ? "bg-rose-100 text-rose-700 font-bold" : "bg-white border border-[#CBD5E1] text-[#94A3B8]"
                         }`}
                       >
                         {sig.triggered ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
                       </span>
                       <div className="space-y-0.5">
-                        <div className="font-semibold text-white text-[11px] capitalize">
+                        <div className="font-bold text-[#16192E] text-[11px] capitalize">
                           {sig.name.replace(/_/g, " ")}
                         </div>
-                        <p className="text-[10px] text-gray-400 leading-tight">
+                        <p className="text-[10px] text-[#64748B] leading-tight">
                           {sig.description}
                         </p>
                       </div>
@@ -926,58 +926,58 @@ export const Incidents: React.FC = () => {
               </div>
 
               {/* ── Human Verification & Review Form ──────────────────────────── */}
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-4 space-y-3">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                    <ShieldAlert className="w-4 h-4 text-amber-400" />
-                    Human Review & Legal Enforcement Sign-off
+                  <span className="text-xs font-bold text-[#16192E] flex items-center gap-1.5">
+                    <ShieldAlert className="w-4 h-4 text-[#C85A17]" />
+                    Human Review &amp; Legal Enforcement Sign-off
                   </span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-[#64748B]">
                     Mandatory step for legal validity
                   </span>
                 </div>
 
                 {selectedIncident.human_notes && (
-                  <div className="p-3 bg-gray-900 border border-gray-800 rounded-lg text-xs space-y-1">
-                    <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                  <div className="p-3 bg-white border border-[#E2E8F0] rounded-lg text-xs space-y-1 shadow-2xs">
+                    <div className="text-[10px] text-[#64748B] flex items-center justify-between">
                       <span>Reviewed by: <strong>{selectedIncident.reviewer_id}</strong></span>
                       <span>{selectedIncident.reviewed_at ? new Date(selectedIncident.reviewed_at).toLocaleString() : ""}</span>
                     </div>
-                    <p className="text-gray-200 text-[11px] italic">"{selectedIncident.human_notes}"</p>
+                    <p className="text-[#16192E] text-[11px] italic">"{selectedIncident.human_notes}"</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label className="text-[10px] text-gray-400 block mb-1">Safety Officer ID</label>
+                      <label className="text-[10px] font-semibold text-[#64748B] block mb-1">Safety Officer ID</label>
                       <input
                         type="text"
                         value={reviewerId}
                         onChange={(e) => setReviewerId(e.target.value)}
                         placeholder="e.g. officer_delhi_09"
-                        className="w-full bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500"
+                        className="w-full bg-white border border-[#CBD5E1] rounded-lg px-2.5 py-1.5 text-xs text-[#16192E] focus:outline-none focus:border-[#16192E]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-gray-400 block mb-1">Review Timestamp</label>
+                      <label className="text-[10px] font-semibold text-[#64748B] block mb-1">Review Timestamp</label>
                       <input
                         type="text"
                         disabled
                         value={new Date().toLocaleString()}
-                        className="w-full bg-gray-900/50 border border-gray-800/60 rounded-lg px-2.5 py-1.5 text-xs text-gray-500 cursor-not-allowed"
+                        className="w-full bg-[#F1F5F9] border border-[#CBD5E1] rounded-lg px-2.5 py-1.5 text-xs text-[#64748B] cursor-not-allowed"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-gray-400 block mb-1">Reviewer Observation & Findings</label>
+                    <label className="text-[10px] font-semibold text-[#64748B] block mb-1">Reviewer Observation &amp; Findings</label>
                     <textarea
                       rows={2}
                       value={reviewerNotes}
                       onChange={(e) => setReviewerNotes(e.target.value)}
                       placeholder="Add official verification notes (e.g. verified dashcam rolling buffer, observed physical contact between vehicles...)"
-                      className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-rose-500"
+                      className="w-full bg-white border border-[#CBD5E1] rounded-lg p-2.5 text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none focus:border-[#16192E]"
                     />
                   </div>
                 </div>
@@ -987,26 +987,26 @@ export const Incidents: React.FC = () => {
                   <button
                     onClick={() => handleReviewAction("DISMISSED")}
                     disabled={isSubmittingReview}
-                    className="flex items-center gap-1.5 px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#16192E] rounded-xl text-xs font-semibold shadow-2xs transition-all disabled:opacity-50"
                   >
-                    <XCircle className="w-4 h-4 text-gray-400" />
+                    <XCircle className="w-4 h-4 text-[#64748B]" />
                     <span>Dismiss False Alarm</span>
                   </button>
 
                   <button
                     onClick={() => handleReviewAction("VERIFIED_INCIDENT")}
                     disabled={isSubmittingReview}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-950/30 transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] text-white rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Verify Incident & Forward</span>
+                    <span>Verify Incident &amp; Forward</span>
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-12 text-center bg-gray-900/40 border border-gray-800/60 rounded-2xl">
-              <p className="text-xs text-gray-400">Select an incident from the feed to inspect evidence</p>
+            <div className="p-12 text-center bg-white border border-[#E2E8F0] rounded-2xl shadow-sm">
+              <p className="text-xs text-[#64748B]">Select an incident from the feed to inspect evidence</p>
             </div>
           )}
         </div>

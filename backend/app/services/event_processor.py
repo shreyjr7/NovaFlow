@@ -96,11 +96,17 @@ class EventProcessor:
                 district = "South"
 
             # Create canonical database record
+            route_id_val = str(msg.get("route_id") or msg.get("routeId") or "R-01")
+            raw_status = str(msg.get("status") or "unverified").lower()
+            if raw_status in ("active", "ai_detected"):
+                raw_status = "unverified"
+
             db_event = IngestedEvent(
                 idempotency_key=idemp_key,
                 event_id=event_id,
                 event_type=str(msg.get("event_type", "GENERIC")).upper(),
                 bus_id=str(msg.get("bus_id", "BUS_001")),
+                route_id=route_id_val,
                 camera_id=str(msg.get("camera_id", "FRONT")),
                 timestamp=dt,
                 gps_lat=lat,
@@ -113,8 +119,8 @@ class EventProcessor:
                 evidence_reference=str(msg.get("evidence_reference") or ""),
                 evidence_image_b64=msg.get("evidence_image_b64"),
                 evidence_clip_url=msg.get("evidence_clip_url"),
-                severity=str(msg.get("severity", "MEDIUM")).upper(),
-                status="ACTIVE",
+                severity=str(msg.get("severity", "medium")).lower(),
+                status=raw_status,
                 metadata_json=json.dumps(msg.get("details", {})),
                 processed_at=datetime.now(timezone.utc),
             )

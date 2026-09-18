@@ -351,19 +351,19 @@ export const PedestrianSafety: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* ── Top Header ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-amber-950/60 border border-amber-800/50 rounded-xl text-amber-400">
+            <span className="p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-700">
               <ShieldAlert className="w-5 h-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                Pedestrian Safety & School Zone Intelligence
+              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
+                Pedestrian Safety &amp; School Zone Intelligence
               </h1>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Vulnerable road user trajectory monitoring, road boundary geofencing, and school bell schedules
               </p>
             </div>
@@ -372,15 +372,15 @@ export const PedestrianSafety: React.FC = () => {
 
         {/* City Filter Pills + Refresh */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-1 flex items-center">
+          <div className="bg-white border border-[#CBD5E1] rounded-xl p-1 flex items-center shadow-2xs">
             {["All", "Delhi", "Mumbai", "Bangalore"].map((city) => (
               <button
                 key={city}
                 onClick={() => setSelectedCity(city)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   selectedCity === city
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                    ? "bg-[#16192E] text-white shadow-xs"
+                    : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
                 }`}
               >
                 {city === "All" ? "All Cities" : city}
@@ -391,22 +391,22 @@ export const PedestrianSafety: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 text-xs rounded-xl font-medium transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-indigo-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#C85A17]" : "text-[#64748B]"}`} />
             <span>{isRefreshing ? "Syncing..." : "Sync Live"}</span>
           </button>
         </div>
       </div>
 
       {/* ── Scientific & Ethical AI Methodology Notice ──────────────────────── */}
-      <div className="bg-indigo-950/40 border border-indigo-800/50 rounded-2xl p-4 flex items-start gap-3 text-xs text-indigo-200">
-        <Info className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-blue-800 shadow-sm">
+        <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-semibold text-white block">
+          <span className="font-bold text-blue-900 block">
             Objective Sensor Proxy Methodology (No Age Classification)
           </span>
-          <p className="text-indigo-300 leading-relaxed text-[11px]">
+          <p className="text-blue-700 leading-relaxed text-[11px]">
             In strict adherence to ethical AI and transportation safety best practices, this platform <strong>does not claim to classify person age</strong> from moving bus cameras (which research confirms is unscientific and unreliable). Instead, vulnerable pedestrian risk is determined via an objective multi-factor proxy: <strong>Person Detected</strong> + <strong>Near Road Boundary (&le; 1.5m)</strong> + <strong>Trajectory Vector Heading Toward Road</strong> + <strong>School Zone Geofence</strong> + <strong>Active School Bell Schedule Hours</strong>. For high-occupancy school gates, <strong>zone-level crowd density</strong> is reported rather than claiming false precision.
           </p>
         </div>
@@ -415,111 +415,111 @@ export const PedestrianSafety: React.FC = () => {
       {/* ── KPI Summary Cards ────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Vulnerable Alerts */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-400">Vulnerable Alerts Today</span>
-            <span className="p-1.5 bg-red-950/60 border border-red-800/40 rounded-lg text-red-400">
+            <span className="text-xs font-semibold text-[#64748B]">Vulnerable Alerts Today</span>
+            <span className="p-1.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700">
               <AlertTriangle className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold font-mono text-red-400">
+            <span className="text-3xl font-bold font-mono text-rose-600">
               {totalAlerts}
             </span>
-            <span className="text-xs text-red-400/80 font-medium">
+            <span className="text-xs text-rose-700 font-semibold">
               PEDESTRIAN_RISK
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-gray-500 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+          <div className="mt-2 text-[11px] text-[#64748B] flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
             Moving toward road during active hours
           </div>
         </div>
 
         {/* Active School Zones */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-400">Active School Zones</span>
-            <span className="p-1.5 bg-amber-950/60 border border-amber-700/40 rounded-lg text-amber-400">
+            <span className="text-xs font-semibold text-[#64748B]">Active School Zones</span>
+            <span className="p-1.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-700">
               <Clock className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold font-mono text-amber-400">
+            <span className="text-3xl font-bold font-mono text-amber-700">
               {filteredSchools.length}
             </span>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-[#64748B]">
               / {schools.length} Monitored
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-gray-500">
+          <div className="mt-2 text-[11px] text-[#64748B]">
             Speed limit enforced: 25 km/h
           </div>
         </div>
 
         {/* Peak Risk School */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-400">Critical School Zone</span>
-            <span className="p-1.5 bg-orange-950/60 border border-orange-700/40 rounded-lg text-orange-400">
+            <span className="text-xs font-semibold text-[#64748B]">Critical School Zone</span>
+            <span className="p-1.5 bg-orange-50 border border-orange-200 rounded-lg text-[#C85A17]">
               <MapPin className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3">
-            <span className="text-sm font-semibold text-white line-clamp-1 block">
+            <span className="text-sm font-bold text-[#16192E] line-clamp-1 block">
               {peakSchool ? peakSchool.name : "N/A"}
             </span>
             <div className="flex items-baseline gap-2 mt-0.5">
-              <span className="text-xs text-red-400 font-mono font-bold">
+              <span className="text-xs text-rose-600 font-mono font-bold">
                 {peakSchool ? `${peakSchool.alerts_today} events` : "--"}
               </span>
-              <span className="text-[10px] text-gray-500">
+              <span className="text-[10px] text-[#64748B]">
                 Density: {peakSchool ? peakSchool.current_density : "--"}
               </span>
             </div>
           </div>
-          <div className="mt-2 text-[11px] text-gray-500">
+          <div className="mt-2 text-[11px] text-[#64748B]">
             {peakSchool?.city} • Active Bell Window
           </div>
         </div>
 
         {/* Crowd Density Alert */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-400">Crowded Transit Gates</span>
-            <span className="p-1.5 bg-indigo-950/60 border border-indigo-800/40 rounded-lg text-indigo-400">
+            <span className="text-xs font-semibold text-[#64748B]">Crowded Transit Gates</span>
+            <span className="p-1.5 bg-blue-50 border border-blue-200 rounded-lg text-blue-700">
               <Users className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold font-mono text-indigo-400">
+            <span className="text-3xl font-bold font-mono text-blue-600">
               {crowdedZonesCount}
             </span>
-            <span className="text-xs text-indigo-400/80 font-medium">
+            <span className="text-xs text-blue-700 font-semibold">
               High Density Areas
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-gray-500">
+          <div className="mt-2 text-[11px] text-[#64748B]">
             Zone-level aggregate reporting enabled
           </div>
         </div>
       </div>
 
       {/* ── Interactive GIS School Geofence & Trajectory Visualizer ───────────── */}
-      <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg space-y-3">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-indigo-400" />
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-300">
-              School Zone Geofence & Pedestrian Trajectory GIS Visualizer
+            <MapPin className="w-4 h-4 text-[#C85A17]" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#16192E]">
+              School Zone Geofence &amp; Pedestrian Trajectory GIS Visualizer
             </h2>
           </div>
-          <span className="text-xs text-gray-500">
-            Showing active geofences & verified trajectory vectors
+          <span className="text-xs text-[#64748B]">
+            Showing active geofences &amp; verified trajectory vectors
           </span>
         </div>
 
-        <div className="relative w-full h-80 rounded-xl overflow-hidden border border-gray-800 bg-gray-950 flex items-center justify-center select-none">
+        <div className="relative w-full h-80 rounded-xl overflow-hidden border border-[#CBD5E1] bg-[#090D16] flex items-center justify-center select-none shadow-inner">
           {/* Cartographic grid background */}
           <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
 
@@ -598,17 +598,17 @@ export const PedestrianSafety: React.FC = () => {
           </svg>
 
           {/* Map Overlay Legend */}
-          <div className="absolute bottom-3 left-3 bg-gray-900/90 backdrop-blur-md border border-gray-800 rounded-xl p-2.5 flex items-center gap-4 text-xs text-gray-300">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+          <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md border border-[#CBD5E1] rounded-xl p-2.5 flex items-center gap-4 text-xs text-[#16192E] shadow-sm">
+            <div className="flex items-center gap-1.5 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse" />
               <span>Moving Toward Road (Risk)</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <div className="flex items-center gap-1.5 font-medium">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
               <span>Parallel / Away (Safe)</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-0.5 bg-yellow-400" />
+            <div className="flex items-center gap-1.5 font-medium">
+              <span className="w-3 h-0.5 bg-amber-400" />
               <span>Road Boundary Line</span>
             </div>
           </div>
@@ -618,13 +618,13 @@ export const PedestrianSafety: React.FC = () => {
       {/* ── Analytical Visualizations Grid ───────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 1. Diurnal Hourly Risk Curve (School bell schedules) */}
-        <div className="lg:col-span-2 bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
           <div className="mb-3">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-400" />
+            <h3 className="text-sm font-bold text-[#16192E] flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#C85A17]" />
               Pedestrian Risk Incident Profile Across School Operating Hours
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Incidents concentrate strictly around morning drop-off (07:30-09:00) and afternoon dismissal (13:30-15:00)
             </p>
           </div>
@@ -633,30 +633,30 @@ export const PedestrianSafety: React.FC = () => {
               <AreaChart data={HOURLY_BELL_CHART_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPedRisk" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#C85A17" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#C85A17" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="hour" stroke="#6b7280" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                <XAxis dataKey="hour" stroke="#94A3B8" tick={{ fontSize: 11, fill: "#64748B" }} />
+                <YAxis stroke="#94A3B8" tick={{ fontSize: 11, fill: "#64748B" }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "0.75rem", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "0.75rem", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                 />
-                <Area type="monotone" dataKey="alerts" name="Vulnerable Pedestrian Alerts" stroke="#ef4444" strokeWidth={2.5} fillOpacity={1} fill="url(#colorPedRisk)" />
+                <Area type="monotone" dataKey="alerts" name="Vulnerable Pedestrian Alerts" stroke="#C85A17" strokeWidth={2.5} fillOpacity={1} fill="url(#colorPedRisk)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* 2. School Zone Crowd Density Breakdown */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
           <div className="mb-2">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-sm font-bold text-[#16192E] flex items-center gap-2">
+              <Users className="w-4 h-4 text-[#C85A17]" />
               School Gate Crowd Density
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Zone-level density distribution
             </p>
           </div>
@@ -677,9 +677,9 @@ export const PedestrianSafety: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#111827", borderColor: "#374151", borderRadius: "0.75rem", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#FFFFFF", borderColor: "#CBD5E1", color: "#16192E", borderRadius: "0.75rem", fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                 />
-                <Legend formatter={(val) => <span className="text-xs text-gray-300">{val}</span>} />
+                <Legend formatter={(val) => <span className="text-xs text-[#64748B] font-medium">{val}</span>} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -687,14 +687,14 @@ export const PedestrianSafety: React.FC = () => {
       </div>
 
       {/* ── Live PEDESTRIAN_RISK Events Feed Table ───────────────────────────── */}
-      <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-5 shadow-lg space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-800/80 pb-4">
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4">
           <div>
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+            <h3 className="text-sm font-bold text-[#16192E] flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-600" />
               Live Vulnerable Pedestrian Risk Alerts
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-[#64748B] mt-0.5">
               Real-time events triggered by trajectory toward roadway inside active school zones
             </p>
           </div>
@@ -702,26 +702,26 @@ export const PedestrianSafety: React.FC = () => {
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-2">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-gray-500 absolute left-3 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Search school or bus..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                className="pl-8 pr-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl text-xs text-[#16192E] placeholder-[#94A3B8] focus:outline-none focus:border-[#16192E]"
               />
             </div>
 
-            <div className="flex items-center gap-1 bg-gray-950 border border-gray-800 rounded-xl p-1 text-xs">
-              <Filter className="w-3 h-3 text-gray-500 ml-1" />
+            <div className="flex items-center gap-1 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl p-1 text-xs">
+              <Filter className="w-3 h-3 text-[#64748B] ml-1" />
               {["ALL", "CROWDED", "SINGLE"].map((filt) => (
                 <button
                   key={filt}
                   onClick={() => setCrowdFilter(filt)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
                     crowdFilter === filt
-                      ? "bg-indigo-600 text-white"
-                      : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                      ? "bg-[#16192E] text-white shadow-xs"
+                      : "text-[#64748B] hover:text-[#16192E]"
                   }`}
                 >
                   {filt}
@@ -732,9 +732,9 @@ export const PedestrianSafety: React.FC = () => {
         </div>
 
         {/* Events Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="bg-gray-950 text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+          <table className="w-full text-left text-xs text-[#16192E]">
+            <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0] font-semibold">
               <tr>
                 <th className="py-3 px-3">School Zone</th>
                 <th className="py-3 px-3">Trajectory Motion</th>
@@ -746,59 +746,59 @@ export const PedestrianSafety: React.FC = () => {
                 <th className="py-3 px-3 text-right">Evidence</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800/60 font-mono text-[11px]">
+            <tbody className="divide-y divide-[#E2E8F0] font-mono text-[11px]">
               {displayedEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gray-500 font-sans text-xs">
+                  <td colSpan={8} className="py-8 text-center text-[#64748B] font-sans text-xs">
                     No pedestrian risk events matching selected criteria.
                   </td>
                 </tr>
               ) : (
                 displayedEvents.map((ev) => (
-                  <tr key={ev.event_id} className="hover:bg-gray-800/40 transition-colors">
+                  <tr key={ev.event_id} className="hover:bg-[#F8FAFC] transition-colors">
                     <td className="py-3 px-3 font-sans">
-                      <span className="font-semibold text-white block">{ev.school_zone.name}</span>
-                      <span className="text-[10px] text-amber-400">
+                      <span className="font-semibold text-[#16192E] block">{ev.school_zone.name}</span>
+                      <span className="text-[10px] text-amber-700 font-medium">
                         {ev.school_zone.school_id} • Limit {ev.school_zone.speed_limit_kmh} km/h
                       </span>
                     </td>
                     <td className="py-3 px-3 font-sans">
-                      <span className="text-red-400 font-bold flex items-center gap-1">
-                        <ArrowUpRight className="w-3.5 h-3.5 text-red-400" />
+                      <span className="text-rose-600 font-bold flex items-center gap-1">
+                        <ArrowUpRight className="w-3.5 h-3.5 text-rose-600" />
                         Towards Road
                       </span>
-                      <span className="text-[10px] text-gray-500 font-mono">
+                      <span className="text-[10px] text-[#64748B] font-mono">
                         {ev.trajectory.speed_px_s.toFixed(0)} px/s ({ev.trajectory.heading_deg.toFixed(0)}&deg;)
                       </span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-white font-bold">{ev.road_boundary.distance_px} px</span>
-                      <span className="text-[10px] text-gray-500 block">&le; 1.5m curb edge</span>
+                      <span className="text-[#16192E] font-bold">{ev.road_boundary.distance_px} px</span>
+                      <span className="text-[10px] text-[#64748B] block">&le; 1.5m curb edge</span>
                     </td>
                     <td className="py-3 px-3 font-sans">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase border ${
                           ev.zone_density.level === "HIGH"
-                            ? "bg-red-950/70 text-red-400 border-red-700/60"
-                            : "bg-amber-950/70 text-amber-400 border-amber-700/60"
+                            ? "bg-rose-50 text-rose-700 border-rose-200"
+                            : "bg-amber-50 text-amber-800 border-amber-200"
                         }`}
                       >
                         {ev.zone_density.level} ({ev.zone_density.pedestrian_count} people)
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-sans text-gray-300 text-[10px]">
+                    <td className="py-3 px-3 font-sans text-[#64748B] text-[10px]">
                       {ev.bus_id} • {ev.camera_id}
                     </td>
-                    <td className="py-3 px-3 font-sans text-gray-400 text-[10px]">
+                    <td className="py-3 px-3 font-sans text-[#64748B] text-[10px]">
                       {new Date(ev.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                     </td>
-                    <td className="py-3 px-3 text-gray-400 text-[10px]">
+                    <td className="py-3 px-3 text-[#64748B] text-[10px]">
                       {ev.location.lat.toFixed(4)}, {ev.location.lon.toFixed(4)}
                     </td>
                     <td className="py-3 px-3 text-right font-sans">
                       <button
                         onClick={() => setSelectedEvent(ev)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-600/80 hover:bg-indigo-600 text-white rounded-lg text-[11px] font-medium transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#C85A17] hover:bg-[#B34F14] text-white rounded-lg text-[11px] font-semibold shadow-xs transition-colors"
                       >
                         <Eye className="w-3.5 h-3.5" /> Evidence
                       </button>
@@ -813,32 +813,32 @@ export const PedestrianSafety: React.FC = () => {
 
       {/* ── Evidence Frame Inspector Modal ───────────────────────────────────── */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#CBD5E1] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 text-[#16192E]">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-red-950/70 border border-red-800/60 rounded-lg text-red-400">
+                <span className="p-1.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700">
                   <AlertTriangle className="w-4 h-4" />
                 </span>
                 <div>
-                  <h4 className="text-base font-bold text-white">
-                    Evidence Frame & Trajectory Inspector
+                  <h4 className="text-base font-bold text-[#16192E]">
+                    Evidence Frame &amp; Trajectory Inspector
                   </h4>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-[#64748B]">
                     Event ID: {selectedEvent.event_id.slice(0, 18)}...
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-1.5 text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC] rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Frame Image Canvas Placeholder / Real Thumbnail */}
-            <div className="relative w-full h-52 bg-gray-950 border border-gray-800 rounded-xl overflow-hidden flex items-center justify-center">
+            <div className="relative w-full h-52 bg-[#0F172A] border border-[#CBD5E1] rounded-xl overflow-hidden flex items-center justify-center shadow-inner">
               {selectedEvent.frame_b64 ? (
                 <img
                   src={selectedEvent.frame_b64}
@@ -854,10 +854,10 @@ export const PedestrianSafety: React.FC = () => {
                   </div>
                   {/* Simulated curb line */}
                   <div className="absolute inset-y-0 right-36 w-0.5 bg-yellow-400" />
-                  <span className="text-xs text-gray-400 font-mono">
+                  <span className="text-xs text-gray-300 font-mono">
                     Captured Video Frame • 1280x720 HD
                   </span>
-                  <span className="text-[10px] text-gray-500 mt-1">
+                  <span className="text-[10px] text-gray-400 mt-1">
                     Curb Distance: {selectedEvent.road_boundary.distance_px} px | Vector Heading: {selectedEvent.trajectory.heading_deg.toFixed(0)}&deg;
                   </span>
                 </div>
@@ -866,47 +866,47 @@ export const PedestrianSafety: React.FC = () => {
 
             {/* Metadata Summary Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-1">
-                <span className="text-gray-400 text-[10px] block uppercase font-semibold">School Zone</span>
-                <span className="font-bold text-white block">{selectedEvent.school_zone.name}</span>
-                <span className="text-[11px] text-amber-400">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-1">
+                <span className="text-[#64748B] text-[10px] block uppercase font-semibold">School Zone</span>
+                <span className="font-bold text-[#16192E] block">{selectedEvent.school_zone.name}</span>
+                <span className="text-[11px] text-amber-700 font-medium">
                   {selectedEvent.school_zone.school_id} • Radius {selectedEvent.school_zone.distance_m}m
                 </span>
               </div>
 
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-1">
-                <span className="text-gray-400 text-[10px] block uppercase font-semibold">Trajectory Motion</span>
-                <span className="font-bold text-red-400 block">Moving Towards Road</span>
-                <span className="text-[11px] text-gray-400 font-mono">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-1">
+                <span className="text-[#64748B] text-[10px] block uppercase font-semibold">Trajectory Motion</span>
+                <span className="font-bold text-rose-600 block">Moving Towards Road</span>
+                <span className="text-[11px] text-[#64748B] font-mono">
                   Speed: {selectedEvent.trajectory.speed_px_s.toFixed(0)} px/s (dx={selectedEvent.trajectory.vector[0]}, dy={selectedEvent.trajectory.vector[1]})
                 </span>
               </div>
 
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-1">
-                <span className="text-gray-400 text-[10px] block uppercase font-semibold">Zone Crowd Density</span>
-                <span className="font-bold text-white block">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-1">
+                <span className="text-[#64748B] text-[10px] block uppercase font-semibold">Zone Crowd Density</span>
+                <span className="font-bold text-[#16192E] block">
                   {selectedEvent.zone_density.level} Density
                 </span>
-                <span className="text-[11px] text-gray-400">
+                <span className="text-[11px] text-[#64748B]">
                   {selectedEvent.zone_density.pedestrian_count} pedestrians in transit gate ROI
                 </span>
               </div>
 
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-1">
-                <span className="text-gray-400 text-[10px] block uppercase font-semibold">Telemetry & Vehicle</span>
-                <span className="font-bold text-white block font-mono">
+              <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 space-y-1">
+                <span className="text-[#64748B] text-[10px] block uppercase font-semibold">Telemetry &amp; Vehicle</span>
+                <span className="font-bold text-[#16192E] block font-mono">
                   {selectedEvent.bus_id} • {selectedEvent.camera_id}
                 </span>
-                <span className="text-[11px] text-gray-400 font-mono">
+                <span className="text-[11px] text-[#64748B] font-mono">
                   {selectedEvent.location.lat.toFixed(5)}, {selectedEvent.location.lon.toFixed(5)}
                 </span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-gray-800 flex justify-end">
+            <div className="pt-2 border-t border-[#E2E8F0] flex justify-end">
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-xl transition-colors"
+                className="px-4 py-2 bg-[#16192E] hover:bg-[#282F5A] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
               >
                 Close Inspector
               </button>

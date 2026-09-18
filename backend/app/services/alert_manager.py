@@ -118,6 +118,26 @@ class AlertManager:
     def _seed_canonical_alerts(self):
         now_iso = datetime.now(timezone.utc).isoformat()
 
+        # Step 32 Benchmark Alert
+        alt_step32 = AlertCard(
+            alert_id="ALT-STEP32-HITRUN",
+            type="Possible hit-and-run",
+            severity=AlertSeverity.CRITICAL,
+            location="Varanasi GT Road Corridor (UP65)",
+            lat=25.3176,
+            lon=82.9739,
+            road_segment="UP_GT_CORRIDOR_01",
+            bus="BUS-108",
+            timestamp="2 min ago",
+            confidence=0.91,
+            evidence="🚨 CRITICAL | Possible hit-and-run | UP65AB1234 | Confidence: 91% | 2 min ago. Rolling buffer clip EV_HITRUN_UP65AB1234: abrupt lateral deflection followed by rapid departure.",
+            evidence_snapshot_url="/evidence/hitrun_up65ab1234.jpg",
+            evidence_video_clip="/evidence/clips/clip_hitrun_up65ab1234.mp4",
+            status=AlertStatus.NEW,
+            audit_trail=[AuditAction(timestamp=now_iso, action="CREATED", actor="Incident Anomaly Engine", notes="High-confidence hit-and-run signature identified")],
+        )
+        self._alerts[alt_step32.alert_id] = alt_step32
+
         # 1. CRITICAL: Possible Incident
         alt_1 = AlertCard(
             alert_id="ALT-2026-001",

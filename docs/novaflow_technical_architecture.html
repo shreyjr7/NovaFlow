@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NovaFlow Transport — Technical Architecture & Implementation Blueprint</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 16mm 14mm 16mm 14mm;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 9.5pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Header Banner */
+    .header-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+      color: #ffffff;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.35);
+      border: 1px solid rgba(147, 197, 253, 0.4);
+      color: #bfdbfe;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-size: 20pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .header-subtitle {
+      font-size: 10pt;
+      color: #cbd5e1;
+      font-weight: 400;
+      max-width: 90%;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 18px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 8pt;
+      color: #94a3b8;
+    }
+
+    .header-meta span strong {
+      color: #ffffff;
+    }
+
+    /* Section Styling */
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 5px;
+      margin-top: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #1e293b;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      margin-bottom: 8px;
+      color: #334155;
+      text-align: justify;
+    }
+
+    /* Callout Card */
+    .callout-card {
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-size: 9pt;
+    }
+
+    .callout-card strong {
+      color: #1e3a8a;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card p {
+      font-size: 8.5pt;
+      color: #475569;
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 7pt;
+      font-weight: 700;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-green { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-amber { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-red { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+    /* Architecture Flow Box */
+    .flow-container {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      line-height: 1.45;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .flow-icon {
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    .flow-label {
+      color: #cbd5e1;
+    }
+
+    .flow-arrow {
+      color: #64748b;
+      margin: 2px 0 2px 16px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 8.5pt;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      color: #2563eb;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 8pt;
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 7.5pt;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: EXECUTIVE OVERVIEW & 3-TIER ARCHITECTURE -->
+  <div class="header-banner">
+    <div class="header-badge">Smart India Hackathon • Urban Spatial Intelligence</div>
+    <h1 class="header-title">NovaFlow Transport</h1>
+    <div class="header-subtitle">
+      AI-Driven Urban Fleet Edge Sensing, Automated Infrastructure Inspection & Spatial Intelligence Architecture
+    </div>
+    <div class="header-meta">
+      <span><strong>Document:</strong> System Technical Blueprint</span>
+      <span><strong>Platform:</strong> Edge AI + Cloud GIS</span>
+      <span><strong>Version:</strong> Production v1.0</span>
+      <span><strong>Classification:</strong> Municipal Transit Authority</span>
+    </div>
+  </div>
+
+  <h2>1. Executive Summary & Core Philosophy</h2>
+  <p>
+    Traditional municipal infrastructure monitoring relies on manual road inspections, sporadic complaint tickets, or expensive dedicated survey vehicles equipped with specialized LIDAR and laser profilers. These approaches are cost-prohibitive, intermittent, and incapable of providing real-time city-wide coverage.
+  </p>
+  <div class="callout-card">
+    <strong>The NovaFlow Paradigm:</strong> Rather than deploying new mobile assets or streaming terabytes of uncompressed video to cloud servers, NovaFlow converts <em>existing municipal public bus fleets</em> into continuous, real-time sensing networks. Every bus automatically inspects road conditions, monitors congestion, and detects safety hazards while servicing regular passenger routes.
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">⚡ Edge-First AI</div>
+      <p>Inference executes directly on on-vehicle edge accelerators (NVIDIA Jetson / Raspberry Pi 5 + Coral). Only 1–2 KB JSON event payloads and brief clips are transmitted, eliminating 99.8% of mobile bandwidth costs.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📡 Store & Forward</div>
+      <p>Zero dependency on continuous internet. Built-in transactional SQLite queues spool detections during cellular blackouts (tunnels, underpasses) and automatically drain upon 4G/5G reconnection.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🔒 Privacy by Design</div>
+      <p>Automated real-time facial and license plate blurring at the camera level. Ephemeral 30s rolling buffer ensures raw video is destroyed unless explicitly triggered by an incident.</p>
+    </div>
+  </div>
+
+  <h2>2. End-to-End 3-Tier Architecture</h2>
+  <p>
+    NovaFlow divides responsibilities into three distinct, decoupled tiers engineered for fault tolerance, edge autonomy, and massive concurrent scaling:
+  </p>
+
+  <div class="flow-container">
+    <div class="flow-step">
+      <span class="flow-icon">[TIER 1: ON-BUS EDGE AI NODE]</span>
+      <span class="flow-label">4 Multi-Angle Cameras (Front, Rear, Left, Right) + GPS Telemetry</span>
+    </div>
+    <div class="flow-arrow">│  ▼ Hardware Decoding, Dynamic Frame Sampling (Velocity Adaptive)</div>
+    <div class="flow-step">
+      <span class="flow-icon">├─ Vision Engine</span>
+      <span class="flow-label">Road Defect Detector • Traffic Flow Engine • Safety/Incident AI • ANPR Lane Enforcer</span>
+    </div>
+    <div class="flow-arrow">│  ▼ Temporal Confirmation Filter (Suppresses transient anomalies over N frames)</div>
+    <div class="flow-step">
+      <span class="flow-icon">├─ Local Spool</span>
+      <span class="flow-label">SQLite Queue Buffering (Offline Resilience with Transactional Locking)</span>
+    </div>
+    <div class="flow-arrow">│  ▼ Network Manager (MQTT / HTTPS REST Sync with Exponential Backoff)</div>
+    <div class="flow-step">
+      <span class="flow-icon">[TIER 2: CENTRAL BACKEND & ANALYTICS]</span>
+      <span class="flow-label">FastAPI Gateway (HTTP 202 Accepted) → Redis Streams Event Queue</span>
+    </div>
+    <div class="flow-arrow">│  ▼ Asynchronous Worker Consumption & Spatial Proximity Merging (Haversine &lt; 15m)</div>
+    <div class="flow-step">
+      <span class="flow-icon">├─ Persistence</span>
+      <span class="flow-label">PostgreSQL + PostGIS (GeoJSON Collections) & Immutable SHA-256 Audit Vault</span>
+    </div>
+    <div class="flow-arrow">│  ▼ Analytics Aggregation & Predictive Travel Time Delay Calibration</div>
+    <div class="flow-step">
+      <span class="flow-icon">[TIER 3: COMMAND & DISPATCH FRONTEND]</span>
+      <span class="flow-label">React 18 + Vite 5 GIS Command Center (12 Live Layers, Clustering, Work Orders)</span>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>NovaFlow Transport — Confidential & Proprietary</span>
+    <span>Page 1 of 3</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- PAGE 2: THE 4 AI ENGINES & RESILIENCE -->
+  <h2>3. The 4 Specialized Edge AI Vision Engines</h2>
+  <p>
+    The on-vehicle compute node executes four decoupled analytical vision pipelines concurrently. Each engine runs optimized TensorRT/ONNX models calibrated for edge inference:
+  </p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">
+        <span>🕳️ Road Surface & Infrastructure</span>
+        <span class="badge badge-amber">Defects</span>
+      </div>
+      <p>
+        <strong>Targets:</strong> Potholes, alligator cracking, road subsidence, surface ponding/waterlogging, damaged or obscured traffic signage, missing median dividers, and faded pedestrian zebra crossings.<br>
+        <strong>Logic:</strong> Incorporates spatial bounding boxes, pixel-area segmentation, depth estimation, and accelerometer/gyro bump cross-validation.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🚗 Traffic Density & Flow Intelligence</span>
+        <span class="badge badge-blue">Flow</span>
+      </div>
+      <p>
+        <strong>Targets:</strong> Vehicle classification (buses, cars, 2-wheelers, trucks, auto-rickshaws), volume counting, speed trajectory calculation via ByteTrack/DeepSORT, and queue length measurement.<br>
+        <strong>Logic:</strong> Dynamically calculates corridor Level of Service (LOS A through F) and detects bottlenecks before systemic paralysis occurs.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🚨 Safety & Incident Anomaly Engine</span>
+        <span class="badge badge-red">Safety</span>
+      </div>
+      <p>
+        <strong>Targets:</strong> Near-miss collisions, abrupt deceleration spikes (&gt;0.6g), erratic lane weaving, pedestrian intrusion into active roadways, and stationary stalled vehicles in live traffic lanes.<br>
+        <strong>Logic:</strong> Multi-frame optical flow vectors combined with kinetic collision trajectory modeling.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>📸 ANPR & Dedicated Lane Enforcement</span>
+        <span class="badge badge-purple">Enforcement</span>
+      </div>
+      <p>
+        <strong>Targets:</strong> License plate recognition and unauthorized private vehicle intrusion into dedicated Bus Rapid Transit (BRT) corridors.<br>
+        <strong>Logic:</strong> Two-stage detection (Plate BBox Localization → CRNN Character Recognition) with on-device blurring for compliant, non-violating vehicles.
+      </p>
+    </div>
+  </div>
+
+  <h2>4. Resilience, Offline Operation & Privacy Framework</h2>
+
+  <h3>4.1. Store-and-Forward Offline Engine (Step 27)</h3>
+  <p>
+    Transit buses operate in harsh cellular environments. The NovaFlow Edge agent employs a robust store-and-forward architecture:
+  </p>
+  <div class="flow-container">
+    AI Detection → Edge Validation → Encrypted Local SQLite Table → Internet Ping Check:
+    <br>&nbsp;&nbsp;├─ [OFFLINE]: Hold securely in local buffer (up to 100,000 events / 30 days)
+    <br>&nbsp;&nbsp;└─ [ONLINE]: Batch drain with exponential retry backoff (1s, 2s, 4s...) & HTTP 202 Ingestion
+  </div>
+
+  <h3>4.2. Privacy by Design & Tamper-Evident Evidence Vault (Steps 30 & 31)</h3>
+  <p>
+    NovaFlow adheres strictly to data minimization standards and the Digital Personal Data Protection (DPDP) Act:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Privacy Mechanism</th>
+        <th style="width: 40%;">Technical Implementation</th>
+        <th style="width: 35%;">Regulatory Compliance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Data Minimization</strong></td>
+        <td>Faces and non-violating vehicle plates are blurred at the inference stage before leaving the bus.</td>
+        <td>Prevents mass surveillance; zero storage of non-incident PII.</td>
+      </tr>
+      <tr>
+        <td><strong>Ephemeral Ring Buffer</strong></td>
+        <td>Raw camera feeds reside in a volatile 30-second circular RAM buffer, continually overwritten.</td>
+        <td>Eliminates continuous raw footage storage.</td>
+      </tr>
+      <tr>
+        <td><strong>Cryptographic Custody</strong></td>
+        <td>When an incident is detected: <code>Clip → SHA-256 Hash → UTC Timestamp → Audit Log → Secure Vault</code></td>
+        <td>Tamper-evident, court-admissible evidence chain of custody.</td>
+      </tr>
+      <tr>
+        <td><strong>Role-Based Access (RBAC)</strong></td>
+        <td>Granular permissions for <code>ADMIN</code>, <code>TRAFFIC POLICE</code>, <code>ROAD ENGINEER</code>, and <code>ANALYST</code>.</td>
+        <td>Principle of least privilege across municipal stakeholders.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-note">
+    <span>NovaFlow Transport — Confidential & Proprietary</span>
+    <span>Page 2 of 3</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- PAGE 3: DEDUPLICATION, GIS COMMAND CENTER & ROI -->
+  <h2>5. Multi-Bus Deduplication & Spatial Consensus (Step 26)</h2>
+  <p>
+    When multiple buses traverse the same corridor, single defects are reported repeatedly. NovaFlow's backend eliminates alert fatigue using spatial-temporal clustering:
+  </p>
+  <div class="flow-container">
+    Bus 101: Pothole detected at Lat 28.61390 (Conf: 84%)
+    <br>Bus 205: Pothole detected at Lat 28.61394 (Conf: 91%) [15 minutes later]
+    <br>Bus 311: Pothole detected at Lat 28.61387 (Conf: 88%) [1 hour later]
+    <br>-------------------------------------------------------------------------------
+    <br>→ HA日內HAVERSINE DISTANCE CLUSTER (&lt; 15 meters)
+    <br>→ SINGLE CONSOLIDATED GIS PIN | Consensus Confidence: 98% (3 Confirmed Observations)
+  </div>
+
+  <h2>6. Closed-Loop Authority & Maintenance Lifecycle (Step 6)</h2>
+  <p>
+    NovaFlow bridges detection and physical maintenance through a finite state machine:
+  </p>
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-title">1. UNVERIFIED</div>
+      <p>Raw edge AI event logged. Placed in review queue for authority inspection.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">2. CONFIRMED</div>
+      <p>Verified by operator or auto-confirmed by multi-bus consensus (&gt;95% confidence).</p>
+    </div>
+    <div class="card">
+      <div class="card-title">3. UNDER REPAIR</div>
+      <p>Work order ticket generated (e.g. <code>WO-2026-8412</code>) and dispatched to road crews.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">4. RESOLVED</div>
+      <p>Patch completed. Edge AI verifies road smoothness on subsequent bus passes.</p>
+    </div>
+  </div>
+
+  <h2>7. Complete Technology Stack</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technologies</th>
+        <th>Operational Functionality</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Edge Computing</strong></td>
+        <td>Python 3.11, OpenCV, PyTorch, TensorRT, SQLite, Paho MQTT</td>
+        <td>Real-time multi-camera capture, model inference, temporal tracking, offline spooling.</td>
+      </tr>
+      <tr>
+        <td><strong>Backend API</strong></td>
+        <td>FastAPI, Uvicorn, SQLModel / SQLAlchemy, Pydantic v2, Python-Jose</td>
+        <td>High-throughput ingestion gateway, JWT authentication, RBAC, GeoJSON spatial router.</td>
+      </tr>
+      <tr>
+        <td><strong>Message Queue</strong></td>
+        <td>Redis Streams (with In-Memory Provider Fallback)</td>
+        <td>Asynchronous event buffer preventing ingestion bottlenecks during traffic surges.</td>
+      </tr>
+      <tr>
+        <td><strong>Database & GIS</strong></td>
+        <td>PostgreSQL 16, PostGIS, SQLite</td>
+        <td>Spatial indexing (ST_DWithin), persistent telemetry, evidence logs, audit trails.</td>
+      </tr>
+      <tr>
+        <td><strong>Command Frontend</strong></td>
+        <td>React 18, Vite 5, TypeScript, TailwindCSS, Leaflet, Lucide</td>
+        <td>Full-screen GIS Command Center, 12 map layers, spatial clustering, work order management.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>8. Municipal Impact & Smart City Return on Investment (ROI)</h2>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">📉 85% Cost Reduction</div>
+      <p>Eliminates the requirement for dedicated laser road survey vehicles by crowdsourcing data from transit buses already operating.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">⏱️ Proactive Repair</div>
+      <p>Detects road cracks and waterlogging before monsoons compound structural degradation, preventing catastrophic road failures.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🚌 Route Delay Analytics</div>
+      <p>Calibrates actual transit runtimes against timetables (e.g. Route 12: 38 min base vs 51 min actual) to optimize scheduling.</p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>NovaFlow Transport — Official Technical Architecture Blueprint</span>
+    <span>Page 3 of 3</span>
+  </div>
+
+</body>
+</html>

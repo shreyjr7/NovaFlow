@@ -1,0 +1,49 @@
+# RDD2022 & Local Indian Road Data Model Fine-Tuning Configuration (Phase 4 - Step 7)
+# Architecture: Ultralytics YOLOv8n (Nano - Edge Optimized)
+model:
+  name: "yolov8n-rdd2022-india"
+  backbone: "yolov8n"
+  pretrained_weights: "yolov8n.pt"
+  input_resolution: [640, 640]
+  target_edge_fps: 25.0
+  export_format: "onnx / tensorrt"
+
+# Dataset Specs: RDD2022 (India Subset) + Local Municipal Transit Telemetry
+dataset:
+  source: "RDD2022 (Road Damage Dataset 2022) - India Subset + NovaFlow Transit Cameras"
+  train_split: "data/rdd2022/India/train/images"
+  val_split: "data/rdd2022/India/val/images"
+  nc: 8
+  names:
+    0: "pothole"               # RDD2022 D40 + Indian road cratering
+    1: "damaged_road"          # RDD2022 D00 (longitudinal), D10 (transverse), D20 (alligator)
+    2: "waterlogging"          # Step 8: Separate class for surface water ponding
+    3: "missing_road_divider"  # Indian Highway / urban median absent
+    4: "missing_zebra"         # Pedestrian crossing absence / wear
+    5: "damaged_sign"          # Physically damaged or twisted road sign
+    6: "missing_sign"          # Expected traffic regulatory sign missing
+    7: "speed_breaker_defect"  # Unmarked / damaged speed bump (Indian urban roads)
+
+# Training Hyperparameters
+hyperparameters:
+  epochs: 100
+  batch_size: 16
+  imgsz: 640
+  lr0: 0.01
+  lrf: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3.0
+  mosaic: 1.0
+  mixup: 0.1
+  copy_paste: 0.1
+  degrees: 5.0
+  translate: 0.1
+  scale: 0.5
+  shear: 2.0
+  perspective: 0.0005       # Windshield tilt simulation
+  fliplr: 0.5               # Left/Right transit mirror
+  flipud: 0.0
+  hsv_h: 0.015              # Illumination variance (Day / Night / Rain)
+  hsv_s: 0.7
+  hsv_v: 0.4

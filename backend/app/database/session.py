@@ -40,10 +40,30 @@ def get_session() -> Session:
 
 def init_db() -> None:
     try:
-        from ..models.ingested_event import IngestedEvent  # noqa: F401
+        from ..models.entities import (
+            IngestedEvent,
+            GpsTelemetry,
+            RouteModel,
+            BusModel,
+            InfrastructureDefect,
+            StatusAuditLog,
+            EventVerification,
+            UserModel,
+        )  # noqa: F401
     except Exception:
         pass
     SQLModel.metadata.create_all(engine)
+    # Safe SQLite column migration for route_id
+    try:
+        with engine.connect() as conn:
+            from sqlalchemy import text
+            res = conn.execute(text("PRAGMA table_info(ingested_events)")).fetchall()
+            col_names = [r[1] for r in res]
+            if "route_id" not in col_names and len(col_names) > 0:
+                conn.execute(text("ALTER TABLE ingested_events ADD COLUMN route_id VARCHAR(64) DEFAULT 'R-01'"))
+                conn.commit()
+    except Exception:
+        pass
 
 # Auto-initialize tables on load
 try:

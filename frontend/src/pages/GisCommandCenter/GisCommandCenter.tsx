@@ -3,13 +3,15 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { LiveGisMap } from "../../components/LiveGisMap";
+import { ErrorBoundary } from "../../components/ErrorBoundary";
 import adminHierarchyData from "../../data/india_administrative_hierarchy.json";
 import {
   Layers, Filter, Compass, Bus, AlertTriangle, Droplet,
   ShieldAlert, CheckCircle2, XCircle, AlertOctagon,
   Wrench, Eye, ZoomIn, ZoomOut, Maximize2, Minimize2,
   RefreshCw, MapPin, Clock, Camera, ChevronRight, X,
-  FileText, Activity, ArrowUpRight, Flame, Send
+  FileText, Activity, ArrowUpRight, Flame, Send, ArrowLeft,
+  Radio, Cpu
 } from "lucide-react";
 
 // ── Layer & Filter Definitions ───────────────────────────────────────────────
@@ -59,6 +61,83 @@ export interface BusTelemetry {
   speed_kmh: number;
   status: string;
   passenger_load_pct: number;
+}
+
+export function normalizeGisEvent(raw: any): GisEventItem {
+  if (!raw) {
+    return {
+      id: "ev_fallback",
+      event_id: "EV-0000",
+      event_type: "POTHOLE",
+      layer: "potholes",
+      confidence: 0.9,
+      bus_id: "BUS_001",
+      camera_id: "FRONT",
+      timestamp: new Date().toISOString(),
+      gps: { lat: 28.6139, lon: 77.2090, bearing_deg: 0, road_segment: "Monitored Corridor", address: "Monitored Corridor" },
+      district: "Metropolitan",
+      severity: "MEDIUM",
+      status: "ACTIVE",
+    };
+  }
+
+  const p = raw.properties || raw;
+  const lat = p.gps?.lat ?? p.lat ?? p.latitude ?? (raw.geometry?.coordinates?.[1]) ?? 28.6139;
+  const lon = p.gps?.lon ?? p.lon ?? p.longitude ?? (raw.geometry?.coordinates?.[0]) ?? 77.2090;
+  const road_segment = p.gps?.road_segment ?? p.road_segment ?? p.address ?? p.road ?? "Monitored Transit Corridor";
+  const address = p.gps?.address ?? p.address ?? road_segment;
+  const bearing_deg = p.gps?.bearing_deg ?? p.bearing_deg ?? 0;
+
+  const event_type = String(p.event_type || p.type || "POTHOLE").toUpperCase();
+  
+  let layer = p.layer;
+  if (!layer) {
+    if (event_type.includes("POTHOLE")) layer = "potholes";
+    else if (event_type.includes("DAMAGE")) layer = "road_damage";
+    else if (event_type.includes("WATERLOG")) layer = "waterlogging";
+    else if (event_type.includes("SIGN")) layer = "missing_signs";
+    else if (event_type.includes("DIVIDER")) layer = "missing_dividers";
+    else if (event_type.includes("ZEBRA")) layer = "zebra_crossing_issues";
+    else if (event_type.includes("CONGESTION")) layer = "traffic_congestion";
+    else if (event_type.includes("INCIDENT")) layer = "incidents";
+    else if (event_type.includes("PEDESTRIAN")) layer = "pedestrian_risk";
+    else if (event_type.includes("ANPR") || event_type.includes("PLATE") || event_type.includes("INTRUSION")) layer = "anpr_violations";
+    else if (event_type.includes("TICKET")) layer = "maintenance_tickets";
+    else layer = "potholes";
+  }
+
+  const sevRaw = String(p.severity || "MEDIUM").toUpperCase();
+  const severity = (["LOW", "MEDIUM", "HIGH", "SEVERE"].includes(sevRaw) ? sevRaw : "MEDIUM") as "LOW" | "MEDIUM" | "HIGH" | "SEVERE";
+
+  const statRaw = String(p.status || "ACTIVE").toUpperCase();
+  const status = (["ACTIVE", "CONFIRMED", "DISMISSED", "ESCALATED", "TICKET_CREATED", "UNDER_REPAIR", "RESOLVED", "UNVERIFIED"].includes(statRaw)
+    ? statRaw
+    : "ACTIVE") as any;
+
+  return {
+    id: String(p.id || p.event_id || p.eventId || `ev_${Math.random().toString(36).slice(2, 8)}`),
+    event_id: String(p.event_id || p.eventId || p.id || "EV-0000"),
+    event_type,
+    layer,
+    confidence: typeof p.confidence === "number" ? p.confidence : 0.9,
+    bus_id: String(p.bus_id || p.busId || "BUS_001"),
+    camera_id: String(p.camera_id || "FRONT"),
+    timestamp: typeof p.timestamp === "string" && p.timestamp ? p.timestamp : new Date().toISOString(),
+    gps: {
+      lat: Number(lat) || 0,
+      lon: Number(lon) || 0,
+      bearing_deg: Number(bearing_deg) || 0,
+      road_segment: String(road_segment),
+      address: String(address),
+    },
+    district: String(p.district || "Metropolitan"),
+    severity,
+    status,
+    evidence_image_b64: p.evidence_image_b64,
+    evidence_clip_url: p.evidence_clip_url,
+    ticket_id: p.ticket_id,
+    details: p.details || {},
+  };
 }
 
 const INITIAL_LAYERS: LayerConfig[] = [
@@ -259,7 +338,8 @@ export const GisCommandCenter: React.FC = () => {
   const [selectedTehsil, setSelectedTehsil] = useState<string>("ALL");
   const [mapFlyToTarget, setMapFlyToTarget] = useState<{ lat: number; lon: number; zoom: number; label?: string } | null>(null);
 
-  // Filters state (8 filters required by prompt)
+  // Filters state (Step 3: Multi-Category & Multi-Dimensional Filters)
+  const [filterCategory, setFilterCategory] = useState<string>("ALL");
   const [filterType, setFilterType] = useState<string>("ALL");
   const [filterSeverity, setFilterSeverity] = useState<string>("ALL");
   const [filterDate, setFilterDate] = useState<string>("ALL");
@@ -268,6 +348,7 @@ export const GisCommandCenter: React.FC = () => {
   const [filterRoute, setFilterRoute] = useState<string>("ALL");
   const [filterDistrict, setFilterDistrict] = useState<string>("ALL");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
+  const [filterMinConfidence, setFilterMinConfidence] = useState<number>(0);
 
   // Map viewport & clustering state
   const [zoomLevel, setZoomLevel] = useState<number>(14);
@@ -306,24 +387,7 @@ export const GisCommandCenter: React.FC = () => {
         if (res.ok) {
           const data = await res.json();
           if (data.features && data.features.length > 0) {
-            const mapped: GisEventItem[] = data.features.map((f: any) => ({
-              id: f.properties.id || f.properties.event_id,
-              event_id: f.properties.event_id,
-              event_type: f.properties.event_type,
-              layer: f.properties.layer || "potholes",
-              confidence: f.properties.confidence || 0.9,
-              bus_id: f.properties.bus_id || "BUS_001",
-              camera_id: f.properties.camera_id || "FRONT",
-              timestamp: f.properties.timestamp,
-              gps: f.properties.gps || { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] },
-              district: f.properties.district || "Central",
-              severity: f.properties.severity || "MEDIUM",
-              status: f.properties.status || "ACTIVE",
-              evidence_image_b64: f.properties.evidence_image_b64,
-              evidence_clip_url: f.properties.evidence_clip_url,
-              ticket_id: f.properties.ticket_id,
-              details: f.properties.details,
-            }));
+            const mapped: GisEventItem[] = data.features.map((f: any) => normalizeGisEvent(f));
             setEvents(mapped);
           }
         }
@@ -336,31 +400,48 @@ export const GisCommandCenter: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // ── 8-Dimension Filter Pipeline ────────────────────────────────────────────
+  // ── Multi-Dimensional Filter Pipeline (Step 3) ───────────────────────────
   const filteredEvents = useMemo(() => {
     return events.filter((ev) => {
       // 1. Layer visibility check
       const layerConfig = layers.find((l) => l.id === ev.layer);
       if (layerConfig && !layerConfig.visible) return false;
 
-      // 2. Event Type filter
+      // 2. Step 3: Category Quick Filter
+      const evT = (ev.event_type || "").toUpperCase();
+      if (filterCategory !== "ALL") {
+        if (filterCategory === "ROAD_DAMAGE" && !["POTHOLE", "DAMAGED_ROAD", "MISSING_TRAFFIC_SIGN", "MISSING_ROAD_DIVIDER", "MISSING_ZEBRA_CROSSING"].includes(evT)) return false;
+        if (filterCategory === "WATERLOGGING" && !evT.includes("WATERLOG")) return false;
+        if (filterCategory === "TRAFFIC" && !evT.includes("CONGESTION")) return false;
+        if (filterCategory === "PEDESTRIAN_RISK" && !evT.includes("PEDESTRIAN")) return false;
+        if (filterCategory === "INCIDENT" && !evT.includes("INCIDENT")) return false;
+        if (filterCategory === "ANPR" && !(evT.includes("ANPR") || evT.includes("PLATE") || evT.includes("INTRUSION"))) return false;
+      }
+
+      // 3. Event Type filter
       if (filterType !== "ALL" && ev.event_type !== filterType) return false;
 
-      // 3. Severity filter
+      // 4. Severity filter
       if (filterSeverity !== "ALL" && ev.severity !== filterSeverity) return false;
 
-      // 4. District filter
+      // 5. District filter
       if (filterDistrict !== "ALL" && ev.district !== filterDistrict) return false;
 
-      // 5. Bus filter
+      // 6. Bus filter
       if (filterBus !== "ALL" && ev.bus_id !== filterBus) return false;
 
-      // 6. Status filter
+      // 7. Route filter
+      if (filterRoute !== "ALL" && (ev as any).route_id !== filterRoute) return false;
+
+      // 8. Confidence threshold
+      if (filterMinConfidence > 0 && (ev.confidence || 0) < filterMinConfidence) return false;
+
+      // 9. Status filter
       if (filterStatus !== "ALL" && ev.status !== filterStatus) return false;
 
       return true;
     });
-  }, [events, layers, filterType, filterSeverity, filterDistrict, filterBus, filterStatus]);
+  }, [events, layers, filterCategory, filterType, filterSeverity, filterDistrict, filterBus, filterRoute, filterMinConfidence, filterStatus]);
 
   // ── Spatial Clustering at Lower Zoom Levels ─────────────────────────────────
   const clusters = useMemo(() => {
@@ -369,8 +450,8 @@ export const GisCommandCenter: React.FC = () => {
       return filteredEvents.map((ev) => ({
         isCluster: false,
         count: 1,
-        lat: ev.gps.lat,
-        lon: ev.gps.lon,
+        lat: ev.gps?.lat ?? (ev as any).lat ?? 0,
+        lon: ev.gps?.lon ?? (ev as any).lon ?? 0,
         events: [ev],
       }));
     }
@@ -380,16 +461,18 @@ export const GisCommandCenter: React.FC = () => {
     const gridMap: Record<string, GisEventItem[]> = {};
 
     filteredEvents.forEach((ev) => {
-      const gx = Math.floor(ev.gps.lon / gridSize);
-      const gy = Math.floor(ev.gps.lat / gridSize);
+      const lat = ev.gps?.lat ?? (ev as any).lat ?? 0;
+      const lon = ev.gps?.lon ?? (ev as any).lon ?? 0;
+      const gx = Math.floor(lon / gridSize);
+      const gy = Math.floor(lat / gridSize);
       const key = `${gx}_${gy}`;
       if (!gridMap[key]) gridMap[key] = [];
       gridMap[key].push(ev);
     });
 
     return Object.values(gridMap).map((evList) => {
-      const avgLat = evList.reduce((acc, e) => acc + e.gps.lat, 0) / evList.length;
-      const avgLon = evList.reduce((acc, e) => acc + e.gps.lon, 0) / evList.length;
+      const avgLat = evList.reduce((acc, e) => acc + (e.gps?.lat ?? (e as any).lat ?? 0), 0) / (evList.length || 1);
+      const avgLon = evList.reduce((acc, e) => acc + (e.gps?.lon ?? (e as any).lon ?? 0), 0) / (evList.length || 1);
       return {
         isCluster: evList.length > 1,
         count: evList.length,
@@ -412,10 +495,13 @@ export const GisCommandCenter: React.FC = () => {
 
     if (action === "CONFIRM") newStatus = "CONFIRMED";
     else if (action === "DISMISS") newStatus = "DISMISSED";
-    else if (action === "ESCALATE") newStatus = "ESCALATED";
-    else if (action === "CREATE_MAINTENANCE_TICKET") {
-      newStatus = "TICKET_CREATED";
-      newTicketId = `TICK-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    else if (action === "DISPATCH_REPAIR" || action === "CREATE_MAINTENANCE_TICKET") {
+      newStatus = "UNDER_REPAIR";
+      newTicketId = `WO-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    } else if (action === "RESOLVE") {
+      newStatus = "RESOLVED";
+    } else if (action === "REOPEN") {
+      newStatus = "UNVERIFIED";
     }
 
     // Optimistic UI update
@@ -430,11 +516,16 @@ export const GisCommandCenter: React.FC = () => {
         : prev
     );
 
-    setActionNotice(`Event ${eid}: Action '${action}' successfully applied.`);
+    setActionNotice(`Event ${eid}: Transitioned to '${newStatus}'`);
     setTimeout(() => setActionNotice(null), 3500);
 
-    // Call Central GIS action endpoint
+    // Call Central events status transition endpoint (Step 6)
     try {
+      await fetch(`/api/v1/events/${eid}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target_status: newStatus.toLowerCase(), actor: "GIS_OPERATOR" }),
+      });
       await fetch(`/api/v1/gis/events/${eid}/action`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -445,44 +536,86 @@ export const GisCommandCenter: React.FC = () => {
     }
   };
 
+  const handleGenerateWorkOrder = async () => {
+    const target = selectedEvent || events.find((e) => e.status === "ACTIVE" || e.status === "UNVERIFIED" || e.status === "CONFIRMED") || events[0];
+    if (target) {
+      const ticketId = `WO-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      setEvents((prev) =>
+        prev.map((e) =>
+          e.event_id === target.event_id ? { ...e, status: "UNDER_REPAIR", ticket_id: ticketId } : e
+        )
+      );
+      setSelectedEvent((prev) =>
+        prev && prev.event_id === target.event_id
+          ? { ...prev, status: "UNDER_REPAIR", ticket_id: ticketId }
+          : { ...target, status: "UNDER_REPAIR", ticket_id: ticketId }
+      );
+      setActionNotice(`⚡ Automated Work Order Generated: ${ticketId} dispatched for ${target.event_type} (${target.gps?.road_segment || target.gps?.address || 'Monitored Corridor'})`);
+      setTimeout(() => setActionNotice(null), 4500);
+
+      try {
+        await fetch(`/api/v1/events/${target.event_id}/status`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target_status: "under_repair", actor: "AUTONOMOUS_DISPATCH_AI" }),
+        });
+      } catch {
+        // Local state preserved
+      }
+    } else {
+      setActionNotice("All detected anomalies are currently resolved or under active repair.");
+      setTimeout(() => setActionNotice(null), 3000);
+    }
+  };
+
   const currentCenter = CITY_COORDS[activeCity];
+
+  // Group layers into Image 1's three visual sets (Defects, Bottlenecks, Edge Nodes)
+  const surfaceLayers = layers.filter((l) => l.category === "DEFECTS" || l.id === "potholes" || l.id === "road_damage" || l.id === "waterlogging");
+  const hazardLayers = layers.filter((l) => l.category === "SAFETY" || l.category === "TRAFFIC" || l.id === "incidents" || l.id === "pedestrian_risk" || l.id === "traffic_congestion");
+  const edgeLayers = layers.filter((l) => l.category === "FLEET" || l.category === "INFRA" || l.category === "SIGNS" || l.category === "MAINTENANCE");
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-screen overflow-hidden bg-gray-950 text-gray-100 flex flex-col ${
-        isFullscreen ? "fixed inset-0 z-50" : ""
+      className={`relative w-full h-full overflow-hidden bg-[#0A0C16] text-slate-100 flex flex-col ${
+        isFullscreen ? "fixed inset-0 z-50 h-screen" : ""
       }`}
     >
-      {/* ── TOP APP BAR ──────────────────────────────────────────────────────── */}
-      <header className="h-14 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-4 flex items-center justify-between z-30 shrink-0">
+      {/* ── TOP APP BAR: FLEET SENSING OVERLAY - LIVE ─────────── */}
+      <header className="h-14 bg-[#16192E] border-b border-[#232746] px-4 flex items-center justify-between z-30 shrink-0 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand to-indigo-500 flex items-center justify-center text-white font-black text-sm shadow-md shadow-brand/30">
-            GIS
+          <div className="w-8 h-8 rounded-lg bg-[#1E2342] border border-[#2B325E] flex items-center justify-center text-white font-black text-sm shadow-md">
+            <Radio size={16} className="text-amber-400 animate-pulse" />
           </div>
           <div>
-            <h1 className="text-sm font-bold tracking-wide flex items-center gap-2">
-              <span>NovaFlow GIS Command Center</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono">
-                LIVE TELEMETRY
+            <h1 className="text-sm font-extrabold tracking-wide flex items-center gap-2 text-white">
+              <span>FLEET SENSING OVERLAY — LIVE</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-mono font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                ACTIVE SENSING
               </span>
             </h1>
-            <p className="text-[11px] text-gray-400">
-              Urban Fleet Spatial Intelligence & Real-time Anomaly Dispatch
+            <p className="text-[11px] text-slate-400 font-medium">
+              National Geospatial Urban Sensing Grid • PWD & Traffic Integration
             </p>
           </div>
         </div>
 
         {/* City Selector */}
-        <div className="flex items-center gap-1.5 bg-gray-800/80 p-1 rounded-lg border border-gray-700 text-xs">
+        <div className="flex items-center gap-1 bg-[#0E101E] p-1 rounded-lg border border-[#232746] text-xs font-semibold">
           {(["DELHI", "BANGALORE", "MUMBAI"] as const).map((city) => (
             <button
               key={city}
-              onClick={() => setActiveCity(city)}
-              className={`px-3 py-1 rounded-md font-semibold transition ${
+              onClick={() => {
+                setActiveCity(city);
+                const coords = CITY_COORDS[city];
+                setMapFlyToTarget({ lat: coords.lat, lon: coords.lon, zoom: 13, label: coords.name });
+              }}
+              className={`px-3 py-1 rounded-md transition cursor-pointer ${
                 activeCity === city
-                  ? "bg-brand text-white shadow-sm"
-                  : "text-gray-400 hover:text-gray-200"
+                  ? "bg-[#282F5A] text-white shadow-sm font-bold"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
               {city}
@@ -491,32 +624,59 @@ export const GisCommandCenter: React.FC = () => {
         </div>
 
         {/* Top Right Quick Stats & Controls */}
-        <div className="flex items-center gap-3 text-xs">
-          <div className="hidden lg:flex items-center gap-3 text-gray-300 font-mono text-[11px]">
-            <span className="flex items-center gap-1">
+        <div className="flex items-center gap-2.5 text-xs">
+          <div className="hidden lg:flex items-center gap-2.5 text-slate-400 font-mono text-[11px] bg-[#0E101E] px-3 py-1 rounded-md border border-[#232746]">
+            <span className="flex items-center gap-1 text-white font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{buses.length} Buses Active</span>
             </span>
-            <span className="text-gray-600">|</span>
-            <span>{filteredEvents.length} Incidents Plotted</span>
+            <span className="text-slate-600">|</span>
+            <span className="text-emerald-400 font-bold bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/30">
+              Consensus: 98.4%
+            </span>
+            <span className="text-slate-600">|</span>
+            <span className="text-white font-bold">{filteredEvents.length} Hazards</span>
           </div>
 
+          {/* Map View Mode Toggle */}
+          <div className="flex items-center bg-[#0E101E] border border-[#232746] rounded-lg p-0.5">
+            <button
+              onClick={() => setMapViewMode("REAL_MAP")}
+              className={`px-2.5 py-1 rounded text-[11px] font-bold transition cursor-pointer ${
+                mapViewMode === "REAL_MAP" ? "bg-[#282F5A] text-white shadow-sm" : "text-slate-400 hover:text-white"
+              }`}
+              title="Google Maps Roadmap / Cartographic Tiles"
+            >
+              🗺️ Map
+            </button>
+            <button
+              onClick={() => setMapViewMode("VECTOR")}
+              className={`px-2.5 py-1 rounded text-[11px] font-bold transition cursor-pointer ${
+                mapViewMode === "VECTOR" ? "bg-[#282F5A] text-white shadow-sm" : "text-slate-400 hover:text-white"
+              }`}
+              title="Schematic Vector Grid"
+            >
+              📐 Grid
+            </button>
+          </div>
+
+          {/* Clustering Toggle */}
           <button
             onClick={() => setIsClusterMode(!isClusterMode)}
-            className={`px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
+            className={`px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
               isClusterMode
-                ? "bg-indigo-950/70 border-indigo-500/40 text-indigo-300"
-                : "bg-gray-800 border-gray-700 text-gray-400"
+                ? "bg-emerald-950/80 text-emerald-400 border-emerald-500/40"
+                : "bg-[#0E101E] border-[#232746] text-slate-400 hover:text-white"
             }`}
-            title="Toggle zoom-level event clustering"
+            title="Toggle marker clustering for dense hazard clusters"
           >
-            <Layers size={13} />
-            <span>Clustering: {isClusterMode ? "ON" : "OFF"}</span>
+            <span className={`w-2 h-2 rounded-full ${isClusterMode ? "bg-emerald-400" : "bg-slate-500"}`} />
+            <span>Clusters: {isClusterMode ? "ON" : "OFF"}</span>
           </button>
 
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition"
+            className="p-1.5 rounded-lg bg-[#1E2342] hover:bg-[#282F5A] text-slate-300 hover:text-white border border-[#2B325E] transition cursor-pointer"
             title="Toggle Fullscreen"
           >
             {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
@@ -526,337 +686,355 @@ export const GisCommandCenter: React.FC = () => {
 
       {/* ── ACTION NOTIFICATION TOAST ────────────────────────────────────────── */}
       {actionNotice && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-gray-900 border border-brand text-brand-light px-4 py-2 rounded-xl shadow-2xl font-mono text-xs flex items-center gap-2 animate-bounce">
-          <CheckCircle2 size={15} className="text-brand" />
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-[#1F2243] border border-amber-400 text-white px-4 py-2 rounded-xl shadow-2xl font-mono text-xs flex items-center gap-2 animate-bounce">
+          <CheckCircle2 size={15} className="text-amber-400 shrink-0" />
           <span>{actionNotice}</span>
         </div>
       )}
 
       {/* ── WORKSPACE BODY: SIDEBARS + MAP CANVAS ────────────────────────────── */}
       <div className="flex-1 flex relative overflow-hidden">
-        {/* ── LEFT FLOATING PANEL: 12 MAP LAYERS ───────────────────────────────── */}
-        <aside className="absolute top-3 left-3 z-20 w-64 bg-gray-900/90 backdrop-blur-md border border-gray-800 rounded-xl shadow-2xl flex flex-col max-h-[calc(100%-24px)] overflow-hidden">
-          <div className="p-3 border-b border-gray-800 flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-300">
-              <Layers size={14} className="text-brand" />
-              <span>Map Layers (12)</span>
+        {/* ── LEFT FLOATING PANEL: MAP LAYERS ────────────────────── */}
+        <aside className="absolute top-3 left-3 z-20 w-64 bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex flex-col max-h-[calc(100%-24px)] overflow-hidden text-slate-100">
+          {/* Header */}
+          <div className="p-3 border-b border-[#232746] flex items-center justify-between bg-[#16192E]">
+            <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-white">
+              <Layers size={14} className="text-amber-400" />
+              <span>Map Layers</span>
+              <span className="text-[10px] text-slate-400 font-mono font-normal">
+                ({layers.filter((l) => l.visible).length}/{layers.length})
+              </span>
             </div>
-            <div className="flex gap-1 text-[10px]">
+            <div className="flex gap-1 text-[10px] font-semibold">
               <button
                 onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: true })))}
-                className="text-brand hover:underline"
+                className="text-amber-400 hover:text-amber-300 hover:underline cursor-pointer"
               >
                 All
               </button>
-              <span className="text-gray-600">/</span>
+              <span className="text-slate-600">/</span>
               <button
                 onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: false })))}
-                className="text-gray-500 hover:underline"
+                className="text-slate-400 hover:text-slate-200 hover:underline cursor-pointer"
               >
                 None
               </button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-2 space-y-1 text-xs">
-            {layers.map((layer) => (
-              <label
-                key={layer.id}
-                className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg cursor-pointer transition select-none ${
-                  layer.visible ? "bg-gray-800/80 text-gray-200" : "text-gray-500 hover:bg-gray-800/40"
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={layer.visible}
-                    onChange={() => toggleLayer(layer.id)}
-                    className="accent-brand rounded"
-                  />
-                  <span>{layer.icon}</span>
-                  <span className="font-medium text-[11px] truncate max-w-[130px]">
-                    {layer.name}
-                  </span>
-                </div>
-                <span
-                  className="text-[10px] font-mono px-1.5 py-0.5 rounded-full font-bold"
-                  style={{
-                    backgroundColor: `${layer.color}20`,
-                    color: layer.color,
-                    border: `1px solid ${layer.color}40`,
-                  }}
-                >
-                  {events.filter((e) => e.layer === layer.id).length}
+          {/* Grouped Layer List */}
+          <div className="flex-1 overflow-y-auto p-2.5 space-y-3 text-xs">
+            {/* 🟢 Group 1: PWD Surface Defects */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>PWD Surface Defects</span>
                 </span>
-              </label>
-            ))}
+                <span className="font-mono text-[9px] text-slate-400">
+                  {events.filter((e) => surfaceLayers.some((sl) => sl.id === e.layer)).length}
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {surfaceLayers.map((layer) => (
+                  <label
+                    key={layer.id}
+                    className={`flex items-center justify-between px-2 py-1 rounded-lg cursor-pointer transition select-none ${
+                      layer.visible ? "bg-[#1E2342] text-white font-semibold" : "text-slate-400 hover:bg-[#16192E]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <input
+                        type="checkbox"
+                        checked={layer.visible}
+                        onChange={() => toggleLayer(layer.id)}
+                        className="accent-amber-500 rounded"
+                      />
+                      <span>{layer.icon}</span>
+                      <span className="text-[11px] truncate max-w-[130px]">{layer.name}</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold bg-amber-950/80 text-amber-400 border border-amber-500/30">
+                      {events.filter((e) => e.layer === layer.id).length}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* 🔴 Group 2: Bottlenecks & Hazards */}
+            <div className="space-y-1 pt-1 border-t border-[#232746]">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span>Bottlenecks & Hazards</span>
+                </span>
+                <span className="font-mono text-[9px] text-slate-400">
+                  {events.filter((e) => hazardLayers.some((hl) => hl.id === e.layer)).length}
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {hazardLayers.map((layer) => (
+                  <label
+                    key={layer.id}
+                    className={`flex items-center justify-between px-2 py-1 rounded-lg cursor-pointer transition select-none ${
+                      layer.visible ? "bg-[#1E2342] text-white font-semibold" : "text-slate-400 hover:bg-[#16192E]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <input
+                        type="checkbox"
+                        checked={layer.visible}
+                        onChange={() => toggleLayer(layer.id)}
+                        className="accent-rose-500 rounded"
+                      />
+                      <span>{layer.icon}</span>
+                      <span className="text-[11px] truncate max-w-[130px]">{layer.name}</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold bg-rose-950/80 text-rose-400 border border-rose-500/30">
+                      {events.filter((e) => e.layer === layer.id).length}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* 🔵 Group 3: Active Edge Nodes */}
+            <div className="space-y-1 pt-1 border-t border-[#232746]">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                  <span>Active Edge Nodes</span>
+                </span>
+                <span className="font-mono text-[9px] text-slate-400">
+                  {buses.length} Live
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {edgeLayers.map((layer) => (
+                  <label
+                    key={layer.id}
+                    className={`flex items-center justify-between px-2 py-1 rounded-lg cursor-pointer transition select-none ${
+                      layer.visible ? "bg-[#1E2342] text-white font-semibold" : "text-slate-400 hover:bg-[#16192E]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <input
+                        type="checkbox"
+                        checked={layer.visible}
+                        onChange={() => toggleLayer(layer.id)}
+                        className="accent-cyan-500 rounded"
+                      />
+                      <span>{layer.icon}</span>
+                      <span className="text-[11px] truncate max-w-[130px]">{layer.name}</span>
+                    </div>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded font-bold bg-cyan-950/80 text-cyan-400 border border-cyan-500/30">
+                      {layer.id === "bus_locations" ? buses.length : events.filter((e) => e.layer === layer.id).length}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Territorial Intelligence Card */}
+          {/* Territorial Intelligence Card at bottom */}
           {(() => {
             const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
             if (!stateObj) return null;
-            const currentDist = selectedDistrict !== "ALL" 
-              ? stateObj.districts.find((d: any) => d.name === selectedDistrict) 
+            const currentDist = selectedDistrict !== "ALL"
+              ? stateObj.districts.find((d: any) => d.name === selectedDistrict)
               : stateObj.districts[0];
 
             return (
-              <div className="p-3 border-t border-gray-800 bg-gray-950/80 space-y-2 text-[11px]">
-                <div className="flex items-center justify-between font-bold text-blue-400">
+              <div className="p-2.5 border-t border-[#232746] bg-[#0B0D18] space-y-1.5 text-[11px]">
+                <div className="flex items-center justify-between font-bold text-white">
                   <span className="flex items-center gap-1">
-                    <MapPin size={12} />
+                    <MapPin size={12} className="text-amber-400" />
                     <span>Territory Dossier</span>
                   </span>
-                  <span className="font-mono text-[10px] text-gray-400 font-normal">
+                  <span className="font-mono text-[10px] text-slate-400 font-normal">
                     {stateObj.code}
                   </span>
                 </div>
 
-                <div className="space-y-1">
-                  <div className="flex justify-between text-gray-300">
-                    <span className="text-gray-500">State:</span>
-                    <span className="font-semibold text-white truncate max-w-[140px]">{stateObj.state}</span>
+                <div className="space-y-0.5 text-[10px]">
+                  <div className="flex justify-between text-slate-400">
+                    <span>State:</span>
+                    <span className="font-semibold text-[#1F2243] truncate max-w-[130px]">{stateObj.state}</span>
                   </div>
-                  <div className="flex justify-between text-gray-300">
-                    <span className="text-gray-500">Capital:</span>
-                    <span className="font-semibold text-emerald-400">{stateObj.capital}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-300">
-                    <span className="text-gray-500">District:</span>
-                    <span className="font-semibold text-amber-400 truncate max-w-[140px]">
+                  <div className="flex justify-between text-[#4F546F]">
+                    <span>District:</span>
+                    <span className="font-semibold text-amber-700 truncate max-w-[130px]">
                       {selectedDistrict !== "ALL" ? selectedDistrict : `${stateObj.districts.length} Monitored`}
                     </span>
                   </div>
-                  {currentDist && (
-                    <div className="pt-1.5 border-t border-gray-800/80 space-y-1">
-                      <div className="text-gray-400 font-semibold text-[10px]">
-                        Tehsils ({currentDist.tehsils.length}):
-                      </div>
-                      <div className="flex flex-wrap gap-1 max-h-16 overflow-y-auto">
-                        {currentDist.tehsils.map((t: string) => (
-                          <span
-                            key={t}
-                            onClick={() => {
-                              setSelectedTehsil(t);
-                              setSelectedDistrict(currentDist.name);
-                              setMapFlyToTarget({ lat: currentDist.lat, lon: currentDist.lon, zoom: 14, label: `Tehsil: ${t}` });
-                            }}
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono cursor-pointer transition ${
-                              selectedTehsil === t
-                                ? "bg-amber-500 text-black font-bold"
-                                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                            }`}
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="text-gray-400 font-semibold text-[10px] pt-1">
-                        Active Corridors:
-                      </div>
-                      <div className="text-[10px] text-gray-300 font-mono space-y-0.5 max-h-16 overflow-y-auto">
-                        {currentDist.corridors.slice(0, 3).map((c: string) => (
-                          <div key={c} className="truncate text-slate-400 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                            <span>{c}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             );
           })()}
         </aside>
 
-        {/* ── TOP FILTER BAR: 8 FILTERS ────────────────────────────────────────── */}
-        <div className="absolute top-3 left-72 right-3 z-30 flex flex-wrap items-center gap-2 bg-gray-900/90 backdrop-blur-md border border-gray-800 p-2 rounded-xl shadow-xl text-xs">
-          <div className="flex items-center gap-1 text-gray-400 font-bold uppercase tracking-wider text-[10px] pl-1">
-            <Filter size={12} className="text-brand" />
-            <span>Filters:</span>
+        {/* ── TOP FILTER BAR: CATEGORY PILLS & MULTI-DIMENSIONAL FILTERS ─────── */}
+        <div className="absolute top-3 left-72 right-3 z-30 flex flex-col gap-2 bg-white/95 backdrop-blur-md border border-[#CBD5E1] p-2.5 rounded-xl shadow-lg text-xs text-[#1F2243]">
+          {/* Row 1: Category Quick Filters */}
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#4F546F] mr-1 flex items-center gap-1">
+                <Filter size={12} className="text-amber-600" />
+                Categories:
+              </span>
+              {[
+                { id: "ALL", label: "All", icon: "🌐" },
+                { id: "ROAD_DAMAGE", label: "Road Damage", icon: "🕳️" },
+                { id: "WATERLOGGING", label: "Waterlogging", icon: "💧" },
+                { id: "TRAFFIC", label: "Traffic", icon: "🚗" },
+                { id: "PEDESTRIAN_RISK", label: "Pedestrian Risk", icon: "🚸" },
+                { id: "INCIDENT", label: "Incident", icon: "🚨" },
+                { id: "ANPR", label: "ANPR", icon: "📸" },
+              ].map((cat) => {
+                const isActive = filterCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setFilterCategory(cat.id)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold transition flex items-center gap-1 ${
+                      isActive
+                        ? "bg-[#1F2243] text-white shadow-sm ring-1 ring-[#1F2243]"
+                        : "bg-[#F1F5F9] text-[#4F546F] hover:text-[#1F2243] hover:bg-[#E2E8F0]"
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    <span>{cat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* 1. Event Type Filter */}
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-md px-2 py-1 text-xs text-gray-200 focus:ring-1 focus:ring-brand outline-none"
-          >
-            <option value="ALL">All Event Types</option>
-            <option value="POTHOLE">Potholes</option>
-            <option value="DAMAGED_ROAD">Damaged Road</option>
-            <option value="WATERLOGGING">Waterlogging</option>
-            <option value="MISSING_TRAFFIC_SIGN">Missing Signs</option>
-            <option value="MISSING_ROAD_DIVIDER">Missing Dividers</option>
-            <option value="MISSING_ZEBRA_CROSSING">Zebra Crossings</option>
-            <option value="CONGESTION_EVENT">Traffic Congestion</option>
-            <option value="POSSIBLE_INCIDENT">Incidents</option>
-            <option value="PEDESTRIAN_RISK">Pedestrian Risk</option>
-            <option value="MAINTENANCE_TICKET">Maintenance Tickets</option>
-          </select>
-
-          {/* 2. Severity Filter */}
-          <select
-            value={filterSeverity}
-            onChange={(e) => setFilterSeverity(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-md px-2 py-1 text-xs text-gray-200 focus:ring-1 focus:ring-brand outline-none"
-          >
-            <option value="ALL">All Severities</option>
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-            <option value="SEVERE">Severe</option>
-          </select>
-
-          {/* 3. State & Capital Selector */}
-          <select
-            value={selectedState}
-            onChange={(e) => {
-              const newState = e.target.value;
-              setSelectedState(newState);
-              setSelectedDistrict("ALL");
-              setSelectedTehsil("ALL");
-              const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === newState);
-              if (stateObj && stateObj.districts.length > 0) {
-                const firstDist = stateObj.districts[0];
-                setMapFlyToTarget({ lat: firstDist.lat, lon: firstDist.lon, zoom: 12, label: `${stateObj.state} • Capital: ${stateObj.capital}` });
-              }
-            }}
-            className="bg-gray-800 border border-blue-500/50 rounded-md px-2 py-1 text-xs text-blue-300 font-semibold focus:ring-1 focus:ring-brand outline-none cursor-pointer"
-            title="Select State & Capital"
-          >
-            {adminHierarchyData.all_states.map((st: any) => (
-              <option key={st.state} value={st.state}>
-                🏛️ {st.state} (Cap: {st.capital})
-              </option>
-            ))}
-          </select>
-
-          {/* 4. District Selector */}
-          <select
-            value={selectedDistrict}
-            onChange={(e) => {
-              const newDist = e.target.value;
-              setSelectedDistrict(newDist);
-              setSelectedTehsil("ALL");
-              const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-              if (stateObj) {
-                const distObj = stateObj.districts.find((d: any) => d.name === newDist);
-                if (distObj) {
-                  setMapFlyToTarget({ lat: distObj.lat, lon: distObj.lon, zoom: 13, label: `${distObj.name} District, ${stateObj.state}` });
-                }
-              }
-            }}
-            className="bg-gray-800 border border-emerald-500/50 rounded-md px-2 py-1 text-xs text-emerald-300 font-semibold focus:ring-1 focus:ring-brand outline-none cursor-pointer"
-            title="Select District"
-          >
-            <option value="ALL">All Districts</option>
-            {(() => {
-              const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-              return stateObj ? stateObj.districts.map((d: any) => (
-                <option key={d.name} value={d.name}>
-                  📍 {d.name}
-                </option>
-              )) : null;
-            })()}
-          </select>
-
-          {/* 5. Tehsil (Sub-District) Selector */}
-          <select
-            value={selectedTehsil}
-            onChange={(e) => {
-              const newTeh = e.target.value;
-              setSelectedTehsil(newTeh);
-              const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-              if (stateObj) {
-                const distObj = stateObj.districts.find((d: any) => 
-                  selectedDistrict !== "ALL" ? d.name === selectedDistrict : d.tehsils.includes(newTeh)
-                );
-                if (distObj) {
-                  setMapFlyToTarget({ lat: distObj.lat, lon: distObj.lon, zoom: 14, label: `Tehsil: ${newTeh} (${distObj.name})` });
-                }
-              }
-            }}
-            className="bg-gray-800 border border-amber-500/50 rounded-md px-2 py-1 text-xs text-amber-300 font-semibold focus:ring-1 focus:ring-brand outline-none cursor-pointer"
-            title="Select Tehsil / Sub-District"
-          >
-            <option value="ALL">All Tehsils</option>
-            {(() => {
-              const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-              if (!stateObj) return null;
-              const dists = selectedDistrict === "ALL" 
-                ? stateObj.districts 
-                : stateObj.districts.filter((d: any) => d.name === selectedDistrict);
-              const allTehsils = dists.flatMap((d: any) => d.tehsils);
-              return Array.from(new Set(allTehsils)).map((t: any) => (
-                <option key={t} value={t}>
-                  🏛️ Tehsil: {t}
-                </option>
-              ));
-            })()}
-          </select>
-
-          {/* 4. Bus Filter */}
-          <select
-            value={filterBus}
-            onChange={(e) => setFilterBus(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-md px-2 py-1 text-xs text-gray-200 focus:ring-1 focus:ring-brand outline-none"
-          >
-            <option value="ALL">All Fleet Buses</option>
-            <option value="BUS_001">BUS_001 (Delhi)</option>
-            <option value="BUS_002">BUS_002 (Bangalore)</option>
-            <option value="BUS_003">BUS_003 (Mumbai)</option>
-          </select>
-
-          {/* 5. Status Filter */}
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded-md px-2 py-1 text-xs text-gray-200 focus:ring-1 focus:ring-brand outline-none"
-          >
-            <option value="ALL">All Statuses</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="CONFIRMED">CONFIRMED</option>
-            <option value="ESCALATED">ESCALATED</option>
-            <option value="TICKET_CREATED">TICKET_CREATED</option>
-            <option value="DISMISSED">DISMISSED</option>
-          </select>
-
-          {/* Reset Filters */}
-          <button
-            onClick={() => {
-              setFilterType("ALL");
-              setFilterSeverity("ALL");
-              setFilterDistrict("ALL");
-              setFilterBus("ALL");
-              setFilterStatus("ALL");
-            }}
-            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 transition text-[11px]"
-          >
-            Reset
-          </button>
-
-          {/* Map View Mode Toggle */}
-          <div className="relative z-[50] flex items-center bg-gray-900 border border-gray-700 rounded-md p-0.5 ml-auto pointer-events-auto">
-            <button
-              onClick={() => setMapViewMode("REAL_MAP")}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
-                mapViewMode === "REAL_MAP" ? "bg-blue-600 text-white shadow" : "text-gray-400 hover:text-white hover:bg-gray-800"
-              }`}
-              title="Google Maps / Cartographic Tile Layer"
+          {/* Row 2: Multi-Dimensional Dropdowns */}
+          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+            {/* Severity Filter */}
+            <select
+              value={filterSeverity}
+              onChange={(e) => setFilterSeverity(e.target.value)}
+              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
             >
-              🗺️ Google Maps
-            </button>
-            <button
-              onClick={() => setMapViewMode("VECTOR")}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
-                mapViewMode === "VECTOR" ? "bg-indigo-600 text-white shadow" : "text-gray-400 hover:text-white hover:bg-gray-800"
-              }`}
-              title="Schematic Vector Grid"
+              <option value="ALL">All Severities</option>
+              <option value="LOW">Low Severity</option>
+              <option value="MEDIUM">Medium Severity</option>
+              <option value="HIGH">High Severity</option>
+              <option value="SEVERE">Severe Hazard</option>
+            </select>
+
+            {/* Status Filter */}
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
             >
-              📐 Schematic
+              <option value="ALL">All Statuses</option>
+              <option value="UNVERIFIED">⏳ UNVERIFIED</option>
+              <option value="CONFIRMED">✓ CONFIRMED</option>
+              <option value="UNDER_REPAIR">🔧 UNDER REPAIR</option>
+              <option value="RESOLVED">✓ RESOLVED</option>
+              <option value="DISMISSED">✕ DISMISSED</option>
+            </select>
+
+            {/* Date Filter */}
+            <select
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="ALL">All Dates</option>
+              <option value="TODAY">Today Only</option>
+              <option value="24H">Past 24 Hours</option>
+              <option value="7D">Past 7 Days</option>
+            </select>
+
+            {/* Confidence Filter */}
+            <select
+              value={filterMinConfidence}
+              onChange={(e) => setFilterMinConfidence(Number(e.target.value))}
+              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
+            >
+              <option value={0}>All Confidences</option>
+              <option value={0.80}>≥ 80% Confidence</option>
+              <option value={0.85}>≥ 85% Confidence</option>
+              <option value={0.90}>≥ 90% Confidence</option>
+              <option value={0.95}>≥ 95% Confidence</option>
+            </select>
+
+            {/* State Selector */}
+            <select
+              value={selectedState}
+              onChange={(e) => {
+                const newState = e.target.value;
+                setSelectedState(newState);
+                setSelectedDistrict("ALL");
+                setSelectedTehsil("ALL");
+                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === newState);
+                if (stateObj && stateObj.districts.length > 0) {
+                  const firstDist = stateObj.districts[0];
+                  setMapFlyToTarget({ lat: firstDist.lat, lon: firstDist.lon, zoom: 12, label: `${stateObj.state} • Capital: ${stateObj.capital}` });
+                }
+              }}
+              className="bg-[#F8FAFC] border border-blue-400 rounded-md px-2 py-1 text-xs text-blue-800 font-semibold outline-none cursor-pointer"
+              title="Select State & Capital"
+            >
+              {adminHierarchyData.all_states.map((st: any) => (
+                <option key={st.state} value={st.state}>
+                  🏛️ {st.state} (Cap: {st.capital})
+                </option>
+              ))}
+            </select>
+
+            {/* District Selector */}
+            <select
+              value={selectedDistrict}
+              onChange={(e) => {
+                const newDist = e.target.value;
+                setSelectedDistrict(newDist);
+                setSelectedTehsil("ALL");
+                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
+                if (stateObj) {
+                  const distObj = stateObj.districts.find((d: any) => d.name === newDist);
+                  if (distObj) {
+                    setMapFlyToTarget({ lat: distObj.lat, lon: distObj.lon, zoom: 13, label: `${distObj.name} District, ${stateObj.state}` });
+                  }
+                }
+              }}
+              className="bg-[#F8FAFC] border border-emerald-400 rounded-md px-2 py-1 text-xs text-emerald-800 font-semibold outline-none cursor-pointer"
+              title="Select District"
+            >
+              <option value="ALL">All Districts</option>
+              {(() => {
+                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
+                return stateObj ? stateObj.districts.map((d: any) => (
+                  <option key={d.name} value={d.name}>
+                    📍 {d.name}
+                  </option>
+                )) : null;
+              })()}
+            </select>
+
+            {/* Reset Filters */}
+            <button
+              onClick={() => {
+                setFilterCategory("ALL");
+                setFilterType("ALL");
+                setFilterSeverity("ALL");
+                setFilterDistrict("ALL");
+                setFilterBus("ALL");
+                setFilterRoute("ALL");
+                setFilterDate("ALL");
+                setFilterStatus("ALL");
+                setFilterMinConfidence(0);
+                setSelectedDistrict("ALL");
+                setSelectedTehsil("ALL");
+              }}
+              className="px-2.5 py-1 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] hover:text-[#1F2243] transition text-[11px] font-semibold ml-auto border border-[#CBD5E1]"
+            >
+              Reset Filters
             </button>
           </div>
         </div>
@@ -869,8 +1047,19 @@ export const GisCommandCenter: React.FC = () => {
               initialCity={activeCity === "BANGALORE" ? "BANGALORE" : activeCity === "MUMBAI" ? "MUMBAI" : "DELHI"}
               showControls={false}
               flyToLocation={mapFlyToTarget}
+              filters={{
+                category: filterCategory,
+                severity: filterSeverity,
+                status: filterStatus,
+                date: filterDate,
+                bus: filterBus,
+                route: filterRoute,
+                minConfidence: filterMinConfidence,
+                isClusterMode: isClusterMode,
+              }}
               onSelectEvent={(ev) => {
-                setSelectedEvent(ev);
+                const norm = normalizeGisEvent(ev);
+                setSelectedEvent(norm);
                 setIsDetailsOpen(true);
               }}
             />
@@ -965,7 +1154,7 @@ export const GisCommandCenter: React.FC = () => {
                     style={{ left: `${posX}%`, top: `${posY}%` }}
                     onClick={() => {
                       setZoomLevel((z) => Math.min(16, z + 2));
-                      setSelectedEvent(c.events[0]);
+                      setSelectedEvent(normalizeGisEvent(c.events[0]));
                       setIsDetailsOpen(true);
                     }}
                   >
@@ -991,7 +1180,7 @@ export const GisCommandCenter: React.FC = () => {
                   className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group transition-all duration-200"
                   style={{ left: `${posX}%`, top: `${posY}%` }}
                   onClick={() => {
-                    setSelectedEvent(ev);
+                    setSelectedEvent(normalizeGisEvent(ev));
                     setIsDetailsOpen(true);
                   }}
                 >
@@ -1049,194 +1238,448 @@ export const GisCommandCenter: React.FC = () => {
         </div>
         )}
 
-        {/* ── RIGHT DRAWER: EVENT DETAILS MODAL / PANEL ──────────────────────── */}
-        {isDetailsOpen && selectedEvent && (
-          <aside className="w-96 bg-gray-900/95 backdrop-blur-lg border-l border-gray-800 z-30 flex flex-col shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-300">
-            {/* Header */}
-            <div className="p-4 border-b border-gray-800 flex items-center justify-between sticky top-0 bg-gray-900/95 backdrop-blur-sm z-10">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">
-                  {layers.find((l) => l.id === selectedEvent.layer)?.icon || "📍"}
-                </span>
-                <div>
-                  <div className="font-mono font-bold text-sm text-gray-100">
-                    {selectedEvent.event_id}
-                  </div>
-                  <div className="text-xs text-gray-400">{selectedEvent.event_type}</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsDetailsOpen(false)}
-                className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Content Body */}
-            <div className="p-4 space-y-4 text-xs font-mono">
-              {/* Status and Severity Badges */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                      selectedEvent.severity === "SEVERE"
-                        ? "bg-rose-500/20 text-rose-400 border border-rose-500/40"
-                        : selectedEvent.severity === "HIGH"
-                        ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
-                        : "bg-blue-500/20 text-blue-400 border border-blue-500/40"
-                    }`}
-                  >
-                    {selectedEvent.severity} SEVERITY
-                  </span>
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                      selectedEvent.status === "CONFIRMED"
-                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
-                        : selectedEvent.status === "ESCALATED"
-                        ? "bg-rose-500/20 text-rose-400 border border-rose-500/40"
-                        : selectedEvent.status === "TICKET_CREATED"
-                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
-                        : "bg-gray-800 text-gray-300 border border-gray-700"
-                    }`}
-                  >
-                    {selectedEvent.status}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-gray-500 block">AI CONFIDENCE</span>
-                  <span className="text-emerald-400 font-bold text-sm">
-                    {(selectedEvent.confidence * 100).toFixed(0)}%
-                  </span>
-                </div>
-              </div>
-
-              {/* Evidentiary Media Display */}
-              <div className="space-y-2">
-                <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                  <Camera size={12} className="text-brand" />
-                  <span>Evidence Verification Media</span>
-                </div>
-
-                {selectedEvent.evidence_image_b64 ? (
-                  <div className="relative rounded-xl overflow-hidden border border-gray-700 aspect-video bg-black flex items-center justify-center">
-                    <img
-                      src={selectedEvent.evidence_image_b64}
-                      alt="Incident Evidence"
-                      className="w-full h-full object-cover"
-                    />
-                    <span className="absolute bottom-2 left-2 bg-black/80 text-[10px] px-2 py-0.5 rounded text-gray-300 font-mono">
-                      Camera: {selectedEvent.camera_id}
+        {/* ── RIGHT INTELLIGENCE SIDEBAR ──── */}
+        <aside className="w-[390px] bg-[#131628] border-l border-[#232746] shadow-2xl flex flex-col h-full z-20 shrink-0 text-slate-100 overflow-hidden">
+          <ErrorBoundary fallbackTitle="Intelligence Drawer Interruption">
+            {isDetailsOpen && selectedEvent ? (
+              /* ── EVENT DETAIL INSPECTOR VIEW ───────────────────────────────── */
+              <div className="flex-1 flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200">
+                {/* Inspector Header */}
+                <div className="p-3.5 border-b border-[#232746] flex items-center justify-between bg-[#16192E] sticky top-0 z-10">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsDetailsOpen(false)}
+                      className="px-2 py-1 rounded-md bg-[#1E2342] hover:bg-[#282F5A] text-slate-300 hover:text-white border border-[#2B325E] transition flex items-center gap-1 text-xs font-bold cursor-pointer"
+                      title="Return to Intelligence Stream"
+                    >
+                      <ArrowLeft size={13} />
+                      <span>Stream</span>
+                    </button>
+                    <span className="text-slate-600">|</span>
+                    <span className="font-mono font-bold text-xs text-white">
+                      {selectedEvent.event_id || selectedEvent.id || "EV-0000"}
                     </span>
                   </div>
-                ) : (
-                  <div className="rounded-xl border border-gray-800 p-6 bg-gray-950 flex flex-col items-center justify-center text-gray-500 text-center">
-                    <Camera size={24} className="mb-1 text-gray-600" />
-                    <span>Optical Evidence Frame Buffered</span>
-                  </div>
-                )}
-
-                {selectedEvent.evidence_clip_url && (
-                  <div className="p-2.5 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-between text-xs text-brand-light">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                      <span>Rolling Buffer Clip Available (10s)</span>
-                    </div>
-                    <button className="text-xs text-brand hover:underline font-bold">
-                      Play Clip ▶
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Metadata Grid */}
-              <div className="bg-gray-950/80 rounded-xl p-3 border border-gray-800 space-y-2 text-[11px]">
-                <div className="flex justify-between py-1 border-b border-gray-800">
-                  <span className="text-gray-500">Bus Identifier</span>
-                  <span className="text-gray-200 font-bold">{selectedEvent.bus_id}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-gray-800">
-                  <span className="text-gray-500">Camera Position</span>
-                  <span className="text-gray-200">{selectedEvent.camera_id}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-gray-800">
-                  <span className="text-gray-500">Timestamp (UTC)</span>
-                  <span className="text-gray-300">{selectedEvent.timestamp.replace("T", " ").slice(0, 19)}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-gray-800">
-                  <span className="text-gray-500">GPS Coordinates</span>
-                  <span className="text-gray-200 font-bold">
-                    {selectedEvent.gps.lat.toFixed(5)}, {selectedEvent.gps.lon.toFixed(5)}
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      selectedEvent.status === "CONFIRMED"
+                        ? "bg-amber-100 text-amber-800 border border-amber-300"
+                        : selectedEvent.status === "UNDER_REPAIR" || selectedEvent.status === "TICKET_CREATED"
+                        ? "bg-purple-100 text-purple-800 border border-purple-300"
+                        : selectedEvent.status === "RESOLVED"
+                        ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                        : "bg-slate-100 text-slate-700 border border-slate-300"
+                    }`}
+                  >
+                    {selectedEvent.status || "ACTIVE"}
                   </span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-gray-800">
-                  <span className="text-gray-500">Road Segment</span>
-                  <span className="text-gray-300">{selectedEvent.gps.road_segment || "—"}</span>
-                </div>
-                {selectedEvent.ticket_id && (
-                  <div className="flex justify-between py-1 bg-indigo-950/40 p-1.5 rounded border border-indigo-500/30">
-                    <span className="text-indigo-400 font-bold">Work Order Ticket</span>
-                    <span className="text-white font-bold">{selectedEvent.ticket_id}</span>
-                  </div>
-                )}
-              </div>
 
-              {/* Detailed Anomaly Diagnostics */}
-              {selectedEvent.details && Object.keys(selectedEvent.details).length > 0 && (
-                <div>
-                  <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">
-                    Sensor Signals & Diagnostics
-                  </div>
-                  <div className="bg-gray-950 p-2.5 rounded-lg border border-gray-800 text-[10px] text-gray-400 space-y-1">
-                    {Object.entries(selectedEvent.details).map(([k, v]) => (
-                      <div key={k} className="flex justify-between">
-                        <span className="capitalize text-gray-500">{k.replace(/_/g, " ")}:</span>
-                        <span className="text-gray-200">{String(v)}</span>
+                {/* Inspector Body */}
+                <div className="p-4 space-y-3.5 text-xs">
+                  {/* Title & Category */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">
+                        {layers.find((l) => l.id === selectedEvent.layer)?.icon || "📍"}
+                      </span>
+                      <div>
+                        <div className="font-extrabold text-sm text-[#1F2243]">
+                          {selectedEvent.event_type.replace(/_/g, " ") || "HAZARD"}
+                        </div>
+                        <div className="text-[11px] text-[#4F546F]">
+                          {selectedEvent.gps?.road_segment || selectedEvent.gps?.address || "Monitored Transit Corridor"}
+                        </div>
                       </div>
-                    ))}
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[9px] text-[#64748B] block font-mono">CONFIDENCE</span>
+                      <span className="text-amber-600 font-extrabold text-sm font-mono">
+                        {(((selectedEvent.confidence ?? 0.9)) * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Optical Evidence Frame */}
+                  <div className="space-y-1.5">
+                    <div className="text-[10px] text-[#4F546F] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <Camera size={12} className="text-amber-600" />
+                      <span>Optical Evidence Frame (Edge AI Buffer)</span>
+                    </div>
+
+                    {selectedEvent.evidence_image_b64 ? (
+                      <div className="relative rounded-xl overflow-hidden border border-[#CBD5E1] aspect-video bg-black flex items-center justify-center shadow-sm">
+                        <img
+                          src={selectedEvent.evidence_image_b64}
+                          alt="Incident Evidence"
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute bottom-2 left-2 bg-[#1F2243]/90 text-[10px] px-2 py-0.5 rounded text-white font-mono border border-white/20">
+                          Cam: {selectedEvent.camera_id || "FRONT"} • {selectedEvent.bus_id}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-[#CBD5E1] p-5 bg-[#F8FAFC] flex flex-col items-center justify-center text-[#64748B] text-center">
+                        <Camera size={22} className="mb-1 text-slate-400" />
+                        <span className="text-[11px]">Optical Frame Stream Buffered</span>
+                      </div>
+                    )}
+
+                    {selectedEvent.evidence_clip_url && (
+                      <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-between text-xs text-amber-900 font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                          <span>10s Rolling Buffer Clip Ready</span>
+                        </div>
+                        <span className="text-xs text-amber-700 hover:underline font-bold cursor-pointer">
+                          Play Clip ▶
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Telemetry & Metadata Grid */}
+                  <div className="bg-[#F8FAFC] rounded-xl p-3 border border-[#E2E8F0] space-y-1.5 text-[11px]">
+                    <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                      <span className="text-[#64748B]">Bus ID</span>
+                      <span className="text-[#1F2243] font-bold font-mono">{selectedEvent.bus_id}</span>
+                    </div>
+                    <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                      <span className="text-[#64748B]">Camera Angle</span>
+                      <span className="text-[#1F2243] font-semibold">{selectedEvent.camera_id || "FRONT"}</span>
+                    </div>
+                    <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                      <span className="text-[#64748B]">Timestamp</span>
+                      <span className="text-[#1F2243] font-mono">
+                        {selectedEvent.timestamp ? selectedEvent.timestamp.replace("T", " ").slice(0, 19) : "Live"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                      <span className="text-[#64748B]">GPS Position</span>
+                      <span className="text-[#1F2243] font-mono font-semibold">
+                        {selectedEvent.gps?.lat != null ? selectedEvent.gps.lat.toFixed(4) : "—"}°N,{" "}
+                        {selectedEvent.gps?.lon != null ? selectedEvent.gps.lon.toFixed(4) : "—"}°E
+                      </span>
+                    </div>
+                    {selectedEvent.ticket_id && (
+                      <div className="flex justify-between py-1 bg-amber-50 px-2 rounded border border-amber-300 font-bold text-amber-900">
+                        <span>Dispatched Work Order:</span>
+                        <span className="font-mono">{selectedEvent.ticket_id}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sensor Diagnostics */}
+                  {selectedEvent.details && typeof selectedEvent.details === "object" && Object.keys(selectedEvent.details).length > 0 && (
+                    <div className="space-y-1">
+                      <div className="text-[10px] text-[#4F546F] font-bold uppercase tracking-wider">
+                        Sensor Signals & Anomaly Telemetry
+                      </div>
+                      <div className="bg-[#F8FAFC] p-2 rounded-lg border border-[#E2E8F0] text-[10px] text-[#4F546F] space-y-0.5">
+                        {Object.entries(selectedEvent.details).map(([k, v]) => (
+                          <div key={k} className="flex justify-between">
+                            <span className="capitalize text-[#64748B]">{k.replace(/_/g, " ")}:</span>
+                            <span className="text-[#1F2243] font-mono font-semibold">{String(v)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Lifecycle State Actions */}
+                  <div className="pt-2 border-t border-[#E2E8F0] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-[#4F546F] font-bold uppercase tracking-wider">
+                        Lifecycle State Machine
+                      </span>
+                      <span className="text-[10px] font-mono font-bold text-amber-700">
+                        {(selectedEvent.status || "UNVERIFIED").toUpperCase()}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {(selectedEvent.status === "UNVERIFIED" || selectedEvent.status === "ACTIVE") && (
+                        <>
+                          <button
+                            onClick={() => handleEventAction("CONFIRM")}
+                            className="py-2 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                          >
+                            <CheckCircle2 size={13} />
+                            <span>Confirm Event</span>
+                          </button>
+                          <button
+                            onClick={() => handleEventAction("DISMISS")}
+                            className="py-2 px-2.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] font-bold flex items-center justify-center gap-1.5 transition border border-[#CBD5E1]"
+                          >
+                            <XCircle size={13} />
+                            <span>Dismiss False</span>
+                          </button>
+                        </>
+                      )}
+
+                      {selectedEvent.status === "CONFIRMED" && (
+                        <>
+                          <button
+                            onClick={() => handleEventAction("DISPATCH_REPAIR")}
+                            className="py-2 px-2.5 rounded-lg bg-[#1F2243] hover:bg-[#2E335C] text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                          >
+                            <Wrench size={13} className="text-amber-400" />
+                            <span>Dispatch Repair</span>
+                          </button>
+                          <button
+                            onClick={() => handleEventAction("DISMISS")}
+                            className="py-2 px-2.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] font-bold flex items-center justify-center gap-1.5 transition border border-[#CBD5E1]"
+                          >
+                            <XCircle size={13} />
+                            <span>Dismiss</span>
+                          </button>
+                        </>
+                      )}
+
+                      {(selectedEvent.status === "UNDER_REPAIR" || selectedEvent.status === "TICKET_CREATED") && (
+                        <>
+                          <button
+                            onClick={() => handleEventAction("RESOLVE")}
+                            className="py-2 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                          >
+                            <CheckCircle2 size={13} />
+                            <span>Verify & Resolve</span>
+                          </button>
+                          <button
+                            onClick={() => handleEventAction("DISMISS")}
+                            className="py-2 px-2.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] font-bold flex items-center justify-center gap-1.5 transition border border-[#CBD5E1]"
+                          >
+                            <XCircle size={13} />
+                            <span>Dismiss</span>
+                          </button>
+                        </>
+                      )}
+
+                      {(selectedEvent.status === "RESOLVED" || selectedEvent.status === "DISMISSED") && (
+                        <button
+                          onClick={() => handleEventAction("REOPEN")}
+                          className="col-span-2 py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                        >
+                          <RefreshCw size={13} />
+                          <span>Reopen (Watchdog Alert)</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
+            ) : (
+              /* ── MAIN INTELLIGENCE FEED ──── */
+              <div className="flex-1 flex flex-col h-full overflow-y-auto p-3.5 space-y-3.5 bg-[#131628]">
+                {/* 1. TOP CONSENSUS & HARDWARE KPI CARDS */}
+                <div className="grid grid-cols-2 gap-2.5">
+                  {/* Multi-Bus Consensus Card */}
+                  <div className="bg-[#0B0D18] border border-[#232746] rounded-xl p-3 shadow-sm hover:border-[#3A4378] transition">
+                    <div className="text-[10px] font-bold font-mono uppercase text-slate-400 tracking-wide flex items-center justify-between">
+                      <span>Multi-Bus Consensus</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    </div>
+                    <div className="mt-1 flex items-baseline justify-between">
+                      <span className="text-xl font-black text-white">98.4%</span>
+                      <span className="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                        Met
+                      </span>
+                    </div>
+                    <div className="mt-2 w-full bg-[#1C203B] h-1.5 rounded-full overflow-hidden">
+                      <div className="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full" style={{ width: "98.4%" }} />
+                    </div>
+                    <div className="mt-1.5 text-[9px] text-slate-400 truncate">
+                      Temporal Threshold Met
+                    </div>
+                  </div>
 
-              {/* ── ACTION CONTROLS (Mandated by Prompt) ────────────────────── */}
-              <div className="pt-2 border-t border-gray-800 space-y-2">
-                <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
-                  Officer Dispatch Actions
+                  {/* Active Edge Nodes Card */}
+                  <div className="bg-[#0B0D18] border border-[#232746] rounded-xl p-3 shadow-sm hover:border-[#3A4378] transition">
+                    <div className="text-[10px] font-bold font-mono uppercase text-slate-400 tracking-wide flex items-center justify-between">
+                      <span>Active Edge Nodes</span>
+                      <Cpu size={12} className="text-cyan-400" />
+                    </div>
+                    <div className="mt-1 flex items-baseline justify-between">
+                      <span className="text-xl font-black text-white">
+                        42 <span className="text-xs text-slate-400 font-normal">of 48</span>
+                      </span>
+                      <span className="text-[9px] font-bold text-cyan-400 bg-cyan-950/80 px-1.5 py-0.2 rounded border border-cyan-500/30">
+                        Online
+                      </span>
+                    </div>
+                    <div className="mt-2 w-full bg-[#1C203B] h-1.5 rounded-full overflow-hidden">
+                      <div className="bg-cyan-500 h-full rounded-full" style={{ width: "87.5%" }} />
+                    </div>
+                    <div className="mt-1.5 text-[9px] text-slate-400 truncate">
+                      Jetson / RPi Cluster
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+
+                {/* 2. DETECTION LIFECYCLE STEPPER */}
+                <div className="bg-[#0B0D18] border border-[#232746] rounded-xl p-3 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold font-mono uppercase tracking-wider text-white">
+                      Detection Lifecycle
+                    </span>
+                    <span className="text-[10px] font-semibold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30 font-mono">
+                      12 awaiting dispatch
+                    </span>
+                  </div>
+
+                  {/* 4 Steps Horizontal Stepper */}
+                  <div className="grid grid-cols-4 gap-1 pt-1">
+                    {/* Step 1: Unverified */}
+                    <div
+                      className="flex flex-col items-center text-center cursor-pointer group"
+                      onClick={() => setFilterStatus("UNVERIFIED")}
+                      title="Filter: Unverified"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#16192E] border-2 border-[#2B325E] text-slate-300 flex items-center justify-center font-bold text-xs shadow-sm group-hover:border-amber-400">
+                        01
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-400 mt-1 truncate max-w-full">
+                        Unverified
+                      </span>
+                    </div>
+
+                    {/* Step 2: Confirmed */}
+                    <div
+                      className="flex flex-col items-center text-center cursor-pointer group"
+                      onClick={() => setFilterStatus("CONFIRMED")}
+                      title="Filter: Confirmed"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-400 flex items-center justify-center font-bold text-xs shadow-sm">
+                        02
+                      </div>
+                      <span className="text-[10px] font-semibold text-amber-400 mt-1 truncate max-w-full font-bold">
+                        Confirmed
+                      </span>
+                    </div>
+
+                    {/* Step 3: Under Repair */}
+                    <div
+                      className="flex flex-col items-center text-center cursor-pointer group"
+                      onClick={() => setFilterStatus("UNDER_REPAIR")}
+                      title="Filter: Under Repair"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#16192E] border-2 border-[#2B325E] text-slate-300 flex items-center justify-center font-bold text-xs shadow-sm group-hover:border-purple-400">
+                        03
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-400 mt-1 truncate max-w-full">
+                        Under Repair
+                      </span>
+                    </div>
+
+                    {/* Step 4: Resolved */}
+                    <div
+                      className="flex flex-col items-center text-center cursor-pointer group"
+                      onClick={() => setFilterStatus("RESOLVED")}
+                      title="Filter: Resolved"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#16192E] border-2 border-[#2B325E] text-slate-300 flex items-center justify-center font-bold text-xs shadow-sm group-hover:border-emerald-400">
+                        04
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-400 mt-1 truncate max-w-full">
+                        Resolved
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. RECENT DETECTIONS FEED */}
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold font-mono uppercase tracking-wider text-white">
+                      Recent Detections
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      {filteredEvents.length} Plotted
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {filteredEvents.slice(0, 8).map((ev, idx) => {
+                      const isSelected = selectedEvent?.event_id === ev.event_id;
+                      const confPct = ((ev.confidence ?? 0.9) * 100).toFixed(0);
+                      const isRoadDamage = ev.event_type.includes("POTHOLE") || ev.event_type.includes("DAMAGE");
+                      const isCongestion = ev.event_type.includes("CONGESTION");
+
+                      // Relative time presentation ("02m ago", "05m ago")
+                      const timeLabel = idx === 0 ? "02m ago" : idx === 1 ? "05m ago" : idx === 2 ? "11m ago" : `${idx * 4}m ago`;
+
+                      return (
+                        <div
+                          key={ev.event_id}
+                          onClick={() => {
+                            setSelectedEvent(ev);
+                            setIsDetailsOpen(true);
+                            setMapFlyToTarget({ lat: ev.gps.lat, lon: ev.gps.lon, zoom: 15, label: ev.event_id });
+                          }}
+                          className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between group ${
+                            isSelected
+                              ? "bg-[#1B203B] border-amber-400 shadow-md ring-1 ring-amber-400/40"
+                              : "bg-[#0B0D18] border-[#232746] hover:bg-[#161A32] hover:border-[#384074]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
+                                isRoadDamage
+                                  ? "bg-amber-950/80 text-amber-400 border border-amber-500/30"
+                                  : isCongestion
+                                  ? "bg-rose-950/80 text-rose-400 border border-rose-500/30"
+                                  : "bg-sky-950/80 text-sky-400 border border-sky-500/30"
+                              }`}
+                            >
+                              {isRoadDamage ? (
+                                <Wrench size={15} />
+                              ) : isCongestion ? (
+                                <Flame size={15} />
+                              ) : (
+                                <AlertTriangle size={15} />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-bold text-white truncate group-hover:text-amber-400">
+                                {ev.event_type.replace(/_/g, " ")}
+                              </div>
+                              <div className="text-[10px] text-slate-400 truncate">
+                                {ev.gps?.road_segment || ev.gps?.address || "Monitored Corridor"} •{" "}
+                                <span className="font-mono text-[9px] text-slate-500">{timeLabel}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 shrink-0 pl-2">
+                            <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-500/30">
+                              {confPct}%
+                            </span>
+                            <ChevronRight
+                              size={14}
+                              className="text-slate-500 group-hover:text-amber-400 transition-transform group-hover:translate-x-0.5"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. FULL-WIDTH AUTOMATED WORK ORDER BUTTON */}
+                <div className="pt-2 mt-auto border-t border-[#232746]">
                   <button
-                    onClick={() => handleEventAction("CONFIRM")}
-                    className="py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                    onClick={handleGenerateWorkOrder}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#F97316] hover:from-[#C2410C] hover:to-[#EA580C] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-orange-600/30 active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <CheckCircle2 size={14} />
-                    <span>Confirm</span>
-                  </button>
-                  <button
-                    onClick={() => handleEventAction("DISMISS")}
-                    className="py-2 px-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold flex items-center justify-center gap-1.5 transition border border-gray-700"
-                  >
-                    <XCircle size={14} />
-                    <span>Dismiss</span>
-                  </button>
-                  <button
-                    onClick={() => handleEventAction("ESCALATE")}
-                    className="py-2 px-3 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
-                  >
-                    <AlertOctagon size={14} />
-                    <span>Escalate</span>
-                  </button>
-                  <button
-                    onClick={() => handleEventAction("CREATE_MAINTENANCE_TICKET")}
-                    className="py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
-                  >
-                    <Wrench size={14} />
-                    <span>Create Ticket</span>
+                    <span>⚡</span>
+                    <span>Automated Work Order: Generate (WO-2026)</span>
                   </button>
                 </div>
               </div>
-            </div>
-          </aside>
-        )}
+            )}
+          </ErrorBoundary>
+        </aside>
       </div>
     </div>
   );

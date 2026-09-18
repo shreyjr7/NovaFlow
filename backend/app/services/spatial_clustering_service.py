@@ -480,6 +480,76 @@ class SpatialClusteringService:
         }
 
 
+
+    def merge_repeated_reports(
+        self,
+        reports: List[Dict[str, Any]],
+        radius_meters: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        """
+        Step 26 — Merge repeated reports:
+        Example:
+          BUS 101, Pothole, GPS 28.61390
+          BUS 205, Pothole, GPS 28.61394
+          BUS 311, Pothole, GPS 28.61387
+          ->
+          ONE POTHOLE
+          Reports: 3
+          Confidence: HIGH
+          Use geographic + temporal clustering rather than creating duplicate pins.
+        """
+        if not reports:
+            return {}
+
+        bus_ids = [r.get("bus_id") or r.get("bus") or "UNKNOWN" for r in reports]
+        d_type = str(reports[0].get("defect_type") or reports[0].get("type") or "POTHOLE").upper()
+        lats = [float(r.get("lat") or r.get("gps", {}).get("lat", 0.0)) for r in reports]
+        lons = [float(r.get("lon") or r.get("gps", {}).get("lon", 0.0)) for r in reports]
+        avg_lat = round(sum(lats) / len(lats), 6)
+        avg_lon = round(sum(lons) / len(lons), 6)
+
+        num_reports = len(reports)
+        unique_buses = list(dict.fromkeys(bus_ids))
+        if num_reports >= 3 and len(unique_buses) >= 2:
+            conf_label = "HIGH"
+            conf_val = 0.94
+        elif num_reports >= 2:
+            conf_label = "MEDIUM"
+            conf_val = 0.86
+        else:
+            conf_label = "LOW"
+            conf_val = 0.75
+
+        # Ingest into internal clusters for GIS single pin representation
+        for r in reports:
+            raw_in = RawObservationIn(
+                bus_id=r.get("bus_id") or r.get("bus") or "BUS 101",
+                camera_id=r.get("camera_id", "FRONT"),
+                defect_type=d_type,
+                severity=r.get("severity", "HIGH"),
+                confidence=r.get("confidence", 0.90),
+                lat=float(r.get("lat") or r.get("gps", {}).get("lat", avg_lat)),
+                lon=float(r.get("lon") or r.get("gps", {}).get("lon", avg_lon)),
+                road_segment=r.get("road_segment", "CENTRAL_CORRIDOR"),
+            )
+            self.ingest_observation(raw_in)
+
+        return {
+            "title": f"ONE {d_type.replace('_', ' ').upper()}",
+            "defect_type": d_type,
+            "reports": num_reports,
+            "number_of_observations": num_reports,
+            "detected_by": unique_buses,
+            "number_of_buses": len(unique_buses),
+            "confidence": conf_label,
+            "confidence_score": conf_val,
+            "status": "Confirmed" if num_reports >= 2 else "Pending",
+            "centroid": {"lat": avg_lat, "lon": avg_lon},
+            "single_pin_representation": True,
+            "duplicate_pins_suppressed": num_reports - 1,
+        }
+
+
 # Singleton instance
 _clustering_service_instance: Optional[SpatialClusteringService] = None
 
@@ -489,3 +559,4 @@ def get_spatial_clustering_service() -> SpatialClusteringService:
     if _clustering_service_instance is None:
         _clustering_service_instance = SpatialClusteringService()
     return _clustering_service_instance
+

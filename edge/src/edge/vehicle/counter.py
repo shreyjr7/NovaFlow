@@ -1,30 +1,22 @@
 """
-Vehicle Tracking – Counting Lines & Region Counter
-====================================================
-Provides configurable virtual counting lines and counting regions
-that use track IDs to prevent double-counting.
+Vehicle Tracking – Counting Lines, Regions & Traffic Density (Phase 5 - Step 13)
+================================================================================
+Provides virtual counting lines, ROI regions, and traffic density calculation:
+  Density = Vehicles / road area (veh/m²)
 
-Counting line
--------------
-A directed line segment (x1,y1)→(x2,y2) placed across the lane.
-A vehicle is counted when its centroid crosses the line and:
-  • It has not been counted by this line before (track_id guard).
-  • Its track is CONFIRMED (min-hits passed).
-
-Crossing direction is detected via sign change of the cross product
-of the line vector and the centroid displacement vector.
-
-Counting region (ROI)
----------------------
-A polygon ROI. Vehicles *present inside* the region at a given frame
-are counted per class for density estimation.
+Key Components:
+---------------
+- CountingLine: Tracks line crossings by confirmed tracks; prevents duplicate counting.
+- CountingRegion: Measures vehicles present inside road polygon ROI.
+- calculate_traffic_density: Standalone function computing Vehicles / road area.
+- TrafficStats: Aggregates real-time rolling statistics (counts, speed, density).
 """
 
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 try:
     import numpy as np
@@ -33,7 +25,6 @@ except ImportError:
 
 logger = logging.getLogger("vehicle.counter")
 
-
 # ── Vehicle class groups ──────────────────────────────────────────────────────
 
 VEHICLE_CLASSES = {
@@ -41,41 +32,83 @@ VEHICLE_CLASSES = {
     "auto_rickshaw", "bicycle", "van",
 }
 
-# Mapping from YOLO class names to canonical groups
+# Mapping from detected class names to canonical reporting groups
 CLASS_GROUP: Dict[str, str] = {
     "car":            "car",
     "bus":            "bus",
     "truck":          "truck",
     "motorcycle":     "two_wheeler",
-    "auto_rickshaw":  "two_wheeler",
-    "bicycle":        "two_wheeler",
+    "auto_rickshaw":  "auto_rickshaw",
+    "bicycle":        "bicycle",
     "van":            "van",
 }
 
-# Density thresholds (vehicles per counting-region area in norm. units)
+# Density thresholds for normalized traffic score
 DENSITY_THRESHOLDS = {
-    "low":      (0.0, 0.3),
-    "medium":   (0.3, 0.6),
-    "high":     (0.6, 1.0),
+    "low":      (0.0, 0.35),
+    "medium":   (0.35, 0.70),
+    "high":     (0.70, 1.0),
 }
 
 
-def _cross_product(v: np.ndarray, w: np.ndarray) -> float:
+# ── Step 13: Traffic Density Calculation ──────────────────────────────────────
+
+def calculate_traffic_density(
+    vehicle_count: int,
+    road_area_sqm: float = 150.0,
+    jam_density_per_sqm: float = 0.12,  # ~1 vehicle per ~8.3 sqm is bumper-to-bumper
+) -> Dict[str, Any]:
+    """
+    Step 13: Calculate traffic density as Vehicles / road area.
+
+    Parameters
+    ----------
+    vehicle_count       : number of vehicles in the road area
+    road_area_sqm       : surface area of the road section in square meters
+    jam_density_per_sqm : saturation capacity threshold for 100% density score
+
+    Returns
+    -------
+    dict with vehicle_count, road_area_sqm, vehicles_per_sqm, density_score, density_level
+    """
+    area = max(1.0, float(road_area_sqm))
+    count = max(0, int(vehicle_count))
+    density_val = count / area
+
+    # Normalized score 0.0 to 1.0 against road saturation threshold
+    score = min(1.0, max(0.0, density_val / jam_density_per_sqm))
+
+    if score < DENSITY_THRESHOLDS["low"][1]:
+        level = "low"
+    elif score < DENSITY_THRESHOLDS["medium"][1]:
+        level = "medium"
+    else:
+        level = "high"
+
+    return {
+        "vehicle_count": count,
+        "road_area_sqm": round(area, 1),
+        "vehicles_per_sqm": round(density_val, 4),
+        "density_score": round(score, 3),
+        "density_level": level,
+    }
+
+
+def _cross_product(v: Tuple[float, float], w: Tuple[float, float]) -> float:
     """2D cross product of vectors v and w."""
-    return float(v[0]*w[1] - v[1]*w[0])
+    return float(v[0] * w[1] - v[1] * w[0])
 
 
-def _point_side(line_p1: np.ndarray, line_p2: np.ndarray, point: np.ndarray) -> float:
-    """Returns sign of which side of line (p1→p2) the point is on."""
-    v = line_p2 - line_p1
-    w = point   - line_p1
+def _point_side(line_p1: Tuple[float, float], line_p2: Tuple[float, float], point: Any) -> float:
+    """Returns sign of which side of line (p1->p2) the point is on."""
+    v = (line_p2[0] - line_p1[0], line_p2[1] - line_p1[1])
+    w = (float(point[0]) - line_p1[0], float(point[1]) - line_p1[1])
     return _cross_product(v, w)
 
 
 def _point_in_polygon(polygon: List[Tuple[float, float]], point: Tuple[float, float]) -> bool:
     """Ray-casting algorithm for point-in-polygon test."""
     x, y = point
-    n = len(polygon)
     inside = False
     px, py = polygon[-1]
     for qx, qy in polygon:
@@ -91,13 +124,7 @@ def _point_in_polygon(polygon: List[Tuple[float, float]], point: Tuple[float, fl
 class CountingLine:
     """
     A virtual counting line across the frame.
-
-    Parameters
-    ----------
-    name    : human-readable label (e.g. "Line A", "Inbound")
-    x1, y1  : start point (pixels)
-    x2, y2  : end point (pixels)
-    direction: "any" | "in" | "out" – only count crossings in the given direction
+    Uses persistent track IDs to ensure each vehicle is counted exactly once.
     """
     name:      str
     x1:        float
@@ -112,23 +139,23 @@ class CountingLine:
     # Per-class counts
     counts: Dict[str, int] = field(default_factory=lambda: {
         "car": 0, "bus": 0, "truck": 0,
-        "two_wheeler": 0, "van": 0, "total": 0,
+        "two_wheeler": 0, "auto_rickshaw": 0, "van": 0, "bicycle": 0, "total": 0,
     })
 
     @property
-    def p1(self) -> np.ndarray:
-        return np.array([self.x1, self.y1])
+    def p1(self) -> Tuple[float, float]:
+        return (float(self.x1), float(self.y1))
 
     @property
-    def p2(self) -> np.ndarray:
-        return np.array([self.x2, self.y2])
+    def p2(self) -> Tuple[float, float]:
+        return (float(self.x2), float(self.y2))
 
-    def update(self, tracks: List) -> List[Dict]:
+    def update(self, tracks: List[Any]) -> List[Dict[str, Any]]:
         """
         Check each confirmed track for line crossing.
         Returns list of crossing event dicts for newly counted vehicles.
         """
-        events = []
+        events: List[Dict[str, Any]] = []
         for track in tracks:
             tid  = track.track_id
             cent = track.centroid
@@ -143,13 +170,14 @@ class CountingLine:
             if prev is None:
                 continue
 
-            # Sign change → crossing
-            if prev * side < 0:
+            # Sign change indicates crossing (including hitting or moving past line)
+            crossed = (prev * side < 0) or (prev < 0 and side >= 0) or (prev > 0 and side <= 0)
+            if crossed:
                 if self.direction == "any" or \
                    (self.direction == "positive" and prev < 0) or \
                    (self.direction == "negative" and prev > 0):
                     self._counted_ids.add(tid)
-                    group = CLASS_GROUP.get(track.label, "car")
+                    group = CLASS_GROUP.get(track.label, track.label)
                     self.counts[group] = self.counts.get(group, 0) + 1
                     self.counts["total"] += 1
                     events.append({
@@ -175,50 +203,47 @@ class CountingLine:
 @dataclass
 class CountingRegion:
     """
-    A polygonal region of interest for density / occupancy measurement.
-
-    Parameters
-    ----------
-    name    : label (e.g. "Intersection", "Bus Stop")
-    polygon : list of (x, y) pixel vertices (clockwise or CCW)
+    Step 13: Polygonal ROI measuring vehicle occupancy and road area density.
     """
-    name:    str
-    polygon: List[Tuple[float, float]]
+    name:          str
+    polygon:       List[Tuple[float, float]]
+    road_area_sqm: float = 150.0   # Default estimated road area in square meters
 
     # Snapshot updated each frame
-    occupancy:        Dict[str, int] = field(default_factory=lambda: {
-        "car": 0, "bus": 0, "truck": 0, "two_wheeler": 0, "van": 0, "total": 0,
+    occupancy: Dict[str, int] = field(default_factory=lambda: {
+        "car": 0, "bus": 0, "truck": 0, "two_wheeler": 0,
+        "auto_rickshaw": 0, "van": 0, "bicycle": 0, "total": 0,
     })
-    density_level:    str = "low"
+    density_level:    str   = "low"
     density_score:    float = 0.0
-    _max_capacity:    int   = 20   # assumed max vehicles that fit in region
+    vehicles_per_sqm: float = 0.0
 
-    def update(self, tracks: List) -> Dict:
+    def update(self, tracks: List[Any]) -> Dict[str, Any]:
         """Snapshot current occupancy for tracks inside the region."""
         for k in self.occupancy:
             self.occupancy[k] = 0
 
         for track in tracks:
-            cx, cy = track.centroid
+            cx, cy = track.centroid[0], track.centroid[1]
             if _point_in_polygon(self.polygon, (float(cx), float(cy))):
-                group = CLASS_GROUP.get(track.label, "car")
+                group = CLASS_GROUP.get(track.label, track.label)
                 self.occupancy[group] = self.occupancy.get(group, 0) + 1
                 self.occupancy["total"] += 1
 
         total = self.occupancy["total"]
-        self.density_score = min(total / self._max_capacity, 1.0)
-        if self.density_score < DENSITY_THRESHOLDS["medium"][0]:
-            self.density_level = "low"
-        elif self.density_score < DENSITY_THRESHOLDS["high"][0]:
-            self.density_level = "medium"
-        else:
-            self.density_level = "high"
+        metrics = calculate_traffic_density(vehicle_count=total, road_area_sqm=self.road_area_sqm)
+        self.density_score = metrics["density_score"]
+        self.density_level = metrics["density_level"]
+        self.vehicles_per_sqm = metrics["vehicles_per_sqm"]
 
         return {
-            "region":       self.name,
-            "occupancy":    dict(self.occupancy),
-            "density_score": round(self.density_score, 3),
-            "density_level": self.density_level,
+            "region":           self.name,
+            "occupancy":        dict(self.occupancy),
+            "vehicle_count":    total,
+            "road_area_sqm":    self.road_area_sqm,
+            "vehicles_per_sqm": self.vehicles_per_sqm,
+            "density_score":    self.density_score,
+            "density_level":    self.density_level,
         }
 
 
@@ -228,26 +253,23 @@ class TrafficStats:
     """
     Aggregates per-frame track data into rolling statistics:
       - total / per-class vehicle counts (via counting lines)
-      - per-region density
-      - per-class average speed
-
-    Call `update()` every processed frame, then `snapshot()` to get the
-    current stats dict suitable for emitting as an event.
+      - per-region density (vehicles / road area)
+      - per-class and overall average speed
     """
 
     def __init__(self, lines: List[CountingLine], regions: List[CountingRegion]):
         self.lines   = lines
         self.regions = regions
         self._speed_history: Dict[str, List[float]] = {
-            g: [] for g in ["car", "bus", "truck", "two_wheeler", "van", "all"]
+            g: [] for g in ["car", "bus", "truck", "two_wheeler", "auto_rickshaw", "van", "all"]
         }
         self._max_speed_history = 120   # keep last N speed samples
 
     def update(
         self,
-        tracks:  List,
-        speeds:  Dict[int, float],   # track_id → speed km/h
-    ) -> List[Dict]:
+        tracks:  List[Any],
+        speeds:  Dict[int, float],   # track_id -> speed km/h
+    ) -> List[Dict[str, Any]]:
         """Update stats and return crossing events from counting lines."""
         # Lines
         all_crossing_events = []
@@ -260,12 +282,12 @@ class TrafficStats:
             region.update(tracks)
 
         # Speed aggregation
-        active_ids = {t.track_id for t in tracks}
         for track in tracks:
             if track.track_id in speeds:
                 spd = speeds[track.track_id]
-                group = CLASS_GROUP.get(track.label, "car")
-                self._speed_history[group].append(spd)
+                group = CLASS_GROUP.get(track.label, track.label)
+                if group in self._speed_history:
+                    self._speed_history[group].append(spd)
                 self._speed_history["all"].append(spd)
 
         # Trim history
@@ -275,15 +297,15 @@ class TrafficStats:
 
         return all_crossing_events
 
-    def snapshot(self) -> Dict:
+    def snapshot(self) -> Dict[str, Any]:
         """Return current statistics as a serialisable dict."""
-        def _avg(lst):
-            return round(sum(lst)/len(lst), 1) if lst else 0.0
+        def _avg(lst: List[float]) -> float:
+            return round(sum(lst) / len(lst), 1) if lst else 0.0
 
         # Total counts from all lines combined
         total_counts: Dict[str, int] = {
             "car": 0, "bus": 0, "truck": 0,
-            "two_wheeler": 0, "van": 0, "total": 0,
+            "two_wheeler": 0, "auto_rickshaw": 0, "van": 0, "total": 0,
         }
         for line in self.lines:
             for k in total_counts:
@@ -293,11 +315,13 @@ class TrafficStats:
         region_snapshots = []
         for region in self.regions:
             region_snapshots.append({
-                "name":          region.name,
-                "total":         region.occupancy["total"],
-                "density_score": region.density_score,
-                "density_level": region.density_level,
-                "occupancy":     dict(region.occupancy),
+                "name":             region.name,
+                "total":            region.occupancy["total"],
+                "road_area_sqm":    region.road_area_sqm,
+                "vehicles_per_sqm": region.vehicles_per_sqm,
+                "density_score":    region.density_score,
+                "density_level":    region.density_level,
+                "occupancy":        dict(region.occupancy),
             })
 
         # Average speed per class
@@ -320,13 +344,6 @@ class TrafficStats:
 # ── Default counting configuration ────────────────────────────────────────────
 
 def default_counting_config(frame_w: int = 1280, frame_h: int = 720) -> Tuple[List[CountingLine], List[CountingRegion]]:
-    """
-    Returns a default set of counting lines and regions for a front-facing camera.
-    Positioned roughly:
-      - Line A: 60% down the frame (primary counting line)
-      - Line B: 40% down the frame (secondary / confirmation line)
-      - Region: central lane zone for density
-    """
     lines = [
         CountingLine(
             name="Line_A",
@@ -351,6 +368,7 @@ def default_counting_config(frame_w: int = 1280, frame_h: int = 720) -> Tuple[Li
                 (frame_w - margin,  frame_h * 0.8),
                 (margin,            frame_h * 0.8),
             ],
+            road_area_sqm=150.0,
         ),
     ]
     return lines, regions

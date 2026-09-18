@@ -273,6 +273,15 @@ class TrajectorySignalEvaluator:
         if triggered_names == {"sudden_deceleration"}:
             return False, "HARD_BRAKING_NORMAL", 0.0
 
+        # Step 18 Explainable Rule: Sudden decel + Abrupt heading change + Nearby anomaly
+        if (
+            "sudden_deceleration" in triggered_names
+            and "abrupt_heading_change" in triggered_names
+            and "nearby_vehicle_interaction" in triggered_names
+        ):
+            conf = 0.76 + (0.05 * len(triggered_names))
+            return True, "POTENTIAL_INCIDENT", min(0.95, conf)
+
         # Hit-and-run signature:
         # Interaction + (Disappearance OR Discontinuity) + Leaving scene
         if "vehicle_leaving_scene" in triggered_names and (
@@ -304,3 +313,20 @@ class TrajectorySignalEvaluator:
 
         # Default: Not enough corroborating signals
         return False, "NORMAL_DRIVING", 0.0
+
+
+# ── Step 18: Explainable Trajectory Rule ──────────────────────────────────────
+
+def check_explainable_incident_rule(
+    sudden_deceleration: bool,
+    abrupt_heading_change: bool,
+    nearby_vehicle_anomaly: bool,
+) -> bool:
+    """
+    Step 18: Explainable physical trajectory rule:
+      Sudden deceleration + Abrupt heading change + Nearby vehicle trajectory anomaly
+      -> Potential incident
+
+    Replaces black-box 'accident classifiers' with transparent physical signals.
+    """
+    return sudden_deceleration and abrupt_heading_change and nearby_vehicle_anomaly

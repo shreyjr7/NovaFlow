@@ -1,3 +1,4 @@
+import { EventDetailModal, EventDetailData } from "../../components/EventDetailModal";
 // src/pages/AlertCenter/AlertCenter.tsx
 // Phase 24 — Centralized Alert Center with Real-Time WebSockets
 
@@ -41,6 +42,7 @@ export const AlertCenter: React.FC = () => {
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
   const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [wsConnected, setWsConnected] = useState<boolean>(false);
+  const [detailEvent, setDetailEvent] = useState<EventDetailData | null>(null);
   const [actionModal, setActionModal] = useState<{
     alertId: string;
     action: "Assign" | "Resolve";
@@ -113,7 +115,24 @@ export const AlertCenter: React.FC = () => {
     };
   }, []);
 
-  const handleAction = async (alertId: string, action: "Acknowledge" | "Verify" | "Escalate" | "Assign" | "Resolve", extraParam?: string) => {
+    const toDetailData = (card: AlertCardData): EventDetailData => ({
+    id: card.alert_id,
+    type: card.type,
+    severity: card.severity,
+    status: card.status,
+    gps: { lat: card.lat, lon: card.lon },
+    road: card.road_segment || "Central City Corridor",
+    area: card.location,
+    confidence: card.confidence,
+    detection_time: card.timestamp,
+    source_bus: card.bus,
+    plate_number: "UP65AB1234",
+    video_clip_url: card.evidence_video_clip,
+    image_urls: card.evidence_snapshot_url ? [card.evidence_snapshot_url] : [],
+    evidence_description: card.evidence,
+  });
+
+const handleAction = async (alertId: string, action: "Acknowledge" | "Verify" | "Escalate" | "Assign" | "Resolve", extraParam?: string) => {
     try {
       const body: any = {
         action,
@@ -519,7 +538,20 @@ export const AlertCenter: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    
+      {/* Step 33 Canonical Event Detail Modal */}
+      <EventDetailModal
+        event={detailEvent}
+        isOpen={!!detailEvent}
+        onClose={() => setDetailEvent(null)}
+        onAction={(action, id) => {
+          if (action === "CONFIRM") handleAction(id, "Verify" as any);
+          else if (action === "DISMISS") handleAction(id, "Resolve" as any, "Dismissed as false positive");
+          else if (action === "ESCALATE") handleAction(id, "Escalate" as any);
+          else if (action === "MARK_UNDER_REPAIR") handleAction(id, "Assign" as any, "Road Maintenance Engineering");
+        }}
+      />
+</div>
   );
 };
 

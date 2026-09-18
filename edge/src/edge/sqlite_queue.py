@@ -24,6 +24,7 @@ import logging
 import os
 import sqlite3
 import threading
+from contextlib import contextmanager
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -51,10 +52,15 @@ class SqliteEventQueue:
         self._lock = threading.Lock()
         self._init_db()
 
-    def _get_conn(self) -> sqlite3.Connection:
+    @contextmanager
+    def _get_conn(self):
         conn = sqlite3.connect(str(self.db_path), timeout=10.0, check_same_thread=False)
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def _init_db(self):
         """Initializes database schema and indexes."""
@@ -253,6 +259,9 @@ class SqliteEventQueue:
 
                 if new_status == "DEAD_LETTER":
                     logger.warning(f"Event {event_id} exceeded max retries ({max_retries}) -> moved to DEAD_LETTER")
+
+    def count(self) -> int:
+        return self.pending_count()
 
     def pending_count(self) -> int:
         """Returns the count of events currently queued and awaiting delivery."""

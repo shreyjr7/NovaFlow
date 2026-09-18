@@ -62,6 +62,12 @@ class NetworkManager:
                 return self._simulated_mode
             return self._state
 
+    def set_state(self, state: str):
+        return self.set_mode(state)
+
+    def drain_buffer(self, send_fn: Optional[Callable[[Dict[str, Any]], bool]] = None) -> int:
+        return self.drain_queue_batch(send_fn)
+
     def set_mode(self, mode: str):
         """
         Manually forces network simulation mode: 'ONLINE', 'OFFLINE', 'RECONNECTING', or 'AUTO'.

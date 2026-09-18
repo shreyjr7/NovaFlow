@@ -12,6 +12,7 @@ from .school_zone_db import (
     DEFAULT_SCHOOL_ZONES,
 )
 from .trajectory_tracker import (
+    CrossingBehavior,
     PedestrianTrack,
     PedestrianTrajectoryTracker,
     TrajectoryState,
@@ -26,6 +27,7 @@ __all__ = [
     "SchoolZone",
     "SchoolZoneDatabase",
     "DEFAULT_SCHOOL_ZONES",
+    "CrossingBehavior",
     "PedestrianTrack",
     "PedestrianTrajectoryTracker",
     "TrajectoryState",

@@ -27,6 +27,8 @@ class TrajectoryInfo(BaseModel):
     heading_deg:        float
     moving_toward_road: bool
     vector:             List[float] = [0.0, 0.0]
+    crossing_behavior:  Optional[str] = "POTENTIAL_RISK"
+    in_roadway:         Optional[bool] = False
 
 
 class SchoolZoneInfo(BaseModel):
@@ -50,19 +52,23 @@ class ZoneDensityInfo(BaseModel):
 
 
 class PedestrianRiskEventIn(BaseModel):
-    event_id:         Optional[str] = None
-    event_type:       str = "PEDESTRIAN_RISK"
-    location:         Dict[str, float]  # {"lat": float, "lon": float}
-    timestamp:        Optional[str] = None
-    bus_id:           str
-    camera_id:        str
-    confidence:       float = Field(..., ge=0.0, le=1.0)
-    trajectory:       TrajectoryInfo
-    school_zone:      SchoolZoneInfo
-    road_boundary:    RoadBoundaryInfo
-    zone_density:     ZoneDensityInfo
-    crowded_area:     Optional[bool] = False
-    frame_b64:        Optional[str] = None
+    event_id:          Optional[str] = None
+    event_type:        str = "PEDESTRIAN_RISK"
+    location:          Dict[str, float]  # {"lat": float, "lon": float}
+    timestamp:         Optional[str] = None
+    bus_id:            str
+    camera_id:         str
+    confidence:        float = Field(..., ge=0.0, le=1.0)
+    trajectory:        TrajectoryInfo
+    school_zone:       SchoolZoneInfo
+    road_boundary:     RoadBoundaryInfo
+    zone_density:      ZoneDensityInfo
+    approx_size:       Optional[Dict[str, Any]] = None
+    approx_distance_m: Optional[float] = None
+    crossing_behavior: Optional[str] = "POTENTIAL_RISK"
+    severity:          Optional[str] = "medium"
+    crowded_area:      Optional[bool] = False
+    frame_b64:         Optional[str] = None
 
 
 # ── School Zones Seed Data ────────────────────────────────────────────────────

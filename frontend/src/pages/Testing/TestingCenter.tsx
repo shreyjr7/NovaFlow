@@ -102,18 +102,18 @@ export const TestingCenter: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
           <div>
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+              <div className="p-2.5 bg-blue-50 text-blue-700 rounded-2xl border border-blue-200 shadow-2xs">
                 <Activity size={24} />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Phase 33 &bull; Complete Testing Framework</h1>
-                <p className="text-slate-400 text-sm mt-0.5">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[#16192E]">Complete Testing Framework</h1>
+                <p className="text-[#64748B] text-xs sm:text-sm mt-0.5">
                   Automated verification across Model Stress, System Trace, Fleet Load, and Fault Resilience
                 </p>
               </div>
@@ -124,7 +124,7 @@ export const TestingCenter: React.FC = () => {
           <div className="flex items-center gap-3">
             <a
               href="/demo-flow"
-              className="px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-2"
+              className="px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] text-white text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center gap-2"
             >
               <Zap size={14} />
               Open 17-Step Demo Flow
@@ -133,13 +133,13 @@ export const TestingCenter: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-800 space-x-2">
+        <div className="flex border-b border-[#E2E8F0] space-x-2">
           <button
             onClick={() => setActiveTab("model")}
-            className={`px-4 py-2.5 text-sm font-semibold rounded-t-lg transition flex items-center gap-2 ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 ${
               activeTab === "model"
-                ? "bg-slate-900 text-indigo-400 border-b-2 border-indigo-500"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-[#16192E] border-b-2 border-[#C85A17] shadow-2xs font-bold"
+                : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
             }`}
           >
             <Eye size={16} />
@@ -147,10 +147,10 @@ export const TestingCenter: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("system")}
-            className={`px-4 py-2.5 text-sm font-semibold rounded-t-lg transition flex items-center gap-2 ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 ${
               activeTab === "system"
-                ? "bg-slate-900 text-indigo-400 border-b-2 border-indigo-500"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-[#16192E] border-b-2 border-[#C85A17] shadow-2xs font-bold"
+                : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
             }`}
           >
             <Layers size={16} />
@@ -158,10 +158,10 @@ export const TestingCenter: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("load")}
-            className={`px-4 py-2.5 text-sm font-semibold rounded-t-lg transition flex items-center gap-2 ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 ${
               activeTab === "load"
-                ? "bg-slate-900 text-indigo-400 border-b-2 border-indigo-500"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-[#16192E] border-b-2 border-[#C85A17] shadow-2xs font-bold"
+                : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
             }`}
           >
             <Gauge size={16} />
@@ -169,31 +169,31 @@ export const TestingCenter: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("failure")}
-            className={`px-4 py-2.5 text-sm font-semibold rounded-t-lg transition flex items-center gap-2 ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 ${
               activeTab === "failure"
-                ? "bg-slate-900 text-indigo-400 border-b-2 border-indigo-500"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-white text-[#16192E] border-b-2 border-[#C85A17] shadow-2xs font-bold"
+                : "text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
             }`}
           >
             <ShieldCheck size={16} />
-            4. Failure & Resilience (6 Modes)
+            4. Failure &amp; Resilience (6 Modes)
           </button>
         </div>
 
         {/* Tab Content: 1. Model Testing */}
         {activeTab === "model" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
               <div>
-                <h3 className="font-bold text-base text-slate-200">Environmental Stress Testing Suite</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="font-bold text-base text-[#16192E]">Environmental Stress Testing Suite</h3>
+                <p className="text-xs text-[#64748B] mt-1">
                   Evaluates optical detection robustness across: Day, Night, Rain, Wet roads, Glare, Motion blur, Occlusion, Dense traffic.
                 </p>
               </div>
               <button
                 onClick={handleRunModelBenchmark}
                 disabled={modelRunning}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition flex items-center gap-2"
+                className="px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2 shrink-0"
               >
                 {modelRunning ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
                 Run Model Benchmark
@@ -204,62 +204,62 @@ export const TestingCenter: React.FC = () => {
               <>
                 {/* 4 Summary KPI Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <span className="text-xs text-slate-400 uppercase font-semibold">Precision</span>
-                    <div className="text-2xl font-extrabold text-indigo-400 mt-1">
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm">
+                    <span className="text-[10px] text-[#64748B] uppercase font-bold">Precision</span>
+                    <div className="text-2xl font-extrabold text-[#16192E] mt-1">
                       {(modelReport.overall_precision * 100).toFixed(1)}%
                     </div>
-                    <span className="text-xs text-slate-500">TP / (TP + FP)</span>
+                    <span className="text-xs text-[#64748B]">TP / (TP + FP)</span>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <span className="text-xs text-slate-400 uppercase font-semibold">Recall</span>
-                    <div className="text-2xl font-extrabold text-emerald-400 mt-1">
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm">
+                    <span className="text-[10px] text-[#64748B] uppercase font-bold">Recall</span>
+                    <div className="text-2xl font-extrabold text-emerald-700 mt-1">
                       {(modelReport.overall_recall * 100).toFixed(1)}%
                     </div>
-                    <span className="text-xs text-slate-500">TP / (TP + FN)</span>
+                    <span className="text-xs text-[#64748B]">TP / (TP + FN)</span>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <span className="text-xs text-slate-400 uppercase font-semibold">mAP@0.50</span>
-                    <div className="text-2xl font-extrabold text-cyan-400 mt-1">
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm">
+                    <span className="text-[10px] text-[#64748B] uppercase font-bold">mAP@0.50</span>
+                    <div className="text-2xl font-extrabold text-blue-700 mt-1">
                       {(modelReport.overall_map_50 * 100).toFixed(1)}%
                     </div>
-                    <span className="text-xs text-slate-500">mean Average Precision</span>
+                    <span className="text-xs text-[#64748B]">mean Average Precision</span>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <span className="text-xs text-slate-400 uppercase font-semibold">F1 Score</span>
-                    <div className="text-2xl font-extrabold text-amber-400 mt-1">
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm">
+                    <span className="text-[10px] text-[#64748B] uppercase font-bold">F1 Score</span>
+                    <div className="text-2xl font-extrabold text-[#C85A17] mt-1">
                       {(modelReport.overall_f1_score * 100).toFixed(1)}%
                     </div>
-                    <span className="text-xs text-slate-500">Harmonic Mean</span>
+                    <span className="text-xs text-[#64748B]">Harmonic Mean</span>
                   </div>
                 </div>
 
                 {/* Condition Breakdown Grid */}
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                  <h4 className="font-bold text-sm text-slate-200 mb-4">Performance across 8 Environmental Stress Conditions</h4>
+                <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-4">
+                  <h4 className="font-bold text-sm text-[#16192E]">Performance across 8 Environmental Stress Conditions</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {modelReport.conditions_tested.map((cond: string) => {
                       const c = modelReport.condition_reports[cond];
                       return (
-                        <div key={cond} className="bg-slate-950 p-3.5 rounded-lg border border-slate-800/80 space-y-2">
+                        <div key={cond} className="bg-[#F8FAFC] p-3.5 rounded-xl border border-[#E2E8F0] space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold text-sm text-slate-200">{cond}</span>
-                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300">
+                            <span className="font-bold text-sm text-[#16192E]">{cond}</span>
+                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white text-[#C85A17] border border-[#E2E8F0]">
                               mAP {(c.map_50 * 100).toFixed(0)}%
                             </span>
                           </div>
-                          <div className="grid grid-cols-3 text-center text-xs pt-1 border-t border-slate-800">
+                          <div className="grid grid-cols-3 text-center text-xs pt-1 border-t border-[#E2E8F0]">
                             <div>
-                              <span className="text-slate-500 block text-[10px]">Precision</span>
-                              <span className="font-semibold text-slate-300">{(c.precision * 100).toFixed(0)}%</span>
+                              <span className="text-[#64748B] block text-[10px]">Precision</span>
+                              <span className="font-semibold text-[#16192E]">{(c.precision * 100).toFixed(0)}%</span>
                             </div>
                             <div>
-                              <span className="text-slate-500 block text-[10px]">Recall</span>
-                              <span className="font-semibold text-slate-300">{(c.recall * 100).toFixed(0)}%</span>
+                              <span className="text-[#64748B] block text-[10px]">Recall</span>
+                              <span className="font-semibold text-[#16192E]">{(c.recall * 100).toFixed(0)}%</span>
                             </div>
                             <div>
-                              <span className="text-slate-500 block text-[10px]">F1</span>
-                              <span className="font-semibold text-slate-300">{(c.f1_score * 100).toFixed(0)}%</span>
+                              <span className="text-[#64748B] block text-[10px]">F1</span>
+                              <span className="font-semibold text-[#16192E]">{(c.f1_score * 100).toFixed(0)}%</span>
                             </div>
                           </div>
                         </div>
@@ -269,11 +269,11 @@ export const TestingCenter: React.FC = () => {
                 </div>
 
                 {/* Per-Class Breakdown Table */}
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                  <h4 className="font-bold text-sm text-slate-200 mb-3">Per-Class Performance Breakdown</h4>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="text-slate-400 border-b border-slate-800">
+                <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-3">
+                  <h4 className="font-bold text-sm text-[#16192E]">Per-Class Performance Breakdown</h4>
+                  <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+                    <table className="w-full text-left text-xs text-[#16192E]">
+                      <thead className="bg-[#F8FAFC] text-[#64748B] border-b border-[#E2E8F0] uppercase text-[10px]">
                         <tr>
                           <th className="py-2.5 px-3">Class Category</th>
                           <th className="py-2.5 px-3">Precision</th>
@@ -282,14 +282,14 @@ export const TestingCenter: React.FC = () => {
                           <th className="py-2.5 px-3">mAP@0.50</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60 font-mono">
+                      <tbody className="divide-y divide-[#E2E8F0] font-mono">
                         {Object.entries(modelReport.per_class_summary).map(([cls, metrics]: any) => (
-                          <tr key={cls} className="hover:bg-slate-800/30">
-                            <td className="py-2.5 px-3 font-semibold text-slate-200 capitalize">{cls.replace(/_/g, " ")}</td>
-                            <td className="py-2.5 px-3 text-indigo-400">{(metrics.precision * 100).toFixed(1)}%</td>
-                            <td className="py-2.5 px-3 text-emerald-400">{(metrics.recall * 100).toFixed(1)}%</td>
-                            <td className="py-2.5 px-3 text-slate-300">{(metrics.f1_score * 100).toFixed(1)}%</td>
-                            <td className="py-2.5 px-3 text-cyan-400">{(metrics.ap_50 * 100).toFixed(1)}%</td>
+                          <tr key={cls} className="hover:bg-[#F8FAFC] transition-colors">
+                            <td className="py-2.5 px-3 font-semibold text-[#16192E] capitalize font-sans">{cls.replace(/_/g, " ")}</td>
+                            <td className="py-2.5 px-3 text-[#16192E]">{(metrics.precision * 100).toFixed(1)}%</td>
+                            <td className="py-2.5 px-3 text-emerald-700 font-bold">{(metrics.recall * 100).toFixed(1)}%</td>
+                            <td className="py-2.5 px-3 text-[#16192E]">{(metrics.f1_score * 100).toFixed(1)}%</td>
+                            <td className="py-2.5 px-3 text-[#C85A17] font-bold">{(metrics.ap_50 * 100).toFixed(1)}%</td>
                           </tr>
                         ))}
                       </tbody>
@@ -304,17 +304,17 @@ export const TestingCenter: React.FC = () => {
         {/* Tab Content: 2. System Testing */}
         {activeTab === "system" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
               <div>
-                <h3 className="font-bold text-base text-slate-200">7-Hop End-to-End System Pipeline Trace</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="font-bold text-base text-[#16192E]">7-Hop End-to-End System Pipeline Trace</h3>
+                <p className="text-xs text-[#64748B] mt-1">
                   Traces a live detection from Video &rarr; Edge AI &rarr; Event &rarr; Network &rarr; Backend &rarr; Database &rarr; GIS Dashboard.
                 </p>
               </div>
               <button
                 onClick={handleRunSystemTrace}
                 disabled={traceRunning}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition flex items-center gap-2"
+                className="px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2 shrink-0"
               >
                 {traceRunning ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
                 Execute 7-Hop Trace
@@ -322,37 +322,37 @@ export const TestingCenter: React.FC = () => {
             </div>
 
             {traceReport && (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 space-y-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <span className="text-xs font-mono text-slate-500 uppercase">Trace ID: {traceReport.trace_id}</span>
-                    <h4 className="text-lg font-bold text-slate-100 flex items-center gap-2 mt-0.5">
-                      <CheckCircle2 size={18} className="text-emerald-400" />
+                    <span className="text-xs font-mono text-[#64748B] uppercase">Trace ID: {traceReport.trace_id}</span>
+                    <h4 className="text-lg font-bold text-[#16192E] flex items-center gap-2 mt-0.5">
+                      <CheckCircle2 size={18} className="text-emerald-600" />
                       Status: {traceReport.overall_status} (Total Pipeline: {traceReport.total_pipeline_latency_ms}ms)
                     </h4>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 w-fit">
                     GIS Verified
                   </span>
                 </div>
 
                 {/* 7-Hop Flowchart Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
-                  {traceReport.hops.map((hop: any, idx: number) => (
+                  {traceReport.hops.map((hop: any) => (
                     <div
                       key={hop.hop_number}
-                      className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex flex-col justify-between space-y-2 relative"
+                      className="bg-[#F8FAFC] border border-[#E2E8F0] p-3.5 rounded-xl flex flex-col justify-between space-y-2 relative"
                     >
                       <div>
-                        <div className="flex items-center justify-between text-xs text-slate-500">
+                        <div className="flex items-center justify-between text-xs text-[#64748B]">
                           <span>Hop {hop.hop_number}</span>
-                          <span className="font-mono text-emerald-400">{hop.latency_ms}ms</span>
+                          <span className="font-mono text-emerald-700 font-bold">{hop.latency_ms}ms</span>
                         </div>
-                        <h5 className="font-bold text-sm text-indigo-300 mt-1">{hop.name}</h5>
-                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{hop.component}</p>
+                        <h5 className="font-bold text-xs sm:text-sm text-[#16192E] mt-1">{hop.name}</h5>
+                        <p className="text-[10px] text-[#64748B] mt-1 line-clamp-2">{hop.component}</p>
                       </div>
-                      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-                        <span className="text-emerald-400 flex items-center gap-1 font-semibold">
+                      <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px]">
+                        <span className="text-emerald-700 flex items-center gap-1 font-bold">
                           <Check size={12} />
                           {hop.status}
                         </span>
@@ -361,7 +361,7 @@ export const TestingCenter: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="p-3 bg-slate-950 rounded-lg text-xs font-mono text-slate-300 border border-slate-800">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl text-xs font-mono text-[#16192E] border border-[#E2E8F0]">
                   {traceReport.summary}
                 </div>
               </div>
@@ -372,22 +372,24 @@ export const TestingCenter: React.FC = () => {
         {/* Tab Content: 3. Load Testing */}
         {activeTab === "load" && (
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
               <div>
-                <h3 className="font-bold text-base text-slate-200">Scalable Concurrency Load Test</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="font-bold text-base text-[#16192E]">Scalable Concurrency Load Test</h3>
+                <p className="text-xs text-[#64748B] mt-1">
                   Simulate concurrent event ingestion across fleet scales: 10, 50, 100, and 500 buses.
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-xs">
-                  <span className="text-slate-400 font-semibold">Scale:</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1.5 bg-[#F8FAFC] p-1 rounded-xl border border-[#E2E8F0] text-xs">
+                  <span className="text-[#64748B] font-semibold px-2">Scale:</span>
                   {[10, 50, 100, 500].map((count) => (
                     <button
                       key={count}
                       onClick={() => setLoadBuses(count)}
-                      className={`px-2.5 py-1 rounded font-bold transition ${
-                        loadBuses === count ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
+                        loadBuses === count
+                          ? "bg-[#16192E] text-white shadow-xs"
+                          : "text-[#64748B] hover:text-[#16192E]"
                       }`}
                     >
                       {count} Buses
@@ -397,7 +399,7 @@ export const TestingCenter: React.FC = () => {
                 <button
                   onClick={handleRunLoadTest}
                   disabled={loadRunning}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition flex items-center gap-2"
+                  className="px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
                 >
                   {loadRunning ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
                   Run Load Simulation
@@ -406,33 +408,33 @@ export const TestingCenter: React.FC = () => {
             </div>
 
             {loadReport && (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+              <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 space-y-6 shadow-sm">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span className="text-xs text-slate-400 font-semibold">Throughput</span>
-                    <div className="text-2xl font-extrabold text-cyan-400 mt-1">{loadReport.throughput_eps} EPS</div>
-                    <span className="text-xs text-slate-500">Events per second</span>
+                  <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B]">Throughput</span>
+                    <div className="text-2xl font-extrabold text-blue-700 mt-1">{loadReport.throughput_eps} EPS</div>
+                    <span className="text-xs text-[#64748B]">Events per second</span>
                   </div>
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span className="text-xs text-slate-400 font-semibold">Success Rate</span>
-                    <div className="text-2xl font-extrabold text-emerald-400 mt-1">
+                  <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B]">Success Rate</span>
+                    <div className="text-2xl font-extrabold text-emerald-700 mt-1">
                       {loadReport.successful_ingestions} / {loadReport.total_events_generated}
                     </div>
-                    <span className="text-xs text-slate-500">Error: {loadReport.error_rate_pct}%</span>
+                    <span className="text-xs text-[#64748B]">Error: {loadReport.error_rate_pct}%</span>
                   </div>
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span className="text-xs text-slate-400 font-semibold">Median Latency (p50)</span>
-                    <div className="text-2xl font-extrabold text-indigo-400 mt-1">{loadReport.latency_p50_ms} ms</div>
-                    <span className="text-xs text-slate-500">Fast path ingestion</span>
+                  <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B]">Median Latency (p50)</span>
+                    <div className="text-2xl font-extrabold text-[#16192E] mt-1">{loadReport.latency_p50_ms} ms</div>
+                    <span className="text-xs text-[#64748B]">Fast path ingestion</span>
                   </div>
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <span className="text-xs text-slate-400 font-semibold">95th Percentile (p95)</span>
-                    <div className="text-2xl font-extrabold text-amber-400 mt-1">{loadReport.latency_p95_ms} ms</div>
-                    <span className="text-xs text-slate-500">Tail latency</span>
+                  <div className="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B]">95th Percentile (p95)</span>
+                    <div className="text-2xl font-extrabold text-[#C85A17] mt-1">{loadReport.latency_p95_ms} ms</div>
+                    <span className="text-xs text-[#64748B]">Tail latency</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-950 rounded-lg text-xs font-mono text-slate-300 border border-slate-800">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl text-xs font-mono text-[#16192E] border border-[#E2E8F0]">
                   {loadReport.summary}
                 </div>
               </div>
@@ -443,17 +445,17 @@ export const TestingCenter: React.FC = () => {
         {/* Tab Content: 4. Failure Testing */}
         {activeTab === "failure" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
               <div>
-                <h3 className="font-bold text-base text-slate-200">Fault-Tolerance & Failure Injection Suite</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="font-bold text-base text-[#16192E]">Fault-Tolerance &amp; Failure Injection Suite</h3>
+                <p className="text-xs text-[#64748B] mt-1">
                   Injects 6 real-world failures and verifies: Zero Event Loss, Local Buffering, Auto-Reconnect, and Duplicate Prevention.
                 </p>
               </div>
               <button
                 onClick={handleRunFailureScenarios}
                 disabled={failureRunning}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition flex items-center gap-2"
+                className="px-4 py-2 bg-[#C85A17] hover:bg-[#B34F14] disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2 shrink-0"
               >
                 {failureRunning ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
                 Run 6 Failure Scenarios
@@ -464,32 +466,32 @@ export const TestingCenter: React.FC = () => {
               <div className="space-y-6">
                 {/* 4 Invariant Badges */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                    <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                    <CheckCircle2 size={24} className="text-emerald-600 shrink-0" />
                     <div>
-                      <span className="text-xs text-slate-400 block font-medium">Invariant 1</span>
-                      <span className="text-sm font-bold text-slate-100">Events Not Lost</span>
+                      <span className="text-[10px] text-[#64748B] block font-bold uppercase">Invariant 1</span>
+                      <span className="text-sm font-bold text-[#16192E]">Events Not Lost</span>
                     </div>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                    <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                    <CheckCircle2 size={24} className="text-emerald-600 shrink-0" />
                     <div>
-                      <span className="text-xs text-slate-400 block font-medium">Invariant 2</span>
-                      <span className="text-sm font-bold text-slate-100">Local Buffering Works</span>
+                      <span className="text-[10px] text-[#64748B] block font-bold uppercase">Invariant 2</span>
+                      <span className="text-sm font-bold text-[#16192E]">Local Buffering Works</span>
                     </div>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                    <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                    <CheckCircle2 size={24} className="text-emerald-600 shrink-0" />
                     <div>
-                      <span className="text-xs text-slate-400 block font-medium">Invariant 3</span>
-                      <span className="text-sm font-bold text-slate-100">Auto-Reconnects</span>
+                      <span className="text-[10px] text-[#64748B] block font-bold uppercase">Invariant 3</span>
+                      <span className="text-sm font-bold text-[#16192E]">Auto-Reconnects</span>
                     </div>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                    <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
+                  <div className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                    <CheckCircle2 size={24} className="text-emerald-600 shrink-0" />
                     <div>
-                      <span className="text-xs text-slate-400 block font-medium">Invariant 4</span>
-                      <span className="text-sm font-bold text-slate-100">Duplicates Prevented</span>
+                      <span className="text-[10px] text-[#64748B] block font-bold uppercase">Invariant 4</span>
+                      <span className="text-sm font-bold text-[#16192E]">Duplicates Prevented</span>
                     </div>
                   </div>
                 </div>
@@ -497,26 +499,26 @@ export const TestingCenter: React.FC = () => {
                 {/* 6 Failure Scenario Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {resilienceReport.scenario_results.map((scen: any) => (
-                    <div key={scen.scenario_name} className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3">
+                    <div key={scen.scenario_name} className="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-sm text-slate-200">{scen.scenario_name}</h4>
-                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <h4 className="font-bold text-sm text-[#16192E]">{scen.scenario_name}</h4>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {scen.status}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">{scen.injected_failure}</p>
-                      <div className="grid grid-cols-3 gap-2 text-center text-xs bg-slate-950 p-2 rounded-lg border border-slate-800">
+                      <p className="text-xs text-[#64748B]">{scen.injected_failure}</p>
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0]">
                         <div>
-                          <span className="text-slate-500 text-[10px] block">Generated</span>
-                          <span className="font-bold text-slate-300">{scen.events_generated}</span>
+                          <span className="text-[#64748B] text-[10px] block font-medium">Generated</span>
+                          <span className="font-bold text-[#16192E]">{scen.events_generated}</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 text-[10px] block">Buffered</span>
-                          <span className="font-bold text-amber-400">{scen.events_buffered_locally}</span>
+                          <span className="text-[#64748B] text-[10px] block font-medium">Buffered</span>
+                          <span className="font-bold text-amber-700">{scen.events_buffered_locally}</span>
                         </div>
                         <div>
-                          <span className="text-slate-500 text-[10px] block">Zero Loss</span>
-                          <span className="font-bold text-emerald-400">CERTIFIED</span>
+                          <span className="text-[#64748B] text-[10px] block font-medium">Zero Loss</span>
+                          <span className="font-bold text-emerald-700">CERTIFIED</span>
                         </div>
                       </div>
                     </div>

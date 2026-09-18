@@ -94,9 +94,36 @@ const CITY_CENTERS: Record<string, { lat: number; lon: number; zoom: number }> =
   All:       { lat: 22.0000, lon: 78.0000, zoom: 5  },
 };
 
-// Dark basemap tile URL (CartoDB dark for congestion visibility)
-const DARK_TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const DARK_TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>';
+// Clean basemap presets with ZERO watermark and NO API key required
+const BASEMAP_OPTIONS = [
+  {
+    id: "google_streets",
+    name: "Google Roadmap",
+    url: "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+    maxZoom: 22,
+    maxNativeZoom: 20,
+    attribution: "&copy; Google Maps",
+  },
+  {
+    id: "esri_dark",
+    name: "Clean Dark Canvas",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    subdomains: ["a", "b", "c"],
+    maxZoom: 19,
+    maxNativeZoom: 16,
+    attribution: "&copy; Esri &copy; OpenStreetMap",
+  },
+  {
+    id: "google_hybrid",
+    name: "Google Hybrid",
+    url: "https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+    maxZoom: 22,
+    maxNativeZoom: 20,
+    attribution: "&copy; Google Maps Imagery",
+  },
+];
 
 export const CongestionMap: React.FC<CongestionMapProps> = ({
   segments,
@@ -106,10 +133,12 @@ export const CongestionMap: React.FC<CongestionMapProps> = ({
   height = "520px",
 }) => {
   const [viewMode, setViewMode] = useState<"corridors" | "heatmap" | "hybrid">("hybrid");
+  const [activeBasemap, setActiveBasemap] = useState<string>("google_streets");
   const [activeSegment, setActiveSegment] = useState<RoadSegmentData | null>(segments[0] || null);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const corridorLayerRef = useRef<L.LayerGroup | null>(null);
   const heatmapLayerRef = useRef<L.LayerGroup | null>(null);
   const markerLayerRef = useRef<L.LayerGroup | null>(null);
@@ -122,6 +151,17 @@ export const CongestionMap: React.FC<CongestionMapProps> = ({
   const handleSegmentClick = (seg: RoadSegmentData) => {
     setActiveSegment(seg);
     if (onSelectSegment) onSelectSegment(seg);
+  };
+
+  const createTileLayer = (presetId: string): L.TileLayer => {
+    const preset = BASEMAP_OPTIONS.find((p) => p.id === presetId) || BASEMAP_OPTIONS[0];
+    return L.tileLayer(preset.url, {
+      maxZoom: preset.maxZoom,
+      maxNativeZoom: preset.maxNativeZoom,
+      subdomains: preset.subdomains,
+      attribution: preset.attribution,
+      crossOrigin: true,
+    });
   };
 
   // Initialize Leaflet map
@@ -138,10 +178,8 @@ export const CongestionMap: React.FC<CongestionMapProps> = ({
       attributionControl: true,
     });
 
-    L.tileLayer(DARK_TILE_URL, {
-      maxZoom: 19,
-      attribution: DARK_TILE_ATTR,
-    }).addTo(map);
+    const tiles = createTileLayer(activeBasemap).addTo(map);
+    tileLayerRef.current = tiles;
 
     corridorLayerRef.current = L.layerGroup().addTo(map);
     heatmapLayerRef.current = L.layerGroup().addTo(map);
@@ -158,6 +196,17 @@ export const CongestionMap: React.FC<CongestionMapProps> = ({
       mapRef.current = null;
     };
   }, []);
+
+  // Update Basemap tile layer dynamically
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (tileLayerRef.current) {
+      mapRef.current.removeLayer(tileLayerRef.current);
+    }
+    const newTiles = createTileLayer(activeBasemap).addTo(mapRef.current);
+    newTiles.bringToBack();
+    tileLayerRef.current = newTiles;
+  }, [activeBasemap]);
 
   // Fly to city when selectedCity changes
   useEffect(() => {
@@ -334,6 +383,22 @@ export const CongestionMap: React.FC<CongestionMapProps> = ({
           <Gauge className="w-3.5 h-3.5" />
           Corridors & Bottlenecks
         </button>
+
+        <span className="text-gray-700">|</span>
+
+        {/* Clean Basemap Switcher (Zero Watermark / No API Key required) */}
+        <select
+          value={activeBasemap}
+          onChange={(e) => setActiveBasemap(e.target.value)}
+          className="text-xs bg-gray-800 text-gray-200 border border-gray-700 rounded-lg px-2.5 py-1 outline-none font-medium cursor-pointer hover:border-gray-500"
+          title="Change Basemap (No API key required)"
+        >
+          {BASEMAP_OPTIONS.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              🗺️ {opt.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Segment Count + Zoom Controls */}

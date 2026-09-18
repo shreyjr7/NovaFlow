@@ -107,3 +107,13 @@ async def get_clustering_stats():
     """
     service = get_spatial_clustering_service()
     return service.get_stats()
+
+
+@router.post("/merge-reports", summary="Merge repeated bus reports into single canonical defect (Step 26)")
+async def merge_reports_endpoint(reports: List[Dict[str, Any]]):
+    """
+    Step 26: Merges multiple bus observations (e.g. BUS 101, BUS 205, BUS 311)
+    within geographic proximity into ONE POTHOLE with Reports: 3, Confidence: HIGH.
+    """
+    service = get_spatial_clustering_service()
+    return service.merge_repeated_reports(reports)

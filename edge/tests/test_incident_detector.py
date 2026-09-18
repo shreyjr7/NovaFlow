@@ -262,3 +262,175 @@ def test_rolling_buffer_evidence_sequence():
     assert "PRE_IMPACT" in phases
     assert "IMPACT" in phases
     assert "POST_IMPACT" in phases
+
+
+# ── Step 18: Explainable Trajectory Rules (No Fake Accident Classifier) ───────
+
+def test_step18_explainable_trajectory_rules():
+    """
+    Step 18: Don't build a fake "accident classifier".
+    Instead use explainable trajectory rules:
+      Sudden deceleration + Abrupt heading change + Nearby vehicle trajectory anomaly
+      -> Potential incident
+    """
+    from edge.incident.signals import (
+        check_explainable_incident_rule,
+        TrajectorySignalEvaluator,
+        VehicleTrackState,
+    )
+
+    # 1. Direct rule evaluator verification
+    assert check_explainable_incident_rule(
+        sudden_deceleration=True,
+        abrupt_heading_change=True,
+        nearby_vehicle_anomaly=True,
+    ) is True
+
+    # Missing any of the physical signals -> not corroborated
+    assert check_explainable_incident_rule(
+        sudden_deceleration=True,
+        abrupt_heading_change=False,
+        nearby_vehicle_anomaly=True,
+    ) is False
+
+    # 2. Test via TrajectorySignalEvaluator with compound physical signals
+    evaluator = TrajectorySignalEvaluator()
+    primary = VehicleTrackState(
+        track_id=14,
+        class_name="car",
+        speed_kmh=12.0,
+        bbox=[200, 200, 300, 300],
+        heading_deg=135.0,
+        prev_speed_kmh=48.0,         # Sudden deceleration (-36 km/h)
+        prev_heading_deg=90.0,        # Abrupt heading change (45 deg)
+        acceleration_m_s2=-5.0,
+    )
+    nearby = VehicleTrackState(
+        track_id=15,
+        class_name="truck",
+        speed_kmh=14.0,
+        bbox=[220, 210, 320, 310],   # Close interaction / anomaly
+        heading_deg=90.0,
+    )
+
+    signals = evaluator.evaluate_signals(primary_track=primary, nearby_tracks=[nearby], dt=0.2)
+    assert signals["sudden_deceleration"].triggered is True
+    assert signals["abrupt_heading_change"].triggered is True
+    assert signals["nearby_vehicle_interaction"].triggered is True
+
+    is_incident, category, conf = evaluator.evaluate_compound_condition(signals)
+    assert is_incident is True
+    assert category in ("POTENTIAL_INCIDENT", "COLLISION_RISK")
+    assert conf >= 0.70
+
+
+# ── Step 19: Incident Evidence Buffer (-5s to +5s) ────────────────────────────
+
+def test_step19_rolling_buffer_surrounding_clip_seconds():
+    """
+    Step 19: Add incident evidence buffer
+    Keep a rolling video buffer:
+      -5 sec, -4 sec, -3 sec, -2 sec, -1 sec, 0 <- INCIDENT, +1 sec, +2 sec, +3 sec, +4 sec, +5 sec
+    When an incident is detected:
+      Save the surrounding clip.
+    """
+    from edge.incident.rolling_buffer import RollingFrameBuffer
+
+    buffer = RollingFrameBuffer(capacity=60)
+    incident_time = 1000.0
+
+    # Push frames from -6.0s to +6.0s relative to incident
+    for i in range(121):
+        t = incident_time - 6.0 + i * 0.1
+        buffer.push(frame=None, timestamp_s=t, frame_idx=i)
+
+    # Extract surrounding clip spanning -5s to +5s
+    clip = buffer.extract_surrounding_clip(
+        incident_timestamp_s=incident_time,
+        pre_seconds=5.0,
+        post_seconds=5.0,
+    )
+
+    assert clip["saved"] is True
+    assert clip["duration_s"] == 10.0
+    assert clip["incident_timestamp_s"] == incident_time
+    assert len(clip["timeline"]) == 11
+
+    # Check relative seconds offsets: -5s to +5s
+    offsets = [entry["offset_seconds"] for entry in clip["timeline"]]
+    assert offsets == [-5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+
+    # Verify incident frame at 0 sec
+    mid_entry = clip["timeline"][5]
+    assert mid_entry["offset_seconds"] == 0.0
+    assert mid_entry["is_incident_frame"] is True
+    assert "INCIDENT" in mid_entry["timeline_label"]
+    assert mid_entry["phase"] == "INCIDENT"
+
+
+# ── Step 20: Don't Determine Fault (Neutral Display & Human Verification) ─────
+
+def test_step20_no_fault_attribution_neutral_display():
+    """
+    Step 20: Don't determine fault
+    Never display:
+      ❌ "Vehicle A is guilty."
+    Display:
+      ✅ "Anomalous event involving Vehicle A."
+    Then send it for human verification.
+    """
+    from edge.incident.anomaly_detector import (
+        IncidentAnomalyDetector,
+        format_neutral_display,
+    )
+
+    # 1. Test display formatting rule
+    display = format_neutral_display("car", 23)
+    assert display == "Anomalous event involving Vehicle #23."
+    assert "guilty" not in display.lower()
+    assert "fault" not in display.lower()
+
+    # Also test with character label like 'A'
+    display_a = format_neutral_display("car", "A")
+    assert display_a == "Anomalous event involving Vehicle A."
+
+    # 2. Test full incident emission payload
+    detector = IncidentAnomalyDetector(camera_id="FRONT", bus_id="BUS-102", cooldown_seconds=0.0)
+    gps = {"lat": 28.6139, "lon": 77.2090, "road_segment": "DEL_01"}
+
+    # Frame 1: Interaction
+    f1 = [
+        {"track_id": 23, "class": "car", "speed_kmh": 40.0, "bbox": [100, 100, 200, 200], "heading_deg": 90.0},
+        {"track_id": 24, "class": "truck", "speed_kmh": 35.0, "bbox": [110, 110, 210, 210], "heading_deg": 90.0},
+    ]
+    detector.process_frame(frame=None, tracks=f1, gps=gps)
+
+    # Frame 2: Trigger anomaly (sudden braking + turn + interaction)
+    f2 = [
+        {"track_id": 23, "class": "car", "speed_kmh": 12.0, "bbox": [120, 100, 220, 200], "heading_deg": 140.0},
+        {"track_id": 24, "class": "truck", "speed_kmh": 15.0, "bbox": [125, 110, 225, 210], "heading_deg": 90.0},
+    ]
+    events = detector.process_frame(frame=None, tracks=f2, gps=gps)
+
+    assert len(events) == 1
+    ev = events[0]
+
+    # MUST NOT contain fault/guilt claims
+    assert "guilty" not in ev.get("display_text", "").lower()
+    assert "guilty" not in ev.get("title", "").lower()
+    assert "Vehicle #23" in ev["display_text"]
+    assert "Anomalous event involving" in ev["display_text"]
+
+    # Enforce human verification
+    assert ev["requires_human_verification"] is True
+    assert ev["status"] == "unverified"
+
+    # Step 20 + Phase 3 canonical standard event representation
+    std = IncidentAnomalyDetector.to_standard_dict(ev)
+    assert "eventId" in std
+    assert std["type"] == "incident"
+    assert std["busId"] == "BUS-102"
+    assert std["severity"] == "high"
+    assert std["status"] == "unverified"
+    assert "Anomalous event involving" in std["details"]["display_text"]
+    assert std["details"]["fault_attributed"] is False
