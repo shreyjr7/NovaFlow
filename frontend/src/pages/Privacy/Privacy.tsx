@@ -122,7 +122,7 @@ export const Privacy: React.FC = () => {
               <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
                 Privacy & Security Architecture
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Phase 26
+                  Compliance Guardrails
                 </span>
               </h1>
               <p className="text-sm text-slate-400">
@@ -386,7 +386,7 @@ export const Privacy: React.FC = () => {
           <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/90 space-y-3">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <Lock size={18} className="text-indigo-400" />
-              Evidence Chain of Custody & Immutability (Phase 27 Link)
+              Evidence Chain of Custody &amp; Immutability
             </h3>
             <p className="text-sm text-slate-300 leading-relaxed">
               Every stored incident clip is cryptographically bound to a <strong>SHA-256 genesis hash</strong>, GPS coordinates, bus ID, and timestamp. Silent overwrites are strictly rejected by storage gates.
@@ -421,8 +421,8 @@ export const Privacy: React.FC = () => {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto touch-scroll">
+            <table className="w-full min-w-[750px] text-left text-xs">
               <thead className="text-slate-400 border-b border-slate-800">
                 <tr>
                   <th className="pb-2">Log ID</th>

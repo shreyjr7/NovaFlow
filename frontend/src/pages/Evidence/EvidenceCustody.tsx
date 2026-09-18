@@ -163,7 +163,7 @@ export const EvidenceCustody: React.FC = () => {
               <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
                 Evidence Chain of Custody
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  Phase 27
+                  Evidentiary Security
                 </span>
               </h1>
               <p className="text-sm text-slate-400">

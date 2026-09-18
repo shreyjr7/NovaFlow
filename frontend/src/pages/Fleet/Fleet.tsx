@@ -28,7 +28,7 @@ export default function Fleet() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6 max-w-[1600px] mx-auto text-[#16192E]">
+    <div className="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 max-w-[1600px] mx-auto text-[#16192E]">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link to="/" className="inline-flex items-center text-xs font-semibold text-[#64748B] hover:text-[#16192E] mb-2 transition">

@@ -334,7 +334,7 @@ export const RouteDelay: React.FC = () => {
                   Bus Route Delay Analytics
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/30">
-                  PHASE 22
+                  Schedule Deviation
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -557,8 +557,8 @@ export const RouteDelay: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-gray-300">
+          <div className="overflow-x-auto touch-scroll">
+            <table className="w-full min-w-[650px] text-left text-xs text-gray-300">
               <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider text-[10px] border-b border-gray-800">
                 <tr>
                   <th className="py-2.5 px-3">Section</th>

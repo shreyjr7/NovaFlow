@@ -252,7 +252,7 @@ export const OfflineBuffer: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-brand text-xs font-mono uppercase tracking-widest">
             <Database size={14} />
-            <span>Phase 15 — Local Store-and-Forward Engine</span>
+            <span>Local Store-and-Forward Engine</span>
           </div>
           <h2 className="text-2xl font-bold mt-1">Onboard Local Buffer & Offline Mode</h2>
           <p className="text-sm text-gray-400 mt-0.5">
@@ -411,8 +411,8 @@ export const OfflineBuffer: React.FC = () => {
         </div>
 
         {/* Table Body */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-mono">
+        <div className="overflow-x-auto touch-scroll">
+          <table className="w-full min-w-[700px] text-left text-xs font-mono">
             <thead className="bg-gray-950/80 text-gray-400 border-b border-gray-800 text-[11px]">
               <tr>
                 <th className="py-3 px-4">Event ID</th>

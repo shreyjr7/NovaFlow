@@ -209,7 +209,7 @@ export const OriginDestination: React.FC = () => {
                   Origin-Destination Traffic Analytics
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  PHASE 21
+                  Mobility Modeling
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -225,7 +225,7 @@ export const OriginDestination: React.FC = () => {
             href="/congestion"
             className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 text-xs rounded-xl font-medium transition-all"
           >
-            <span>Congestion Heatmap (Phase 20)</span>
+            <span>Congestion Heatmap</span>
           </a>
 
           <button
@@ -630,8 +630,8 @@ export const OriginDestination: React.FC = () => {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-gray-300 border border-gray-800 rounded-xl overflow-hidden font-mono">
+          <div className="overflow-x-auto touch-scroll">
+            <table className="w-full min-w-[650px] text-left text-xs text-gray-300 border border-gray-800 rounded-xl overflow-hidden font-mono">
               <thead className="bg-gray-950 text-gray-400 uppercase tracking-wider text-[11px] border-b border-gray-800">
                 <tr>
                   <th className="py-3 px-4 bg-gray-900 font-bold font-sans">Origin \ Destination</th>

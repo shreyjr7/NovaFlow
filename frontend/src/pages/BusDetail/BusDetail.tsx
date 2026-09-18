@@ -35,23 +35,23 @@ export default function BusDetail() {
   if (!bus) return <div className="p-8 text-white">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="min-h-screen bg-gray-950 text-white p-3 sm:p-5 lg:p-6">
       <div className="max-w-6xl mx-auto">
-        <Link to="/fleet" className="inline-flex items-center text-indigo-400 hover:text-indigo-300 mb-6">
+        <Link to="/fleet" className="inline-flex items-center text-indigo-400 hover:text-indigo-300 mb-4 sm:mb-6 text-sm">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Fleet
         </Link>
         
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-indigo-500/20 rounded-xl border border-indigo-500/30">
-            <Bus className="w-8 h-8 text-indigo-400" />
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="p-2.5 sm:p-3 bg-indigo-500/20 rounded-xl border border-indigo-500/30 shrink-0">
+            <Bus className="w-6 h-6 sm:w-8 h-8 text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">{bus.name}</h1>
-            <p className="text-gray-400">{bus.model} • {bus.propulsion}</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">{bus.name}</h1>
+            <p className="text-xs sm:text-sm text-gray-400">{bus.model} • {bus.propulsion}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="bg-gray-900 border border-gray-800 p-4 rounded-xl">
             <div className="flex items-center gap-2 text-gray-400 mb-2">
               <Navigation className="w-4 h-4" /> Route

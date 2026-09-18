@@ -295,7 +295,7 @@ export const ReportGenerator: React.FC = () => {
                   SIMULATION CENTRE ── SIH PROBLEM STATEMENT 124
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                  PHASE 29
+                  Diagnostic Engine
                 </span>
               </div>
               <h1 className="text-2xl font-bold tracking-tight text-[#16192E]">
@@ -634,8 +634,8 @@ export const ReportGenerator: React.FC = () => {
                 <h3 className="text-lg font-bold text-[#16192E] border-l-4 border-[#C85A17] pl-3">
                   4. Infrastructure Deficiencies
                 </h3>
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
-                  <table className="w-full text-left text-xs text-[#16192E]">
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-x-auto touch-scroll">
+                  <table className="w-full min-w-[500px] text-left text-xs text-[#16192E]">
                     <thead className="bg-white text-[#64748B] uppercase border-b border-[#E2E8F0] font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Deficient Asset</th>
@@ -735,8 +735,8 @@ export const ReportGenerator: React.FC = () => {
                 </div>
 
                 {/* Worst Delayed Routes Table */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-x-auto">
-                  <table className="w-full text-left text-xs text-[#16192E]">
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-x-auto touch-scroll">
+                  <table className="w-full min-w-[500px] text-left text-xs text-[#16192E]">
                     <thead className="bg-white uppercase text-[#64748B] border-b border-[#E2E8F0] font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Route</th>
@@ -787,8 +787,8 @@ export const ReportGenerator: React.FC = () => {
                 <h3 className="text-lg font-bold text-[#16192E] border-l-4 border-[#C85A17] pl-3">
                   9. Top Priority Locations & GIS Map Visualization
                 </h3>
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-x-auto">
-                  <table className="w-full text-left text-xs text-[#16192E]">
+                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] overflow-x-auto touch-scroll">
+                  <table className="w-full min-w-[550px] text-left text-xs text-[#16192E]">
                     <thead className="bg-white uppercase text-[#64748B] border-b border-[#E2E8F0] font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">#</th>
@@ -896,8 +896,8 @@ export const ReportGenerator: React.FC = () => {
               Municipal Intelligence Report Archive
             </h2>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-[#16192E]">
+            <div className="overflow-x-auto touch-scroll">
+              <table className="w-full min-w-[650px] text-left text-sm text-[#16192E]">
                 <thead className="bg-[#F8FAFC] text-xs uppercase text-[#64748B] border-b border-[#E2E8F0] font-semibold">
                   <tr>
                     <th className="py-3 px-4">Report ID</th>
@@ -952,8 +952,8 @@ export const ReportGenerator: React.FC = () => {
 
       {/* ── Share Modal Dialog ────────────────────────────────────────── */}
       {shareModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E2E8F0] rounded-xl max-w-lg w-full p-6 space-y-4 shadow-xl text-[#16192E]">
+        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4 shadow-xl text-[#16192E]">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
                 <Share2 className="w-5 h-5 text-[#C85A17]" />

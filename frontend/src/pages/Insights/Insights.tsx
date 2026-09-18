@@ -95,7 +95,7 @@ export const Insights: React.FC = () => {
     : 95;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-3 sm:p-5 lg:p-8 space-y-4 sm:space-y-6">
       {/* Top Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
         <div>
@@ -104,13 +104,13 @@ export const Insights: React.FC = () => {
               <Sparkles size={24} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-3">
                 Actionable Insights Engine
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  Phase 23
+                  Synthesis Engine
                 </span>
               </h1>
-              <p className="text-sm text-slate-400">
+              <p className="text-xs sm:text-sm text-slate-400">
                 Multi-domain synthesis across road defects, congestion, incidents, route delays, infrastructure, and pedestrian risks.
               </p>
             </div>

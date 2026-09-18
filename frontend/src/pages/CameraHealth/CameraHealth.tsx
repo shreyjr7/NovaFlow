@@ -386,8 +386,8 @@ export const CameraHealth: React.FC = () => {
           <span className="text-xs text-[#64748B]">Triggered automatically by dirty/obstructed lens fail-safe</span>
         </div>
 
-        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
-          <table className="w-full text-left text-xs text-[#16192E]">
+        <div className="overflow-x-auto touch-scroll border border-[#E2E8F0] rounded-xl">
+          <table className="w-full min-w-[650px] text-left text-xs text-[#16192E]">
             <thead className="bg-[#F8FAFC] text-[#64748B] border-b border-[#E2E8F0] uppercase text-[10px]">
               <tr>
                 <th className="py-2.5 px-3">Ticket ID</th>

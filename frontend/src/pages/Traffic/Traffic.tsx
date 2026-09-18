@@ -199,16 +199,16 @@ const Traffic: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent text-[#16192E] p-6 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#16192E] tracking-tight flex items-center gap-2">
-            <Activity size={26} className="text-[#C85A17]" />
-            Vehicle Detection &amp; Tracking
+          <h1 className="text-xl sm:text-2xl font-bold text-[#16192E] tracking-tight flex items-center gap-2">
+            <Activity size={24} className="text-[#C85A17] shrink-0" />
+            <span>Vehicle Detection &amp; Tracking</span>
           </h1>
-          <p className="text-sm text-[#64748B] mt-1">
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
             ByteTrack multi-object tracking · Counting lines · Speed estimation · Density analysis
           </p>
         </div>
@@ -218,7 +218,7 @@ const Traffic: React.FC = () => {
           </span>
           <button
             onClick={() => setLiveMode(l => !l)}
-            className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg hover:bg-[#F8FAFC] text-[#16192E] font-medium shadow-2xs transition"
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white border border-[#CBD5E1] rounded-lg hover:bg-[#F8FAFC] text-[#16192E] font-medium shadow-2xs transition cursor-pointer"
           >
             <RefreshCw size={12} /> {liveMode ? "Pause" : "Resume"}
           </button>
@@ -226,14 +226,14 @@ const Traffic: React.FC = () => {
       </div>
 
       {/* ── Camera selector ─────────────────────────────────────────────── */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <Camera size={14} className="text-[#64748B]" />
-        <span className="text-xs font-medium text-[#64748B]">Camera:</span>
+      <div className="flex items-center gap-2 flex-wrap text-xs">
+        <Camera size={14} className="text-[#64748B] shrink-0" />
+        <span className="font-medium text-[#64748B]">Camera:</span>
         {["FRONT", "REAR", "LEFT", "RIGHT"].map(cam => (
           <button
             key={cam}
             onClick={() => setActiveCam(cam)}
-            className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border font-medium transition cursor-pointer ${
               activeCam === cam
                 ? "bg-[#16192E] border-[#16192E] text-white shadow-xs"
                 : "bg-white border-[#CBD5E1] text-[#64748B] hover:text-[#16192E] hover:bg-[#F8FAFC]"
@@ -242,13 +242,13 @@ const Traffic: React.FC = () => {
             {cam}
           </button>
         ))}
-        <span className="ml-2 text-xs text-[#64748B]">
+        <span className="text-[#64748B]">
           Active Tracks: <span className="text-[#C85A17] font-bold">{snap.active_tracks}</span>
         </span>
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2.5 sm:gap-3">
         <StatCard title="Total Vehicles"  value={snap.counts.total}        icon={TrendingUp} color="text-[#C85A17]"       sub="cumulative" />
         <StatCard title="Cars"            value={snap.counts.car}          icon={Car}        color="text-blue-600" />
         <StatCard title="Two-Wheelers"    value={snap.counts.two_wheeler}  icon={Bike}       color="text-purple-600" />

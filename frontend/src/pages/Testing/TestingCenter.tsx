@@ -271,8 +271,8 @@ export const TestingCenter: React.FC = () => {
                 {/* Per-Class Breakdown Table */}
                 <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm space-y-3">
                   <h4 className="font-bold text-sm text-[#16192E]">Per-Class Performance Breakdown</h4>
-                  <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
-                    <table className="w-full text-left text-xs text-[#16192E]">
+                  <div className="overflow-x-auto touch-scroll border border-[#E2E8F0] rounded-xl">
+                    <table className="w-full min-w-[550px] text-left text-xs text-[#16192E]">
                       <thead className="bg-[#F8FAFC] text-[#64748B] border-b border-[#E2E8F0] uppercase text-[10px]">
                         <tr>
                           <th className="py-2.5 px-3">Class Category</th>
@@ -337,7 +337,7 @@ export const TestingCenter: React.FC = () => {
                 </div>
 
                 {/* 7-Hop Flowchart Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
                   {traceReport.hops.map((hop: any) => (
                     <div
                       key={hop.hop_number}

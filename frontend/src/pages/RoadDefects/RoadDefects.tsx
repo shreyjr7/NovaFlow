@@ -411,7 +411,7 @@ export const RoadDefects: React.FC = () => {
             <Construction className="text-[#C85A17]" size={26} />
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#16192E]">Road Defect Management Console</h1>
             <span className="px-2 py-0.5 text-xs font-semibold rounded bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]">
-              Phase 18
+              Municipal Work Orders
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#64748B] mt-1">
@@ -620,7 +620,7 @@ export const RoadDefects: React.FC = () => {
             <div>
               <div className="flex items-center gap-2 text-[#C85A17] font-bold text-sm">
                 <Sparkles size={18} />
-                <span>Geospatial-Temporal Event Deduplication Engine (Phase 19)</span>
+                <span>Geospatial-Temporal Event Deduplication Engine</span>
               </div>
               <p className="text-xs text-[#64748B] mt-1 max-w-2xl">
                 Combines multiple bus camera sightings within 25m into <strong className="text-[#16192E]">ONE CANONICAL DEFECT</strong> using PostGIS <code className="text-[#C85A17] font-mono font-semibold">ST_DWithin</code>, road segment map matching, and Bayesian multi-bus consensus.
@@ -825,8 +825,8 @@ export const RoadDefects: React.FC = () => {
               <span className="text-xs text-[#64748B]">Sorted by Priority Score &amp; Recurrence</span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-[#16192E]">
+            <div className="overflow-x-auto touch-scroll">
+              <table className="w-full min-w-[700px] text-left text-xs text-[#16192E]">
                 <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0] font-semibold">
                   <tr>
                     <th className="py-2.5 px-3">Defect ID &amp; Type</th>
@@ -1147,8 +1147,8 @@ export const RoadDefects: React.FC = () => {
 
       {/* 1. Assign Authority Modal */}
       {actionModal === "assign" && selectedDefect && (
-        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-5 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4 text-[#16192E]">
             <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
               <Send size={18} className="text-blue-600" />
               Assign Maintenance Authority &amp; Issue Ticket
@@ -1202,8 +1202,8 @@ export const RoadDefects: React.FC = () => {
 
       {/* 2. Update Repair Modal */}
       {actionModal === "update" && selectedDefect && (
-        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-5 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4 text-[#16192E]">
             <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
               <Wrench size={18} className="text-purple-600" />
               Update Repair Progress
@@ -1251,8 +1251,8 @@ export const RoadDefects: React.FC = () => {
 
       {/* 3. Upload Repair Evidence Modal */}
       {actionModal === "evidence" && selectedDefect && (
-        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-5 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4 text-[#16192E]">
             <h3 className="text-base font-bold text-[#16192E] flex items-center gap-2">
               <Camera size={18} className="text-emerald-600" />
               Upload Repair Completion Evidence
@@ -1291,8 +1291,8 @@ export const RoadDefects: React.FC = () => {
 
       {/* 4. Reject Defect Modal */}
       {actionModal === "reject" && selectedDefect && (
-        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-6 max-w-md w-full space-y-4 text-[#16192E]">
+        <div className="fixed inset-0 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-xl rounded-xl p-5 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-4 text-[#16192E]">
             <h3 className="text-base font-bold text-rose-600 flex items-center gap-2">
               <XCircle size={18} />
               Reject / Dismiss Defect

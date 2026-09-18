@@ -247,6 +247,7 @@ export const ANPR: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [stateFilter, setStateFilter] = useState<string>("ALL");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [mobileTab, setMobileTab] = useState<"records" | "inspector">("records");
 
   // Verification Form State
   const [officerId, setOfficerId] = useState<string>("officer_delhi_01");
@@ -352,16 +353,16 @@ export const ANPR: React.FC = () => {
   const unreadableCount = records.filter((r) => r.state === "NOT_READABLE" || r.state === "NOT_PRESENT").length;
 
   return (
-    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-3 sm:p-5 lg:p-8 space-y-4 sm:space-y-6">
       {/* ── Header & Navigation ────────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700">
+            <span className="p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 shrink-0">
               <Car className="w-5 h-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
                 Automatic Number Plate Recognition (ANPR)
               </h1>
               <p className="text-xs text-[#64748B] mt-0.5">
@@ -372,16 +373,16 @@ export const ANPR: React.FC = () => {
         </div>
 
         {/* Global Navigation Links */}
-        <div className="flex flex-wrap items-center gap-2">
-          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs">
-            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Home</a>
-            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Fleet</a>
-            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Defects</a>
-            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Traffic</a>
-            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Congestion</a>
-            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Pedestrian</a>
-            <a href="/incidents" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Incidents</a>
-            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs">ANPR</span>
+        <div className="flex flex-wrap items-center gap-2 max-w-full">
+          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs overflow-x-auto touch-scroll max-w-full">
+            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Home</a>
+            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Fleet</a>
+            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Defects</a>
+            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Traffic</a>
+            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Congestion</a>
+            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Pedestrian</a>
+            <a href="/incidents" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Incidents</a>
+            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs shrink-0">ANPR</span>
           </nav>
 
           <button
@@ -505,10 +506,34 @@ export const ANPR: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Tab Switcher (Visible on <lg) */}
+      <div className="flex lg:hidden items-center p-1 bg-white border border-[#CBD5E1] rounded-xl shadow-2xs">
+        <button
+          onClick={() => setMobileTab("records")}
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${
+            mobileTab === "records"
+              ? "bg-[#16192E] text-white shadow-xs"
+              : "text-[#64748B] hover:text-[#16192E]"
+          }`}
+        >
+          📋 Plates List ({displayedRecords.length})
+        </button>
+        <button
+          onClick={() => setMobileTab("inspector")}
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${
+            mobileTab === "inspector"
+              ? "bg-[#16192E] text-white shadow-xs"
+              : "text-[#64748B] hover:text-[#16192E]"
+          }`}
+        >
+          🔍 Inspector ({selectedRecord ? selectedRecord.registration_number : "None"})
+        </button>
+      </div>
+
       {/* ── Main Workspace: Records Feed & Verification Inspector Pane ───────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* ── Left Column: Records Feed & Filters (5 cols) ───────────────────── */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className={`lg:col-span-5 space-y-4 ${mobileTab === "inspector" ? "hidden lg:block" : "block"}`}>
           <div className="bg-white border border-[#E2E8F0] rounded-2xl p-3.5 space-y-3 shadow-sm">
             {/* Search Input */}
             <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl px-3 py-1.5">
@@ -570,7 +595,10 @@ export const ANPR: React.FC = () => {
                 return (
                   <div
                     key={rec.record_id}
-                    onClick={() => setSelectedRecord(rec)}
+                    onClick={() => {
+                      setSelectedRecord(rec);
+                      setMobileTab("inspector");
+                    }}
                     className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
                         ? "bg-orange-50/50 border-[#C85A17] shadow-sm ring-1 ring-[#C85A17]/40"
@@ -640,9 +668,19 @@ export const ANPR: React.FC = () => {
         </div>
 
         {/* ── Right Column: Verification Inspector & Evidence Detail (7 cols) ── */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className={`lg:col-span-7 space-y-4 ${mobileTab === "records" ? "hidden lg:block" : "block"}`}>
           {selectedRecord ? (
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5 shadow-sm">
+              {/* Mobile Back Button */}
+              <div className="lg:hidden pb-2 border-b border-[#E2E8F0]">
+                <button
+                  onClick={() => setMobileTab("records")}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C85A17] hover:underline"
+                >
+                  ← Back to Plates List
+                </button>
+              </div>
+
               {/* Header Info */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3.5">
                 <div>

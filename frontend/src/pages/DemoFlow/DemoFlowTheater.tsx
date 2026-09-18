@@ -115,8 +115,8 @@ export const DemoFlowTheater: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-3 sm:p-5 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div>
@@ -125,8 +125,8 @@ export const DemoFlowTheater: React.FC = () => {
                 <Zap size={24} />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-                  Phase 35 &bull; End-to-End Demo Flow Theater
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
+                  End-to-End Demo Flow Theater
                 </h1>
                 <p className="text-slate-400 text-sm mt-0.5">
                   Live Demonstration: Bus 104 on Route 12 through complete 17-step lifecycle & Incident Pipeline

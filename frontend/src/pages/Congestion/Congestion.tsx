@@ -461,7 +461,7 @@ export const Congestion: React.FC = () => {
                   Traffic Congestion Analytics &amp; Heatmap
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#16192E] text-white shadow-xs">
-                  PHASE 20
+                  Thermal GIS
                 </span>
               </div>
               <p className="text-xs text-[#64748B] mt-0.5">
@@ -502,7 +502,7 @@ export const Congestion: React.FC = () => {
             href="/od-analysis"
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] text-[#16192E] text-xs rounded-xl font-medium shadow-2xs transition-all"
           >
-            <span>Origin-Destination (Phase 21)</span>
+            <span>Origin-Destination</span>
             <ChevronRight className="w-3.5 h-3.5 text-[#64748B]" />
           </a>
         </div>
@@ -716,8 +716,8 @@ export const Congestion: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
-          <table className="w-full text-left text-xs text-[#16192E]">
+        <div className="overflow-x-auto touch-scroll border border-[#E2E8F0] rounded-xl">
+          <table className="w-full min-w-[750px] text-left text-xs text-[#16192E]">
             <thead className="bg-[#F8FAFC] text-[#64748B] uppercase tracking-wider text-[10px] border-b border-[#E2E8F0] font-semibold">
               <tr>
                 <th className="py-2.5 px-3">Rank</th>

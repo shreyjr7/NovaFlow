@@ -356,6 +356,10 @@ export const GisCommandCenter: React.FC = () => {
   const [isClusterMode, setIsClusterMode] = useState<boolean>(true);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
 
+  // Mobile responsiveness states (<lg)
+  const [mobileGisTab, setMobileGisTab] = useState<"MAP" | "INTEL">("MAP");
+  const [mobileLayersOpen, setMobileLayersOpen] = useState<boolean>(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   // City center coordinates
@@ -583,27 +587,26 @@ export const GisCommandCenter: React.FC = () => {
       }`}
     >
       {/* ── TOP APP BAR: FLEET SENSING OVERLAY - LIVE ─────────── */}
-      <header className="h-14 bg-[#16192E] border-b border-[#232746] px-4 flex items-center justify-between z-30 shrink-0 shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#1E2342] border border-[#2B325E] flex items-center justify-center text-white font-black text-sm shadow-md">
+      <header className="min-h-14 bg-[#16192E] border-b border-[#232746] px-3 sm:px-4 py-2 sm:py-0 flex flex-wrap items-center justify-between gap-2 z-30 shrink-0 shadow-md">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-[#1E2342] border border-[#2B325E] flex items-center justify-center text-white font-black text-sm shadow-md shrink-0">
             <Radio size={16} className="text-amber-400 animate-pulse" />
           </div>
-          <div>
-            <h1 className="text-sm font-extrabold tracking-wide flex items-center gap-2 text-white">
-              <span>FLEET SENSING OVERLAY — LIVE</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-mono font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                ACTIVE SENSING
+          <div className="min-w-0">
+            <h1 className="text-xs sm:text-sm font-extrabold tracking-wide flex items-center gap-1.5 sm:gap-2 text-white truncate">
+              <span className="truncate">FLEET SENSING OVERLAY</span>
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.2 sm:py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-mono font-bold shrink-0">
+                LIVE
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium">
+            <p className="hidden sm:block text-[11px] text-slate-400 font-medium truncate">
               National Geospatial Urban Sensing Grid • PWD & Traffic Integration
             </p>
           </div>
         </div>
 
         {/* City Selector */}
-        <div className="flex items-center gap-1 bg-[#0E101E] p-1 rounded-lg border border-[#232746] text-xs font-semibold">
+        <div className="flex items-center gap-1 bg-[#0E101E] p-0.5 sm:p-1 rounded-lg border border-[#232746] text-[11px] sm:text-xs font-semibold shrink-0">
           {(["DELHI", "BANGALORE", "MUMBAI"] as const).map((city) => (
             <button
               key={city}
@@ -612,7 +615,7 @@ export const GisCommandCenter: React.FC = () => {
                 const coords = CITY_COORDS[city];
                 setMapFlyToTarget({ lat: coords.lat, lon: coords.lon, zoom: 13, label: coords.name });
               }}
-              className={`px-3 py-1 rounded-md transition cursor-pointer ${
+              className={`px-2 sm:px-3 py-1 rounded-md transition cursor-pointer ${
                 activeCity === city
                   ? "bg-[#282F5A] text-white shadow-sm font-bold"
                   : "text-slate-400 hover:text-white"
@@ -624,8 +627,8 @@ export const GisCommandCenter: React.FC = () => {
         </div>
 
         {/* Top Right Quick Stats & Controls */}
-        <div className="flex items-center gap-2.5 text-xs">
-          <div className="hidden lg:flex items-center gap-2.5 text-slate-400 font-mono text-[11px] bg-[#0E101E] px-3 py-1 rounded-md border border-[#232746]">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 text-xs shrink-0">
+          <div className="hidden xl:flex items-center gap-2.5 text-slate-400 font-mono text-[11px] bg-[#0E101E] px-3 py-1 rounded-md border border-[#232746]">
             <span className="flex items-center gap-1 text-white font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>{buses.length} Buses Active</span>
@@ -642,7 +645,7 @@ export const GisCommandCenter: React.FC = () => {
           <div className="flex items-center bg-[#0E101E] border border-[#232746] rounded-lg p-0.5">
             <button
               onClick={() => setMapViewMode("REAL_MAP")}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition cursor-pointer ${
+              className={`px-2 sm:px-2.5 py-1 rounded text-[10px] sm:text-[11px] font-bold transition cursor-pointer ${
                 mapViewMode === "REAL_MAP" ? "bg-[#282F5A] text-white shadow-sm" : "text-slate-400 hover:text-white"
               }`}
               title="Google Maps Roadmap / Cartographic Tiles"
@@ -651,7 +654,7 @@ export const GisCommandCenter: React.FC = () => {
             </button>
             <button
               onClick={() => setMapViewMode("VECTOR")}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition cursor-pointer ${
+              className={`px-2 sm:px-2.5 py-1 rounded text-[10px] sm:text-[11px] font-bold transition cursor-pointer ${
                 mapViewMode === "VECTOR" ? "bg-[#282F5A] text-white shadow-sm" : "text-slate-400 hover:text-white"
               }`}
               title="Schematic Vector Grid"
@@ -660,10 +663,10 @@ export const GisCommandCenter: React.FC = () => {
             </button>
           </div>
 
-          {/* Clustering Toggle */}
+          {/* Clustering Toggle (hidden on small mobile) */}
           <button
             onClick={() => setIsClusterMode(!isClusterMode)}
-            className={`px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+            className={`hidden sm:flex px-2.5 py-1 rounded-lg border text-xs font-semibold items-center gap-1.5 transition cursor-pointer ${
               isClusterMode
                 ? "bg-emerald-950/80 text-emerald-400 border-emerald-500/40"
                 : "bg-[#0E101E] border-[#232746] text-slate-400 hover:text-white"
@@ -679,10 +682,44 @@ export const GisCommandCenter: React.FC = () => {
             className="p-1.5 rounded-lg bg-[#1E2342] hover:bg-[#282F5A] text-slate-300 hover:text-white border border-[#2B325E] transition cursor-pointer"
             title="Toggle Fullscreen"
           >
-            {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
           </button>
         </div>
       </header>
+
+      {/* ── MOBILE VIEW SWITCHER (<lg) ─────────────────────────── */}
+      <div className="flex lg:hidden items-center justify-between p-2 bg-[#121528] border-b border-[#232746] gap-2 shrink-0 z-20">
+        <button
+          onClick={() => setMobileGisTab("MAP")}
+          className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation cursor-pointer ${
+            mobileGisTab === "MAP"
+              ? "bg-[#C85A17] text-white shadow-sm"
+              : "bg-[#1E2342] text-slate-300 hover:text-white"
+          }`}
+        >
+          <span>🗺️ Live Map</span>
+        </button>
+        <button
+          onClick={() => setMobileGisTab("INTEL")}
+          className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation cursor-pointer ${
+            mobileGisTab === "INTEL"
+              ? "bg-[#C85A17] text-white shadow-sm"
+              : "bg-[#1E2342] text-slate-300 hover:text-white"
+          }`}
+        >
+          <span>📋 Intel Feed ({filteredEvents.length})</span>
+        </button>
+        <button
+          onClick={() => setMobileLayersOpen((v) => !v)}
+          className={`py-1.5 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-[#2B325E] touch-manipulation cursor-pointer ${
+            mobileLayersOpen ? "bg-amber-600 text-white" : "bg-[#1E2342] text-slate-300"
+          }`}
+          title="Toggle Map Layers"
+        >
+          <Layers size={14} />
+          <span className="hidden xs:inline">Layers</span>
+        </button>
+      </div>
 
       {/* ── ACTION NOTIFICATION TOAST ────────────────────────────────────────── */}
       {actionNotice && (
@@ -695,7 +732,9 @@ export const GisCommandCenter: React.FC = () => {
       {/* ── WORKSPACE BODY: SIDEBARS + MAP CANVAS ────────────────────────────── */}
       <div className="flex-1 flex relative overflow-hidden">
         {/* ── LEFT FLOATING PANEL: MAP LAYERS ────────────────────── */}
-        <aside className="absolute top-3 left-3 z-20 w-64 bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex flex-col max-h-[calc(100%-24px)] overflow-hidden text-slate-100">
+        <aside className={`absolute top-3 left-3 z-30 w-64 max-w-[calc(100vw-24px)] bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex-col max-h-[calc(100%-24px)] overflow-hidden text-slate-100 transition-all ${
+          mobileLayersOpen ? "flex" : "hidden sm:flex"
+        }`}>
           {/* Header */}
           <div className="p-3 border-b border-[#232746] flex items-center justify-between bg-[#16192E]">
             <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-white">
@@ -705,7 +744,7 @@ export const GisCommandCenter: React.FC = () => {
                 ({layers.filter((l) => l.visible).length}/{layers.length})
               </span>
             </div>
-            <div className="flex gap-1 text-[10px] font-semibold">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold">
               <button
                 onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: true })))}
                 className="text-amber-400 hover:text-amber-300 hover:underline cursor-pointer"
@@ -718,6 +757,13 @@ export const GisCommandCenter: React.FC = () => {
                 className="text-slate-400 hover:text-slate-200 hover:underline cursor-pointer"
               >
                 None
+              </button>
+              <button
+                onClick={() => setMobileLayersOpen(false)}
+                className="sm:hidden ml-1 p-1 text-slate-400 hover:text-white rounded cursor-pointer"
+                title="Close Layers"
+              >
+                <X size={14} />
               </button>
             </div>
           </div>
@@ -874,7 +920,7 @@ export const GisCommandCenter: React.FC = () => {
         </aside>
 
         {/* ── TOP FILTER BAR: CATEGORY PILLS & MULTI-DIMENSIONAL FILTERS ─────── */}
-        <div className="absolute top-3 left-72 right-3 z-30 flex flex-col gap-2 bg-white/95 backdrop-blur-md border border-[#CBD5E1] p-2.5 rounded-xl shadow-lg text-xs text-[#1F2243]">
+        <div className="absolute top-3 left-3 sm:left-72 right-3 z-20 flex flex-col gap-2 bg-white/95 backdrop-blur-md border border-[#CBD5E1] p-2 sm:p-2.5 rounded-xl shadow-lg text-xs text-[#1F2243] max-h-[35vh] sm:max-h-none overflow-y-auto sm:overflow-visible touch-scroll">
           {/* Row 1: Category Quick Filters */}
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2">
             <div className="flex flex-wrap items-center gap-1.5">
@@ -1041,7 +1087,9 @@ export const GisCommandCenter: React.FC = () => {
 
         {/* ── MAP CANVAS (REAL GOOGLE MAPS / VECTOR PROJECTION) ───────────────────── */}
         {mapViewMode === "REAL_MAP" ? (
-          <div className="flex-1 w-full h-[calc(100vh-56px)] min-h-[600px] relative bg-gray-950 overflow-hidden">
+          <div className={`flex-1 w-full h-[calc(100vh-56px)] min-h-[450px] relative bg-gray-950 overflow-hidden ${
+            mobileGisTab === "INTEL" ? "hidden lg:block" : "block"
+          }`}>
             <LiveGisMap
               height="100%"
               initialCity={activeCity === "BANGALORE" ? "BANGALORE" : activeCity === "MUMBAI" ? "MUMBAI" : "DELHI"}
@@ -1061,11 +1109,14 @@ export const GisCommandCenter: React.FC = () => {
                 const norm = normalizeGisEvent(ev);
                 setSelectedEvent(norm);
                 setIsDetailsOpen(true);
+                setMobileGisTab("INTEL");
               }}
             />
           </div>
         ) : (
-        <div className="flex-1 w-full h-full relative bg-gray-950 overflow-hidden cursor-default">
+        <div className={`flex-1 w-full h-full relative bg-gray-950 overflow-hidden cursor-default ${
+          mobileGisTab === "INTEL" ? "hidden lg:block" : "block"
+        }`}>
           {/* Cartographic Vector Grid Background (CartoDB Dark Tile Simulation) */}
           <div
             className="absolute inset-0 opacity-40"
@@ -1239,11 +1290,13 @@ export const GisCommandCenter: React.FC = () => {
         )}
 
         {/* ── RIGHT INTELLIGENCE SIDEBAR ──── */}
-        <aside className="w-[390px] bg-[#131628] border-l border-[#232746] shadow-2xl flex flex-col h-full z-20 shrink-0 text-slate-100 overflow-hidden">
+        <aside className={`w-full lg:w-[390px] bg-[#131628] border-l border-[#232746] shadow-2xl flex-col h-full z-20 shrink-0 text-slate-100 overflow-hidden ${
+          mobileGisTab === "MAP" ? "hidden lg:flex" : "flex"
+        }`}>
           <ErrorBoundary fallbackTitle="Intelligence Drawer Interruption">
             {isDetailsOpen && selectedEvent ? (
               /* ── EVENT DETAIL INSPECTOR VIEW ───────────────────────────────── */
-              <div className="flex-1 flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200">
+              <div className="flex-1 flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200 touch-scroll">
                 {/* Inspector Header */}
                 <div className="p-3.5 border-b border-[#232746] flex items-center justify-between bg-[#16192E] sticky top-0 z-10">
                   <div className="flex items-center gap-2">
@@ -1255,8 +1308,16 @@ export const GisCommandCenter: React.FC = () => {
                       <ArrowLeft size={13} />
                       <span>Stream</span>
                     </button>
+                    <button
+                      onClick={() => setMobileGisTab("MAP")}
+                      className="lg:hidden px-2 py-1 rounded-md bg-[#C85A17] hover:bg-[#B34D10] text-white transition flex items-center gap-1 text-xs font-bold cursor-pointer"
+                      title="View on Live Map"
+                    >
+                      <MapPin size={13} />
+                      <span>Map</span>
+                    </button>
                     <span className="text-slate-600">|</span>
-                    <span className="font-mono font-bold text-xs text-white">
+                    <span className="font-mono font-bold text-xs text-white truncate max-w-[100px] xs:max-w-none">
                       {selectedEvent.event_id || selectedEvent.id || "EV-0000"}
                     </span>
                   </div>
@@ -1470,7 +1531,7 @@ export const GisCommandCenter: React.FC = () => {
               </div>
             ) : (
               /* ── MAIN INTELLIGENCE FEED ──── */
-              <div className="flex-1 flex flex-col h-full overflow-y-auto p-3.5 space-y-3.5 bg-[#131628]">
+              <div className="flex-1 flex flex-col h-full overflow-y-auto p-3.5 space-y-3.5 bg-[#131628] touch-scroll">
                 {/* 1. TOP CONSENSUS & HARDWARE KPI CARDS */}
                 <div className="grid grid-cols-2 gap-2.5">
                   {/* Multi-Bus Consensus Card */}

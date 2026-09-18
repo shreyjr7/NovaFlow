@@ -341,12 +341,12 @@ export const Incidents: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [lastRefreshed, setLastRefreshed] = useState<string>("");
 
-  // Review modal state
   const [reviewerNotes, setReviewerNotes] = useState<string>("");
   const [reviewerId, setReviewerId] = useState<string>("safety_officer_01");
   const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
   const [activeFrameIdx, setActiveFrameIdx] = useState<number>(1);
   const [isPlayingClip, setIsPlayingClip] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<"feed" | "inspector">("feed");
 
   // Sync with backend API
   const fetchIncidents = async () => {
@@ -456,16 +456,16 @@ export const Incidents: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-3 sm:p-5 lg:p-8 space-y-4 sm:space-y-6">
       {/* ── Top Header & Navigation ────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-700">
+            <span className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 shrink-0">
               <AlertOctagon className="w-5 h-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#16192E] flex items-center gap-2">
                 Incident &amp; Hit-and-Run Anomaly Intelligence
               </h1>
               <p className="text-xs text-[#64748B] mt-0.5">
@@ -476,15 +476,15 @@ export const Incidents: React.FC = () => {
         </div>
 
         {/* Global Navigation Links */}
-        <div className="flex flex-wrap items-center gap-2">
-          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs">
-            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Home</a>
-            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Fleet</a>
-            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Defects</a>
-            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Traffic</a>
-            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Congestion</a>
-            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors">Pedestrian</a>
-            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs">Incidents</span>
+        <div className="flex flex-wrap items-center gap-2 max-w-full">
+          <nav className="flex items-center space-x-1 text-xs bg-white border border-[#CBD5E1] rounded-xl p-1 shadow-2xs overflow-x-auto touch-scroll max-w-full">
+            <a href="/" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Home</a>
+            <a href="/fleet" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Fleet</a>
+            <a href="/road-defects" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Defects</a>
+            <a href="/traffic" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Traffic</a>
+            <a href="/congestion" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Congestion</a>
+            <a href="/pedestrian-safety" className="px-2.5 py-1 text-[#64748B] hover:text-[#16192E] rounded-lg hover:bg-[#F8FAFC] transition-colors shrink-0">Pedestrian</a>
+            <span className="px-2.5 py-1 bg-[#16192E] text-white rounded-lg font-semibold shadow-xs shrink-0">Incidents</span>
           </nav>
 
           <button
@@ -575,10 +575,34 @@ export const Incidents: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Tab Switcher (Visible on <lg) */}
+      <div className="flex lg:hidden items-center p-1 bg-white border border-[#CBD5E1] rounded-xl shadow-2xs">
+        <button
+          onClick={() => setMobileTab("feed")}
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${
+            mobileTab === "feed"
+              ? "bg-[#16192E] text-white shadow-xs"
+              : "text-[#64748B] hover:text-[#16192E]"
+          }`}
+        >
+          📋 Incidents Feed ({displayedIncidents.length})
+        </button>
+        <button
+          onClick={() => setMobileTab("inspector")}
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${
+            mobileTab === "inspector"
+              ? "bg-[#16192E] text-white shadow-xs"
+              : "text-[#64748B] hover:text-[#16192E]"
+          }`}
+        >
+          🔍 Evidence Inspector
+        </button>
+      </div>
+
       {/* ── Main Layout: Incident Feed & Evidence Inspector Modal/Pane ────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* ── Left Column: Incident List & Filters (5 cols) ───────────────────── */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className={`lg:col-span-5 space-y-4 ${mobileTab === "inspector" ? "hidden lg:block" : "block"}`}>
           {/* Filter Bar */}
           <div className="bg-white border border-[#E2E8F0] rounded-2xl p-3.5 space-y-3 shadow-sm">
             <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl px-3 py-1.5">
@@ -665,6 +689,7 @@ export const Incidents: React.FC = () => {
                       setSelectedIncident(inc);
                       setActiveFrameIdx(1);
                       setIsPlayingClip(false);
+                      setMobileTab("inspector");
                     }}
                     className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
@@ -739,9 +764,19 @@ export const Incidents: React.FC = () => {
         </div>
 
         {/* ── Right Column: Human Reviewer & Evidence Inspector (7 cols) ──────── */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className={`lg:col-span-7 space-y-4 ${mobileTab === "feed" ? "hidden lg:block" : "block"}`}>
           {selectedIncident ? (
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5 shadow-sm">
+              {/* Mobile Back Button */}
+              <div className="lg:hidden pb-2 border-b border-[#E2E8F0]">
+                <button
+                  onClick={() => setMobileTab("feed")}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C85A17] hover:underline"
+                >
+                  ← Back to Incidents Feed
+                </button>
+              </div>
+
               {/* Header Info */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3.5">
                 <div>

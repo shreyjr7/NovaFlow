@@ -115,7 +115,7 @@ export const PublicDashboard: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-transparent text-[#16192E] p-4 sm:p-6 md:p-8 space-y-6">
+    <div className="min-h-screen bg-transparent text-[#16192E] p-3 sm:p-5 lg:p-8 space-y-4 sm:space-y-6">
       {/* Toast */}
       {toastMsg && (
         <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white shadow-2xl animate-fade-in border border-emerald-400">

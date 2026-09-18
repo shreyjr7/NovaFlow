@@ -292,13 +292,13 @@ export const AdminPanel: React.FC = () => {
           </div>
 
           {/* Module Data Table */}
-          <div className="overflow-x-auto max-h-[440px] border border-[#E2E8F0] rounded-xl">
+          <div className="overflow-x-auto touch-scroll max-h-[440px] border border-[#E2E8F0] rounded-xl">
             {loading ? (
               <div className="py-12 text-center text-xs text-[#64748B]">Loading module telemetry...</div>
             ) : filteredData.length === 0 ? (
               <div className="py-12 text-center text-xs text-[#64748B]">No matching records found.</div>
             ) : (
-              <table className="w-full text-left text-xs text-[#16192E]">
+              <table className="w-full min-w-[650px] text-left text-xs text-[#16192E]">
                 <thead className="bg-[#F8FAFC] uppercase text-[#64748B] border-b border-[#E2E8F0] sticky top-0 text-[10px]">
                   <tr>
                     {Object.keys(filteredData[0] || {}).map((k) => (

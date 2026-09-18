@@ -732,8 +732,8 @@ export const PedestrianSafety: React.FC = () => {
         </div>
 
         {/* Events Table */}
-        <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
-          <table className="w-full text-left text-xs text-[#16192E]">
+        <div className="overflow-x-auto touch-scroll border border-[#E2E8F0] rounded-xl">
+          <table className="w-full min-w-[700px] text-left text-xs text-[#16192E]">
             <thead className="bg-[#F8FAFC] text-[#64748B] uppercase text-[10px] tracking-wider border-b border-[#E2E8F0] font-semibold">
               <tr>
                 <th className="py-3 px-3">School Zone</th>
@@ -813,8 +813,8 @@ export const PedestrianSafety: React.FC = () => {
 
       {/* ── Evidence Frame Inspector Modal ───────────────────────────────────── */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border border-[#CBD5E1] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 text-[#16192E]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#CBD5E1] rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-4 text-[#16192E]">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div className="flex items-center gap-2">
                 <span className="p-1.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700">

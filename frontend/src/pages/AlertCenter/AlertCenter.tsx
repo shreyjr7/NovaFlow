@@ -215,7 +215,7 @@ const handleAction = async (alertId: string, action: "Acknowledge" | "Verify" | 
               <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
                 Centralized Alert Center
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  Phase 24
+                  Live Dispatch
                 </span>
               </h1>
               <p className="text-sm text-slate-400">
@@ -495,8 +495,8 @@ const handleAction = async (alertId: string, action: "Acknowledge" | "Verify" | 
 
       {/* Action Modal for Assign / Resolve */}
       {actionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-white">
                 {actionModal.action === "Assign" ? "Assign Alert Authority" : "Resolve Fleet Alert"}

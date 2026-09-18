@@ -539,8 +539,8 @@ export const UrbanAnalytics: React.FC = () => {
                 <span>Top Defect Corridors (Ranked by Multi-Bus Confirmation)</span>
                 <span className="text-xs text-gray-400">PostGIS ST_DWithin Deduplicated</span>
               </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
+              <div className="overflow-x-auto touch-scroll">
+                <table className="w-full min-w-[700px] text-left text-sm text-gray-300">
                   <thead className="bg-gray-900/60 text-xs uppercase text-gray-400 border-b border-gray-700">
                     <tr>
                       <th className="py-3 px-4">Corridor Name</th>
@@ -686,8 +686,8 @@ export const UrbanAnalytics: React.FC = () => {
                   <span>Top 10 Most Congested Road Segments</span>
                   <span className="text-xs text-gray-400">Sorted by Congestion Score</span>
                 </h3>
-                <div className="overflow-x-auto max-h-72">
-                  <table className="w-full text-left text-xs text-gray-300">
+                <div className="overflow-x-auto touch-scroll max-h-72">
+                  <table className="w-full min-w-[550px] text-left text-xs text-gray-300">
                     <thead className="bg-gray-900/60 uppercase text-gray-400 border-b border-gray-700 sticky top-0">
                       <tr>
                         <th className="py-2.5 px-3">#</th>
@@ -753,8 +753,8 @@ export const UrbanAnalytics: React.FC = () => {
             {/* Vulnerable Spots Leaderboard */}
             <div className="p-5 bg-gray-800 rounded-xl border border-gray-700">
               <h3 className="text-base font-bold text-white mb-4">Vulnerable Pedestrian Conflict Hotspots</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
+              <div className="overflow-x-auto touch-scroll">
+                <table className="w-full min-w-[650px] text-left text-sm text-gray-300">
                   <thead className="bg-gray-900/60 text-xs uppercase text-gray-400 border-b border-gray-700">
                     <tr>
                       <th className="py-3 px-4">Location Name</th>
@@ -901,8 +901,8 @@ export const UrbanAnalytics: React.FC = () => {
                 <span>Worst Delayed Bus Routes Ranking</span>
                 <span className="text-xs text-gray-400">Scheduled vs Observed Travel Time</span>
               </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-300">
+              <div className="overflow-x-auto touch-scroll">
+                <table className="w-full min-w-[700px] text-left text-sm text-gray-300">
                   <thead className="bg-gray-900/60 text-xs uppercase text-gray-400 border-b border-gray-700">
                     <tr>
                       <th className="py-3 px-3">#</th>

@@ -277,8 +277,8 @@ export const AIModelManagement: React.FC = () => {
 
       {/* ── Version Detail Modal ────────────────────────────────────────── */}
       {versionModalOpen && selectedModel && (
-        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-xl">
+        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div>
                 <h3 className="text-lg font-bold text-[#16192E] flex items-center gap-2">
@@ -388,11 +388,11 @@ export const AIModelManagement: React.FC = () => {
 
       {/* ── Version Comparison Modal ────────────────────────────────────── */}
       {compareModalOpen && comparison && (
-        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-xl">
+        <div className="fixed inset-0 z-50 bg-[#16192E]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white border border-[#E2E8F0] rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <div>
-                <h3 className="text-lg font-bold text-[#16192E] flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-[#16192E] flex items-center gap-2">
                   <GitCompare className="w-5 h-5 text-[#C85A17]" />
                   Compare Versions: {comparison.version_a.version} vs {comparison.version_b.version}
                 </h3>
@@ -407,8 +407,8 @@ export const AIModelManagement: React.FC = () => {
             </div>
 
             {/* Side-by-side Table */}
-            <div className="overflow-x-auto border border-[#E2E8F0] rounded-xl">
-              <table className="w-full text-left text-xs text-[#16192E]">
+            <div className="overflow-x-auto touch-scroll border border-[#E2E8F0] rounded-xl">
+              <table className="w-full min-w-[500px] text-left text-xs text-[#16192E]">
                 <thead className="bg-[#F8FAFC] uppercase text-[#64748B] border-b border-[#E2E8F0] text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3">Metric / Property</th>
