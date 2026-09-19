@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Home from "./pages/Home/Home";
 import Fleet from "./pages/Fleet/Fleet";
 import BusDetail from "./pages/BusDetail/BusDetail";
@@ -109,6 +110,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <AppShell />
+      <SpeedInsights />
     </Router>
   );
 };
