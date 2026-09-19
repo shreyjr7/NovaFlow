@@ -39,66 +39,89 @@ export const GovernmentHeader: React.FC<GovernmentHeaderProps> = ({
           {mobileSidebarOpen ? <X size={20} className="text-amber-400" /> : <Menu size={20} />}
         </button>
 
-        {/* Double-ring circular government emblem */}
+        {/* Double-ring circular BEL government emblem */}
         <div className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full border border-slate-400/60 bg-[#1E2342] flex items-center justify-center text-white shadow-inner ring-1 sm:ring-2 ring-slate-500/20">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-amber-400/40 bg-gradient-to-br from-slate-800 to-[#16192E] flex items-center justify-center">
-            <Shield size={13} className="text-amber-400 sm:w-3.5 sm:h-3.5" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-amber-400/40 bg-gradient-to-br from-slate-800 to-[#16192E] flex items-center justify-center font-bold text-[10px] text-amber-400">
+            BEL
           </div>
         </div>
         <div className="min-w-0">
           <div className="font-extrabold text-white text-xs sm:text-[13px] tracking-wide sm:tracking-wider uppercase flex items-center gap-2 font-sans truncate">
-            <span className="truncate">National Defence &amp; Surveillance</span>
+            <span className="truncate">Bharat Electronics Limited (BEL)</span>
+            <span className="hidden md:inline-flex px-1.5 py-0.2 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono font-normal">
+              NovaFlow
+            </span>
           </div>
           <div className="hidden sm:block text-[11px] text-[#8E9BB0] font-medium truncate">
-            Government of India &nbsp;|&nbsp; National Security &amp; Strategic Surveillance Directorate
+            Smart Automation &nbsp;|&nbsp; Urban Fleet Intelligence Dashboard
           </div>
           <div className="sm:hidden text-[10px] text-[#8E9BB0] font-medium truncate">
-            Govt. of India • Strategic Surveillance
+            Smart Automation • Urban Fleet
           </div>
         </div>
       </div>
 
       {/* Center: Live Operational Status */}
-      <div className="hidden xl:flex items-center gap-2 px-3 py-1 text-[11px] font-medium text-slate-300">
+      <div className="hidden 2xl:flex items-center gap-2 px-3 py-1 text-[11px] font-medium text-slate-300">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ring-2 ring-emerald-500/30" />
         <span className="text-slate-200">System Operational</span>
       </div>
 
-      {/* Right: Notifications, High Contrast Toggle, Officer Profile */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-        {/* Quick Navigation Pills */}
-        <div className="hidden xl:flex items-center gap-1.5 mr-2">
+      {/* Right: Navigation, Notifications, High Contrast Toggle */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        {/* Quick Navigation Pills for the 4 Core Pillars */}
+        <nav className="hidden lg:flex items-center gap-1 mr-1">
           <Link
             to="/"
-            className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
               location.pathname === "/"
-                ? "bg-[#282F5A] text-white shadow-sm"
+                ? "bg-[#282F5A] text-white shadow-sm ring-1 ring-slate-400/30"
                 : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
             }`}
           >
-            Dashboard
+            Home
           </Link>
           <Link
             to="/gis"
-            className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
               location.pathname === "/gis"
                 ? "bg-[#C85A17] text-white shadow-sm"
                 : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
             }`}
           >
-            GIS Map
+            GIS Dashboard
           </Link>
           <Link
-            to="/road-defects"
-            className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
-              location.pathname === "/road-defects"
-                ? "bg-[#282F5A] text-white shadow-sm"
+            to="/hazards"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+              location.pathname === "/hazards" || location.pathname === "/road-defects"
+                ? "bg-[#282F5A] text-white shadow-sm ring-1 ring-slate-400/30"
                 : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
             }`}
           >
-            Work Orders
+            AI Hazards
           </Link>
-        </div>
+          <Link
+            to="/work-orders"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+              location.pathname === "/work-orders"
+                ? "bg-[#282F5A] text-white shadow-sm ring-1 ring-slate-400/30"
+                : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
+            }`}
+          >
+            PWD Work Orders
+          </Link>
+          <Link
+            to="/analytics"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+              location.pathname === "/analytics" || location.pathname === "/urban-analytics"
+                ? "bg-[#282F5A] text-white shadow-sm ring-1 ring-slate-400/30"
+                : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
+            }`}
+          >
+            Fleet Analytics
+          </Link>
+        </nav>
 
         {/* Notification Bell */}
         <button

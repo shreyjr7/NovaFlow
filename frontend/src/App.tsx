@@ -27,6 +27,9 @@ import GovernmentHeader from "./components/GovernmentHeader";
 import UnifiedSidebar from "./components/UnifiedSidebar";
 import TestingCenter from "./pages/Testing/TestingCenter";
 import DemoFlowTheater from "./pages/DemoFlow/DemoFlowTheater";
+import Hazards from "./pages/Hazards/Hazards";
+import WorkOrders from "./pages/WorkOrders/WorkOrders";
+import FleetAnalytics from "./pages/FleetAnalytics/FleetAnalytics";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const AppShell: React.FC = () => {
@@ -56,6 +59,12 @@ const AppShell: React.FC = () => {
               <Route path="/fleet" element={<Fleet />} />
               <Route path="/fleet/:busId" element={<BusDetail />} />
               <Route path="/road-defects" element={<RoadDefects />} />
+              <Route path="/hazards" element={<Hazards />} />
+              <Route path="/ai-hazards" element={<Hazards />} />
+              <Route path="/work-orders" element={<WorkOrders />} />
+              <Route path="/pwd-work-orders" element={<WorkOrders />} />
+              <Route path="/analytics" element={<FleetAnalytics />} />
+              <Route path="/fleet-analytics" element={<FleetAnalytics />} />
               <Route path="/traffic" element={<Traffic />} />
               <Route path="/congestion" element={<Congestion />} />
               <Route path="/pedestrian-safety" element={<PedestrianSafety />} />

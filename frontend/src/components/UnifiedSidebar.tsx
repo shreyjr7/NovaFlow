@@ -21,33 +21,35 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    groupName: "WORKSPACE",
+    groupName: "CORE INTELLIGENCE",
     items: [
-      { name: "Dashboard", path: "/", icon: LayoutDashboard, color: "text-slate-200" },
-      { name: "Fleet Sensor Pool", path: "/fleet", icon: Bus, badge: "248", color: "text-slate-300" },
-      { name: "GIS Spatial Command", path: "/gis", icon: MapPin, badge: "LIVE", color: "text-amber-400" },
-      { name: "PWD Work Orders", path: "/road-defects", icon: Wrench, badge: "42", color: "text-slate-300" },
-      { name: "Intelligence Reports", path: "/reports", icon: FileText, color: "text-slate-300" },
+      { name: "Home Dashboard", path: "/", icon: LayoutDashboard, color: "text-slate-200" },
+      { name: "Live GIS Command", path: "/gis", icon: MapPin, badge: "LIVE", color: "text-amber-400" },
+      { name: "AI Hazard Detections", path: "/hazards", icon: AlertTriangle, badge: "AI", color: "text-rose-400" },
+      { name: "PWD Work Orders", path: "/work-orders", icon: Wrench, badge: "PWD", color: "text-sky-400" },
+      { name: "Fleet Analytics", path: "/analytics", icon: TrendingUp, badge: "TREND", color: "text-indigo-400" },
     ],
   },
   {
-    groupName: "INFRASTRUCTURE & SAFETY",
+    groupName: "SENSORS & MOBILITY",
     items: [
+      { name: "Transit Fleet Pool", path: "/fleet", icon: Bus, badge: "248", color: "text-slate-300" },
       { name: "Traffic Speeds", path: "/traffic", icon: TrafficCone, color: "text-slate-300" },
-      { name: "Congestion Heatmap", path: "/congestion", icon: Flame, badge: "HOT", color: "text-rose-400" },
-      { name: "Incident Safety Hotlist", path: "/incidents", icon: AlertTriangle, badge: "ALERT", color: "text-red-400" },
+      { name: "Congestion Heatmap", path: "/congestion", icon: Flame, badge: "HOT", color: "text-orange-400" },
       { name: "Pedestrian Conflict", path: "/pedestrian-safety", icon: Users, color: "text-slate-300" },
+      { name: "Incident Hotlist", path: "/incidents", icon: ShieldAlert, badge: "ALERT", color: "text-red-400" },
       { name: "ANPR Plate Hotlist", path: "/anpr", icon: Camera, color: "text-slate-300" },
-      { name: "Citizen Public Portal", path: "/public", icon: ShieldCheck, color: "text-emerald-400" },
     ],
   },
   {
-    groupName: "CONFIGURATION",
+    groupName: "MUNICIPAL & GOVERNANCE",
     items: [
-      { name: "Matching Criteria", path: "/ai-models", icon: Activity, color: "text-slate-300" },
-      { name: "System Settings", path: "/admin", icon: Shield, color: "text-slate-300" },
-      { name: "Hardware Health & Watchdog", path: "/camera-health", icon: Cpu, badge: "OK", color: "text-emerald-400" },
+      { name: "Citizen Public Portal", path: "/public", icon: ShieldCheck, color: "text-emerald-400" },
+      { name: "Diagnostic Reports", path: "/reports", icon: FileText, color: "text-slate-300" },
+      { name: "AI Model Governance", path: "/ai-models", icon: Activity, color: "text-slate-300" },
+      { name: "Edge Device Health", path: "/camera-health", icon: Cpu, badge: "OK", color: "text-emerald-400" },
       { name: "System Diagnostics", path: "/testing", icon: CheckCircle2, color: "text-slate-300" },
+      { name: "Admin Console", path: "/admin", icon: Shield, color: "text-slate-300" },
     ],
   },
 ];
@@ -144,7 +146,7 @@ export const UnifiedSidebar: React.FC<UnifiedSidebarProps> = ({
           <div className="flex items-center gap-2 overflow-hidden">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
             <span className="text-xs font-bold font-mono uppercase tracking-wider text-slate-200 truncate">
-              Command Navigation
+              BEL Fleet Command
             </span>
           </div>
           <button
@@ -169,7 +171,7 @@ export const UnifiedSidebar: React.FC<UnifiedSidebarProps> = ({
             </div>
             <div className="flex items-center justify-between">
               <span className="text-slate-500">Platform:</span>
-              <span className="text-slate-300 font-mono font-semibold">Civil Command v2.6</span>
+              <span className="text-slate-300 font-mono font-semibold">BEL NovaFlow v3.0</span>
             </div>
           </div>
         </div>
@@ -188,7 +190,7 @@ export const UnifiedSidebar: React.FC<UnifiedSidebarProps> = ({
             <div className="flex items-center gap-2 overflow-hidden">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-[11px] font-bold font-mono uppercase tracking-wider text-slate-300 truncate">
-                Command Directorate
+                BEL Smart Automation
               </span>
             </div>
           )}
@@ -214,7 +216,7 @@ export const UnifiedSidebar: React.FC<UnifiedSidebarProps> = ({
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Platform:</span>
-                <span className="text-slate-300 font-mono font-semibold">Civil Command v2.6</span>
+                <span className="text-slate-300 font-mono font-semibold">BEL NovaFlow v3.0</span>
               </div>
             </div>
           ) : (
