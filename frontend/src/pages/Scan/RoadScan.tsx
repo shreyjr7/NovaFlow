@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import {
   roadScanApi,
+  getBackendBaseUrl,
+  setBackendBaseUrl,
   ScanDetection,
   VideoJobProgress,
   ScanConfig,
@@ -171,6 +173,11 @@ export const RoadScan: React.FC = () => {
   const timerRef = useRef<number | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  const [backendUrlInput, setBackendUrlInput] = useState<string>(() => getBackendBaseUrl() || "");
+  const [isSavingUrl, setIsSavingUrl] = useState<boolean>(false);
+  const [showUrlSettings, setShowUrlSettings] = useState<boolean>(false);
+  const [copiedTunnelCmd, setCopiedTunnelCmd] = useState<boolean>(false);
+
   // Check Backend Health on Mount
   const verifyBackendHealth = async () => {
     setIsCheckingHealth(true);
@@ -182,6 +189,21 @@ export const RoadScan: React.FC = () => {
       modelWeights: health.modelWeights,
     });
     setIsCheckingHealth(false);
+  };
+
+  const handleSaveBackendUrl = async () => {
+    setIsSavingUrl(true);
+    setBackendBaseUrl(backendUrlInput);
+    await verifyBackendHealth();
+    setIsSavingUrl(false);
+  };
+
+  const handleResetBackendUrl = async () => {
+    setIsSavingUrl(true);
+    setBackendBaseUrl("");
+    setBackendUrlInput("");
+    await verifyBackendHealth();
+    setIsSavingUrl(false);
   };
 
   useEffect(() => {
@@ -1136,26 +1158,157 @@ export const RoadScan: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         {/* Backend Offline Advisory Banner */}
         {backendHealth.checked && !backendHealth.online && (
-          <div className="mb-6 p-4 rounded-xl bg-[#FEF2F2] border border-[#FCA5A5] text-[#991B1B] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-[#DC2626] flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-sm font-bold text-[#991B1B]">
-                  AI Vision Engine Server Unreachable
-                </h4>
-                <p className="text-xs text-[#B91C1C] mt-0.5">
-                  The FastAPI AI backend on <code className="bg-[#FEE2E2] px-1 py-0.5 rounded font-mono">http://localhost:8000</code> is currently not detected. You can retry the connection once the backend server is started.
-                </p>
+          <div className="mb-6 p-5 rounded-2xl bg-[#FEF2F2] border border-[#FCA5A5] text-[#991B1B] shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-[#DC2626] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-bold text-[#991B1B] flex items-center gap-2">
+                    <span>AI Vision Engine Server Not Connected</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-red-200 text-red-800 font-semibold">
+                      Vercel Cloud Frontend
+                    </span>
+                  </h4>
+                  <p className="text-xs text-[#B91C1C] mt-1 leading-relaxed">
+                    Vercel hosts the web frontend, while the PyTorch YOLOv8 AI inference engine runs on a FastAPI backend.
+                    Connect your backend endpoint below to run video analysis and live dashcam scanning.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2 self-start sm:self-auto flex-shrink-0">
               <button
                 onClick={verifyBackendHealth}
                 disabled={isCheckingHealth}
-                className="px-3.5 py-1.5 rounded-lg bg-[#DC2626] hover:bg-[#B91C1C] text-white text-xs font-bold transition flex items-center gap-1.5 flex-shrink-0"
+                className="px-3.5 py-1.5 rounded-lg bg-[#DC2626] hover:bg-[#B91C1C] text-white text-xs font-bold transition flex items-center gap-1.5 flex-shrink-0 self-start sm:self-auto cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isCheckingHealth ? "animate-spin" : ""}`} />
                 <span>Retry Connection</span>
+              </button>
+            </div>
+
+            {/* Quick URL Config Input */}
+            <div className="bg-white p-3.5 rounded-xl border border-red-200 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <span>Backend Server Endpoint URL</span>
+                  <span className="text-[10px] text-slate-500 font-normal">(saved in browser)</span>
+                </span>
+                {getBackendBaseUrl() && (
+                  <button
+                    onClick={handleResetBackendUrl}
+                    className="text-[11px] text-red-600 hover:underline cursor-pointer"
+                  >
+                    Reset to Default
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={backendUrlInput}
+                  onChange={(e) => setBackendUrlInput(e.target.value)}
+                  placeholder="e.g. https://your-tunnel.loca.lt or https://novaflow.onrender.com"
+                  className="flex-1 bg-slate-50 border border-slate-300 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-mono focus:outline-none"
+                />
+                <button
+                  onClick={handleSaveBackendUrl}
+                  disabled={isSavingUrl || isCheckingHealth}
+                  className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer shadow-sm"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isSavingUrl ? "animate-spin" : ""}`} />
+                  <span>Connect & Save</span>
+                </button>
+              </div>
+
+              {/* Instructions Row */}
+              <div className="pt-2 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] text-slate-600">
+                <div className="space-y-1">
+                  <span className="font-semibold text-slate-800">⚡ 30-Second Live Test (Local PC):</span>
+                  <div className="flex items-center justify-between bg-slate-900 text-emerald-400 px-2.5 py-1 rounded font-mono text-[10px]">
+                    <span>npx localtunnel --port 8000</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText("npx localtunnel --port 8000");
+                        setCopiedTunnelCmd(true);
+                        setTimeout(() => setCopiedTunnelCmd(false), 2000);
+                      }}
+                      className="text-slate-400 hover:text-white cursor-pointer ml-2"
+                    >
+                      {copiedTunnelCmd ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-slate-500">Paste the generated HTTPS link above and click Connect & Save.</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="font-semibold text-slate-800">☁️ Permanent Cloud (Render / Railway):</span>
+                  <p className="text-[10px] text-slate-500 leading-normal">
+                    Deploy <code className="font-mono bg-slate-100 px-1 py-0.2 rounded">backend/</code> to Render.com, then add <code className="font-mono bg-slate-100 px-1 py-0.2 rounded text-blue-600">VITE_API_URL</code> to your Vercel Project Settings &gt; Environment Variables.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Backend Online Status Banner (Compact) */}
+        {backendHealth.checked && backendHealth.online && (
+          <div className="mb-4 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between text-xs shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20 animate-pulse" />
+              <span className="font-medium">
+                AI Vision Engine Operational:{" "}
+                <span className="font-mono font-semibold text-emerald-800">
+                  {getBackendBaseUrl() || "http://localhost:8000 (Local / Proxy)"}
+                </span>
+              </span>
+              {backendHealth.modelWeights && (
+                <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[10px] font-mono border border-emerald-300">
+                  YOLOv8 Active
+                </span>
+              )}
+            </div>
+            <button
+              onClick={() => setShowUrlSettings(!showUrlSettings)}
+              className="text-emerald-700 hover:text-emerald-900 underline font-medium cursor-pointer"
+            >
+              {showUrlSettings ? "Hide Settings" : "Change Server URL"}
+            </button>
+          </div>
+        )}
+
+        {/* Optional Collapsible Settings when Online */}
+        {backendHealth.checked && backendHealth.online && showUrlSettings && (
+          <div className="mb-6 p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <h5 className="text-xs font-bold text-slate-800">Configure Backend Server Endpoint</h5>
+              <button
+                onClick={() => setShowUrlSettings(false)}
+                className="text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={backendUrlInput}
+                onChange={(e) => setBackendUrlInput(e.target.value)}
+                placeholder="https://your-backend.loca.lt or https://novaflow.onrender.com"
+                className="flex-1 bg-slate-50 border border-slate-300 focus:border-blue-500 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-mono focus:outline-none"
+              />
+              <button
+                onClick={handleSaveBackendUrl}
+                disabled={isSavingUrl}
+                className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+              >
+                <RefreshCw className={`w-3 h-3 ${isSavingUrl ? "animate-spin" : ""}`} />
+                <span>Save</span>
+              </button>
+              <button
+                onClick={handleResetBackendUrl}
+                className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer"
+              >
+                Reset
               </button>
             </div>
           </div>

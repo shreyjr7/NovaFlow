@@ -63,9 +63,12 @@ export interface BusTelemetryPayload {
   timestamp?: string;
 }
 
+import { getApiBaseUrl } from "./roadScanApi";
+
 export async function fetchAllBuses(routeId?: string): Promise<BusNode[]> {
   try {
-    const url = routeId ? `/api/v1/buses?route_id=${encodeURIComponent(routeId)}` : "/api/v1/buses";
+    const apiBase = getApiBaseUrl();
+    const url = routeId ? `${apiBase}/buses?route_id=${encodeURIComponent(routeId)}` : `${apiBase}/buses`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -78,7 +81,8 @@ export async function fetchAllBuses(routeId?: string): Promise<BusNode[]> {
 
 export async function fetchBusDetail(busId: string): Promise<BusDetailNode | null> {
   try {
-    const res = await fetch(`/api/v1/buses/${encodeURIComponent(busId)}`);
+    const apiBase = getApiBaseUrl();
+    const res = await fetch(`${apiBase}/buses/${encodeURIComponent(busId)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
@@ -89,7 +93,8 @@ export async function fetchBusDetail(busId: string): Promise<BusDetailNode | nul
 
 export async function fetchBusDetections(busId: string, limit = 50): Promise<BusDetectionItem[]> {
   try {
-    const res = await fetch(`/api/v1/buses/${encodeURIComponent(busId)}/detections?limit=${limit}`);
+    const apiBase = getApiBaseUrl();
+    const res = await fetch(`${apiBase}/buses/${encodeURIComponent(busId)}/detections?limit=${limit}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return Array.isArray(data) ? data : [];
@@ -101,7 +106,8 @@ export async function fetchBusDetections(busId: string, limit = 50): Promise<Bus
 
 export async function sendBusTelemetry(payload: BusTelemetryPayload): Promise<boolean> {
   try {
-    const res = await fetch("/api/v1/buses/telemetry", {
+    const apiBase = getApiBaseUrl();
+    const res = await fetch(`${apiBase}/buses/telemetry`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

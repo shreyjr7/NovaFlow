@@ -216,7 +216,49 @@ export interface LiveFrameBatchResponse {
   geminiVerificationEnabled?: boolean;
 }
 
-const API_BASE = "/api/v1";
+/**
+ * Resolves the backend base URL dynamically:
+ * 1. User runtime override saved in localStorage ("novaflow_backend_url")
+ * 2. Vite environment variable (VITE_API_URL or VITE_BACKEND_URL)
+ * 3. Default relative path (for local dev proxy or same-domain deployment)
+ */
+export function getBackendBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("novaflow_backend_url");
+    if (stored && stored.trim()) {
+      return stored.trim().replace(/\/+$/, "");
+    }
+  }
+  const envUrl = (import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL;
+  if (envUrl && typeof envUrl === "string" && envUrl.trim()) {
+    return envUrl.trim().replace(/\/+$/, "");
+  }
+  return "";
+}
+
+export function setBackendBaseUrl(url: string): void {
+  if (typeof window !== "undefined") {
+    if (!url || !url.trim()) {
+      localStorage.removeItem("novaflow_backend_url");
+    } else {
+      localStorage.setItem("novaflow_backend_url", url.trim().replace(/\/+$/, ""));
+    }
+  }
+}
+
+export function getApiBaseUrl(): string {
+  const base = getBackendBaseUrl();
+  return base ? `${base}/api/v1` : "/api/v1";
+}
+
+export function resolveEvidenceUrl(url?: string): string {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+    return url;
+  }
+  const base = getBackendBaseUrl();
+  return base ? `${base}${url.startsWith("/") ? "" : "/"}${url}` : url;
+}
 
 /**
  * Normalizes raw detection JSON from backend into typed ScanDetection.
@@ -250,10 +292,10 @@ function normalizeDetection(d: any): ScanDetection {
           y2: d.bounding_box.y2 ?? 1,
         }
       : undefined,
-    evidenceImagePath: d.annotated_evidence_path || d.evidence_path || d.evidenceImagePath,
-    originalImagePath: d.original_evidence_path || d.evidence_path || d.originalImagePath,
-    annotatedImagePath: d.annotated_evidence_path || d.evidence_path || d.annotatedImagePath,
-    thumbnailPath: d.thumbnail_path || d.thumbnailPath,
+    evidenceImagePath: resolveEvidenceUrl(d.annotated_evidence_path || d.evidence_path || d.evidenceImagePath),
+    originalImagePath: resolveEvidenceUrl(d.original_evidence_path || d.evidence_path || d.originalImagePath),
+    annotatedImagePath: resolveEvidenceUrl(d.annotated_evidence_path || d.evidence_path || d.annotatedImagePath),
+    thumbnailPath: resolveEvidenceUrl(d.thumbnail_path || d.thumbnailPath),
     storageProvider: d.storage_provider || d.storageProvider || "local_disk",
     status: (d.status || "CONFIRMED").toUpperCase() as any,
     associatedTicketId: d.associated_ticket_id || d.associatedTicketId || d.ticket_id || d.ticketId,
@@ -324,20 +366,34 @@ export const roadScanApi = {
   }> {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
-      const res = await fetch(`${API_BASE}/analyze/health`, {
+      const headers: Record<string, string> = {
+        "bypass-tunnel-reminder": "true",
+        "ngrok-skip-browser-warning": "true",
+      };
+
+      const res = await fetch(`${getApiBaseUrl()}/analyze/health`, {
         signal: controller.signal,
+        headers,
       });
       clearTimeout(timeoutId);
 
-      if (res.ok) {
+      // Check if response is actually JSON and not an HTML 404/rewrite page from Vercel
+      const contentType = res.headers.get("content-type") || "";
+      if (res.ok && contentType.includes("application/json")) {
         const data = await res.json();
         return {
           online: true,
           status: data.status,
           modelWeights: data.model_weights,
           message: "AI Vision Backend is operational and responsive.",
+        };
+      }
+      if (res.ok && !contentType.includes("application/json")) {
+        return {
+          online: false,
+          message: "Backend endpoint returned HTML instead of JSON. Ensure your tunnel or backend server URL is configured.",
         };
       }
       return {
@@ -349,7 +405,7 @@ export const roadScanApi = {
         online: false,
         message: err.name === "AbortError"
           ? "Connection timed out connecting to backend server."
-          : "Cannot connect to NovaFlow AI Vision backend (port 8000).",
+          : `Cannot connect to NovaFlow AI Vision backend: ${err.message}`,
       };
     }
   },
@@ -373,7 +429,11 @@ export const roadScanApi = {
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `${API_BASE}/analyze/video`);
+      xhr.open("POST", `${getApiBaseUrl()}/analyze/video`);
+      try {
+        xhr.setRequestHeader("bypass-tunnel-reminder", "true");
+        xhr.setRequestHeader("ngrok-skip-browser-warning", "true");
+      } catch {}
       xhr.timeout = 120000; // 2 minutes for upload
 
       if (signal) {
@@ -418,7 +478,7 @@ export const roadScanApi = {
 
       xhr.onerror = () => {
         reject(
-          new Error("Network error connecting to AI backend. Ensure the FastAPI backend is running on port 8000.")
+          new Error("Network error connecting to AI backend. Please verify your backend server URL in settings.")
         );
       };
 
@@ -434,7 +494,13 @@ export const roadScanApi = {
    * Polls the status of an ongoing video analysis job.
    */
   async getJobStatus(jobId: string, signal?: AbortSignal): Promise<VideoJobProgress> {
-    const res = await fetch(`${API_BASE}/jobs/${jobId}`, { signal });
+    const res = await fetch(`${getApiBaseUrl()}/jobs/${jobId}`, {
+      signal,
+      headers: {
+        "bypass-tunnel-reminder": "true",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) {
       if (res.status === 404) {
         throw new Error(`Job '${jobId}' not found on server.`);
@@ -455,8 +521,12 @@ export const roadScanApi = {
    */
   async cancelJob(jobId: string): Promise<boolean> {
     try {
-      const res = await fetch(`${API_BASE}/jobs/${jobId}/cancel`, {
+      const res = await fetch(`${getApiBaseUrl()}/jobs/${jobId}/cancel`, {
         method: "POST",
+        headers: {
+          "bypass-tunnel-reminder": "true",
+          "ngrok-skip-browser-warning": "true",
+        },
       });
       return res.ok;
     } catch {
@@ -529,9 +599,13 @@ export const roadScanApi = {
     if (signal) signal.addEventListener("abort", onAbort);
 
     try {
-      const res = await fetch(`${API_BASE}/analyze/frame`, {
+      const res = await fetch(`${getApiBaseUrl()}/analyze/frame`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "bypass-tunnel-reminder": "true",
+          "ngrok-skip-browser-warning": "true",
+        },
         signal: controller.signal,
         body: JSON.stringify({
           frame_b64: payload.frameBase64,
@@ -602,9 +676,13 @@ export const roadScanApi = {
     if (signal) signal.addEventListener("abort", onAbort);
 
     try {
-      const res = await fetch(`${API_BASE}/analyze/batch`, {
+      const res = await fetch(`${getApiBaseUrl()}/analyze/batch`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "bypass-tunnel-reminder": "true",
+          "ngrok-skip-browser-warning": "true",
+        },
         signal: controller.signal,
         body: JSON.stringify({
           frames: payload.frames.map((f) => ({
@@ -670,7 +748,12 @@ export const roadScanApi = {
     if (params?.min_buses) query.set("min_buses", String(params.min_buses));
     if (params?.limit) query.set("limit", String(params.limit));
 
-    const res = await fetch(`${API_BASE}/hazards/persistent?${query.toString()}`);
+    const res = await fetch(`${getApiBaseUrl()}/hazards/persistent?${query.toString()}`, {
+      headers: {
+        "bypass-tunnel-reminder": "true",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) {
       throw new Error(`Failed to load persistent hazards: ${res.status}`);
     }
@@ -682,7 +765,12 @@ export const roadScanApi = {
    * Fetches full detail for a persistent road hazard.
    */
   async fetchHazardDetail(hazardId: string): Promise<PersistentHazard> {
-    const res = await fetch(`${API_BASE}/hazards/${hazardId}`);
+    const res = await fetch(`${getApiBaseUrl()}/hazards/${hazardId}`, {
+      headers: {
+        "bypass-tunnel-reminder": "true",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) {
       throw new Error(`Hazard ${hazardId} not found (${res.status})`);
     }
@@ -693,7 +781,12 @@ export const roadScanApi = {
    * Fetches observation timeline for a specific hazard.
    */
   async fetchHazardObservations(hazardId: string): Promise<HazardObservation[]> {
-    const res = await fetch(`${API_BASE}/hazards/${hazardId}/observations`);
+    const res = await fetch(`${getApiBaseUrl()}/hazards/${hazardId}/observations`, {
+      headers: {
+        "bypass-tunnel-reminder": "true",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
     if (!res.ok) {
       throw new Error(`Hazard observations not found (${res.status})`);
     }
@@ -707,7 +800,12 @@ export const roadScanApi = {
   async fetchSampleVideoBlob(): Promise<File> {
     let response: Response;
     try {
-      response = await fetch(`${API_BASE}/scan/sample-video`);
+      response = await fetch(`${getApiBaseUrl()}/scan/sample-video`, {
+        headers: {
+          "bypass-tunnel-reminder": "true",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
       if (!response.ok) {
         throw new Error(`Backend sample endpoint returned ${response.status}`);
       }

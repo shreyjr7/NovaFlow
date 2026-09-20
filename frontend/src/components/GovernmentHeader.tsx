@@ -1,7 +1,9 @@
 // src/components/GovernmentHeader.tsx
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Shield, Activity, MapPin, Bus, AlertTriangle, FileText, CheckCircle2, Menu, X } from "lucide-react";
+import { Shield, Activity, MapPin, Bus, AlertTriangle, FileText, CheckCircle2, Menu, X, Server } from "lucide-react";
+import BackendConfigModal from "./BackendConfigModal";
+import { roadScanApi } from "../services/roadScanApi";
 
 interface GovernmentHeaderProps {
   mobileSidebarOpen?: boolean;
@@ -13,7 +15,27 @@ export const GovernmentHeader: React.FC<GovernmentHeaderProps> = ({
   onToggleMobileSidebar,
 }) => {
   const [timeStr, setTimeStr] = useState<string>("");
+  const [configModalOpen, setConfigModalOpen] = useState<boolean>(false);
+  const [backendOnline, setBackendOnline] = useState<boolean>(false);
   const location = useLocation();
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkStatus = async () => {
+      try {
+        const health = await roadScanApi.checkBackendHealth();
+        if (isMounted) setBackendOnline(health.online);
+      } catch {
+        if (isMounted) setBackendOnline(false);
+      }
+    };
+    checkStatus();
+    const interval = setInterval(checkStatus, 30000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -61,10 +83,25 @@ export const GovernmentHeader: React.FC<GovernmentHeaderProps> = ({
         </div>
       </div>
 
-      {/* Center: Live Operational Status */}
-      <div className="hidden 2xl:flex items-center gap-2 px-3 py-1 text-[11px] font-medium text-slate-300">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ring-2 ring-emerald-500/30" />
-        <span className="text-slate-200">System Operational</span>
+      {/* Center: Live Operational Status & AI Backend Connection */}
+      <div className="hidden xl:flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2.5 py-1 text-[11px] font-medium text-slate-300 bg-[#1E2342] rounded-lg border border-[#2B345A]">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ring-2 ring-emerald-500/30" />
+          <span className="text-slate-200">System Operational</span>
+        </div>
+        <button
+          onClick={() => setConfigModalOpen(true)}
+          className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-lg border transition cursor-pointer ${
+            backendOnline
+              ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/50"
+              : "bg-amber-950/40 border-amber-500/40 text-amber-300 hover:bg-amber-900/50"
+          }`}
+          title="Configure NovaFlow AI Backend Server URL"
+        >
+          <Server size={13} className={backendOnline ? "text-emerald-400" : "text-amber-400"} />
+          <span>{backendOnline ? "AI Server Connected" : "AI Server Offline (Configure)"}</span>
+          <span className={`w-1.5 h-1.5 rounded-full ${backendOnline ? "bg-emerald-400" : "bg-amber-400 animate-ping"}`} />
+        </button>
       </div>
 
       {/* Right: Navigation, Notifications, High Contrast Toggle */}
@@ -168,6 +205,13 @@ export const GovernmentHeader: React.FC<GovernmentHeaderProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Backend Server Configuration Modal */}
+      <BackendConfigModal
+        isOpen={configModalOpen}
+        onClose={() => setConfigModalOpen(false)}
+        onConnected={() => setBackendOnline(true)}
+      />
     </header>
   );
 };
