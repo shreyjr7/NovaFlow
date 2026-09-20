@@ -33,3 +33,7 @@ scratch/
 *.pt
 data/evidence_frames/
 *.mp4
+!frontend/public/*.mp4
+
+
+
