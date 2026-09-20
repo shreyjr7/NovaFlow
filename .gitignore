@@ -34,6 +34,12 @@ scratch/
 data/evidence_frames/
 *.mp4
 !frontend/public/*.mp4
+!backend/road_damage_yolov8.pt
+!backend/keremberke_pothole.pt
+!backend/yolov8n.pt
+!backend/novaflow.db
+!test_road_sample.mp4
+
 
 
 
