@@ -226,7 +226,13 @@ export function getBackendBaseUrl(): string {
   if (typeof window !== "undefined") {
     const stored = localStorage.getItem("novaflow_backend_url");
     if (stored && stored.trim()) {
-      return stored.trim().replace(/\/+$/, "");
+      const trimmed = stored.trim().replace(/\/+$/, "");
+      // Discard invalid terminal commands stored by mistake
+      if (trimmed.toLowerCase().includes("npx") || trimmed.toLowerCase().includes("localtunnel --port")) {
+        localStorage.removeItem("novaflow_backend_url");
+        return "";
+      }
+      return trimmed;
     }
   }
   const envUrl = (import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL;
@@ -238,10 +244,12 @@ export function getBackendBaseUrl(): string {
 
 export function setBackendBaseUrl(url: string): void {
   if (typeof window !== "undefined") {
-    if (!url || !url.trim()) {
+    const trimmed = (url || "").trim().replace(/\/+$/, "");
+    if (!trimmed || trimmed.toLowerCase().includes("npx") || trimmed.toLowerCase().includes("localtunnel --port")) {
       localStorage.removeItem("novaflow_backend_url");
     } else {
-      localStorage.setItem("novaflow_backend_url", url.trim().replace(/\/+$/, ""));
+      const validUrl = trimmed.startsWith("http://") || trimmed.startsWith("https://") ? trimmed : `https://${trimmed}`;
+      localStorage.setItem("novaflow_backend_url", validUrl);
     }
   }
 }
