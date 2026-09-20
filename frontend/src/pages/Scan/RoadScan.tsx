@@ -192,8 +192,21 @@ export const RoadScan: React.FC = () => {
   };
 
   const handleSaveBackendUrl = async () => {
+    let cleaned = backendUrlInput.trim();
+    if (cleaned.toLowerCase().includes("npx") || cleaned.toLowerCase().includes("localtunnel --port")) {
+      setBackendHealth({
+        checked: true,
+        online: false,
+        message: "You pasted the terminal command instead of the URL! Run `npx localtunnel --port 8000` in your PC terminal, and paste the generated HTTPS link (e.g. https://fresh-snakes-shave.loca.lt) here.",
+      });
+      return;
+    }
+    if (cleaned && !cleaned.startsWith("http://") && !cleaned.startsWith("https://")) {
+      cleaned = `https://${cleaned}`;
+      setBackendUrlInput(cleaned);
+    }
     setIsSavingUrl(true);
-    setBackendBaseUrl(backendUrlInput);
+    setBackendBaseUrl(cleaned);
     await verifyBackendHealth();
     setIsSavingUrl(false);
   };

@@ -60,7 +60,24 @@ export const BackendConfigModal: React.FC<BackendConfigModalProps> = ({
   if (!isOpen) return null;
 
   const handleTestAndSave = async (urlToSave?: string) => {
-    const target = urlToSave !== undefined ? urlToSave : inputUrl;
+    let target = (urlToSave !== undefined ? urlToSave : inputUrl).trim();
+
+    // Check if user accidentally pasted the terminal command instead of the generated URL
+    if (target.toLowerCase().includes("npx") || target.toLowerCase().includes("localtunnel --port")) {
+      setTestResult({
+        tested: true,
+        success: false,
+        message:
+          "You pasted the terminal command instead of the URL! Run `npx localtunnel --port 8000` in your PC terminal/command prompt, and paste the generated HTTPS link (e.g. https://fresh-snakes-shave.loca.lt) here.",
+      });
+      return;
+    }
+
+    if (target && !target.startsWith("http://") && !target.startsWith("https://")) {
+      target = `https://${target}`;
+      setInputUrl(target);
+    }
+
     setIsTesting(true);
     setTestResult({ tested: false, success: false, message: "" });
 
