@@ -26,6 +26,8 @@ from .reports import router as reports_router
 from .public_dashboard import router as public_dashboard_router
 from .admin_panel import router as admin_panel_router
 from .ai_models import router as ai_models_router
+from .buses_api import router as buses_api_router
+from .maintenance import router as maintenance_router
 
 from ..auth import router as auth_router
 
@@ -35,12 +37,12 @@ class _RouterHolder:
 
 auth = _RouterHolder(auth_router)
 users = _RouterHolder()
-buses = _RouterHolder()
+buses = _RouterHolder(buses_api_router)
 routes = _RouterHolder(route_delay_router)
 cameras = _RouterHolder(camera_health_router)
 analytics = _RouterHolder(insights_router)
 alerts = _RouterHolder(alerts_router)
-maintenance = _RouterHolder()
+maintenance = _RouterHolder(maintenance_router)
 reports = _RouterHolder(reports_router)
 admin = _RouterHolder(admin_panel_router)
 

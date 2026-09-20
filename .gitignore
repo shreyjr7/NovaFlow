@@ -30,4 +30,6 @@ Thumbs.db
 *.log
 scratch/
 *.db
-
+*.pt
+data/evidence_frames/
+*.mp4

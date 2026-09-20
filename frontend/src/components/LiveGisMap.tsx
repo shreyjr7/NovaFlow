@@ -13,13 +13,21 @@ import nationwideData from "../data/nationwide_gis_data.json";
 export interface BusItem {
   bus_id: string;
   route_id: string;
-  name: string;
+  name?: string;
   lat: number;
   lon: number;
+  latitude?: number;
+  longitude?: number;
   bearing_deg: number;
+  heading?: number;
   speed_kmh: number;
+  speed?: number;
   status: string;
   passenger_occupancy_pct?: number;
+  timestamp?: string;
+  camera_status?: string;
+  AI_status?: string;
+  connection_status?: string;
 }
 
 export interface GisFeature {
@@ -45,6 +53,13 @@ export interface GisFeature {
     state_code?: string;
     name?: string;
     color?: string;
+    persistent_hazard_id?: string;
+    independent_buses_count?: number;
+    contributing_buses?: string | string[];
+    persistence_badge?: string;
+    last_detected_at?: string;
+    ai_confidence?: number;
+    observation_count?: number;
     details?: Record<string, any>;
   };
 }
@@ -54,6 +69,7 @@ export interface LiveGisFilterState {
   severity?: string; // ALL, LOW, MEDIUM, HIGH, SEVERE
   status?: string;   // ALL, ACTIVE, CONFIRMED, ESCALATED, TICKET_CREATED, RESOLVED
   date?: string;     // ALL, TODAY, 24H, 7D
+  district?: string; // ALL, or specific district name
   bus?: string;      // ALL, or specific bus_id
   route?: string;    // ALL, or specific route_id
   minConfidence?: number; // 0, 0.8, 0.85, 0.9, 0.95
@@ -159,12 +175,52 @@ export const EVENT_CATEGORY_CONFIG: Record<string, { icon: string; label: string
     text: "text-orange-400",
     category: "ROAD_DAMAGE"
   },
+  ROAD_DAMAGE: {
+    icon: "🚧",
+    label: "Road Damage",
+    bg: "bg-orange-600",
+    border: "border-orange-300",
+    text: "text-orange-400",
+    category: "ROAD_DAMAGE"
+  },
+  ROAD_CRACK: {
+    icon: "⚡",
+    label: "Road Crack",
+    bg: "bg-orange-700",
+    border: "border-orange-400",
+    text: "text-orange-300",
+    category: "ROAD_DAMAGE"
+  },
+  DEBRIS: {
+    icon: "🪨",
+    label: "Road Debris",
+    bg: "bg-amber-700",
+    border: "border-amber-400",
+    text: "text-amber-300",
+    category: "ROAD_DAMAGE"
+  },
+  ROAD_DEBRIS: {
+    icon: "🪨",
+    label: "Road Debris",
+    bg: "bg-amber-700",
+    border: "border-amber-400",
+    text: "text-amber-300",
+    category: "ROAD_DAMAGE"
+  },
   MISSING_TRAFFIC_SIGN: {
     icon: "🪧",
     label: "Missing Traffic Sign",
     bg: "bg-pink-600",
     border: "border-pink-300",
     text: "text-pink-400",
+    category: "ROAD_DAMAGE"
+  },
+  POTENTIAL_MISSING_SIGN: {
+    icon: "🪧",
+    label: "Potential Missing Sign",
+    bg: "bg-pink-700",
+    border: "border-pink-400",
+    text: "text-pink-300",
     category: "ROAD_DAMAGE"
   },
   MISSING_ROAD_DIVIDER: {
@@ -175,9 +231,25 @@ export const EVENT_CATEGORY_CONFIG: Record<string, { icon: string; label: string
     text: "text-rose-400",
     category: "ROAD_DAMAGE"
   },
+  POTENTIAL_MISSING_DIVIDER: {
+    icon: "⚠️",
+    label: "Potential Missing Divider",
+    bg: "bg-rose-700",
+    border: "border-rose-400",
+    text: "text-rose-300",
+    category: "ROAD_DAMAGE"
+  },
   MISSING_ZEBRA_CROSSING: {
     icon: "🦓",
     label: "Missing Zebra Crossing",
+    bg: "bg-lime-600",
+    border: "border-lime-300",
+    text: "text-lime-400",
+    category: "ROAD_DAMAGE"
+  },
+  DAMAGED_ZEBRA_CROSSING: {
+    icon: "🦓",
+    label: "Damaged Zebra Crossing",
     bg: "bg-lime-600",
     border: "border-lime-300",
     text: "text-lime-400",
@@ -199,12 +271,28 @@ export const EVENT_CATEGORY_CONFIG: Record<string, { icon: string; label: string
     text: "text-yellow-400",
     category: "TRAFFIC"
   },
+  POTENTIAL_CONGESTION: {
+    icon: "🚗",
+    label: "Potential Congestion",
+    bg: "bg-yellow-700",
+    border: "border-yellow-400",
+    text: "text-yellow-300",
+    category: "TRAFFIC"
+  },
   POSSIBLE_INCIDENT: {
     icon: "🚨",
     label: "Incident Alert",
     bg: "bg-red-600",
     border: "border-red-300 animate-pulse",
     text: "text-red-400",
+    category: "INCIDENT"
+  },
+  POTENTIAL_INCIDENT: {
+    icon: "🚨",
+    label: "Potential Incident",
+    bg: "bg-red-700",
+    border: "border-red-400 animate-pulse",
+    text: "text-red-300",
     category: "INCIDENT"
   },
   PEDESTRIAN_RISK: {
@@ -214,6 +302,62 @@ export const EVENT_CATEGORY_CONFIG: Record<string, { icon: string; label: string
     border: "border-purple-300",
     text: "text-purple-400",
     category: "PEDESTRIAN_RISK"
+  },
+  POTENTIAL_PEDESTRIAN_RISK: {
+    icon: "🚸",
+    label: "Potential Pedestrian Risk",
+    bg: "bg-purple-700",
+    border: "border-purple-400",
+    text: "text-purple-300",
+    category: "PEDESTRIAN_RISK"
+  },
+  PEDESTRIAN: {
+    icon: "🚶",
+    label: "Pedestrian In Corridor",
+    bg: "bg-purple-600",
+    border: "border-purple-300",
+    text: "text-purple-400",
+    category: "PEDESTRIAN_RISK"
+  },
+  BUS: {
+    icon: "🚌",
+    label: "Transit Bus",
+    bg: "bg-blue-600",
+    border: "border-blue-300",
+    text: "text-blue-400",
+    category: "TRAFFIC"
+  },
+  CAR: {
+    icon: "🚗",
+    label: "Vehicle (Car)",
+    bg: "bg-yellow-600",
+    border: "border-yellow-300",
+    text: "text-yellow-400",
+    category: "TRAFFIC"
+  },
+  TRUCK: {
+    icon: "🚚",
+    label: "Vehicle (Truck)",
+    bg: "bg-yellow-700",
+    border: "border-yellow-400",
+    text: "text-yellow-300",
+    category: "TRAFFIC"
+  },
+  MOTORCYCLE: {
+    icon: "🏍️",
+    label: "Motorcycle",
+    bg: "bg-yellow-600",
+    border: "border-yellow-300",
+    text: "text-yellow-400",
+    category: "TRAFFIC"
+  },
+  MAINTENANCE_TICKET: {
+    icon: "🔧",
+    label: "Maintenance Work Order",
+    bg: "bg-emerald-700",
+    border: "border-emerald-400",
+    text: "text-emerald-300",
+    category: "MAINTENANCE"
   },
   ANPR_VIOLATION: {
     icon: "📸",
@@ -273,6 +417,7 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
   const effectiveSeverity = filters?.severity ?? localSeverity;
   const effectiveStatus = filters?.status ?? localStatus;
   const effectiveDate = filters?.date ?? localDate;
+  const effectiveDistrict = filters?.district ?? "ALL";
   const effectiveBus = filters?.bus ?? localBus;
   const effectiveRoute = filters?.route ?? localRoute;
   const effectiveMinConfidence = filters?.minConfidence ?? localMinConfidence;
@@ -313,19 +458,40 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
     });
   };
 
-  // Helper to match category filter
-  const matchesCategory = (eventType: string, targetCategory: string): boolean => {
+  // Helper to match category filter (comprehensive category & keyword mapping)
+  const matchesCategory = (item: any, targetCategory: string): boolean => {
     if (!targetCategory || targetCategory === "ALL") return true;
-    const t = (eventType || "").toUpperCase();
+    const p = item.properties || item;
+    const directCat = (p.category || item.category || "").toUpperCase();
+    if (directCat === targetCategory.toUpperCase()) return true;
+
+    const evType = String(p.event_type || p.type || item.event_type || item.type || "").toUpperCase();
+    const configCat = EVENT_CATEGORY_CONFIG[evType]?.category;
+    if (configCat && configCat === targetCategory.toUpperCase()) return true;
+
+    const layer = String(p.layer || item.layer || "").toLowerCase();
     if (targetCategory === "ROAD_DAMAGE") {
-      return t.includes("POTHOLE") || t.includes("DAMAGE") || t.includes("SIGN") || t.includes("DIVIDER") || t.includes("ZEBRA");
+      return (
+        ["potholes", "road_damage", "missing_signs", "missing_dividers", "zebra_crossing_issues"].includes(layer) ||
+        ["POTHOLE", "DAMAGE", "CRACK", "DEBRIS", "SIGN", "DIVIDER", "ZEBRA"].some(k => evType.includes(k))
+      );
     }
-    if (targetCategory === "WATERLOGGING") return t.includes("WATERLOG");
-    if (targetCategory === "TRAFFIC") return t.includes("CONGESTION");
-    if (targetCategory === "PEDESTRIAN_RISK") return t.includes("PEDESTRIAN");
-    if (targetCategory === "INCIDENT") return t.includes("INCIDENT");
-    if (targetCategory === "ANPR") return t.includes("ANPR") || t.includes("PLATE") || t.includes("INTRUSION");
-    return true;
+    if (targetCategory === "WATERLOGGING") {
+      return layer === "waterlogging" || evType.includes("WATERLOG") || evType.includes("FLOOD") || evType.includes("PUDDLE");
+    }
+    if (targetCategory === "TRAFFIC") {
+      return layer === "traffic_congestion" || ["CONGESTION", "TRAFFIC", "BUS", "CAR", "TRUCK", "MOTORCYCLE", "VEHICLE"].some(k => evType.includes(k));
+    }
+    if (targetCategory === "PEDESTRIAN_RISK") {
+      return layer === "pedestrian_risk" || evType.includes("PEDESTRIAN");
+    }
+    if (targetCategory === "INCIDENT") {
+      return layer === "incidents" || evType.includes("INCIDENT") || evType.includes("COLLISION") || evType.includes("ACCIDENT");
+    }
+    if (targetCategory === "ANPR") {
+      return layer === "anpr_violations" || evType.includes("ANPR") || evType.includes("PLATE") || evType.includes("INTRUSION");
+    }
+    return false;
   };
 
   // Helper to match date filter
@@ -333,17 +499,18 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
     if (!dateFilter || dateFilter === "ALL") return true;
     if (!timestampStr) return true;
     const evDate = new Date(timestampStr);
+    if (isNaN(evDate.getTime())) return true;
     const now = new Date();
     const diffHours = (now.getTime() - evDate.getTime()) / (1000 * 60 * 60);
 
     if (dateFilter === "TODAY") {
-      return evDate.toDateString() === now.toDateString();
+      return evDate.toDateString() === now.toDateString() || Math.abs(diffHours) <= 24;
     }
     if (dateFilter === "24H") {
-      return diffHours <= 24;
+      return Math.abs(diffHours) <= 24;
     }
     if (dateFilter === "7D") {
-      return diffHours <= 168;
+      return Math.abs(diffHours) <= 168;
     }
     return true;
   };
@@ -402,35 +569,87 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
           bearing_deg: p.bearing_deg || p.gps?.bearing_deg || 0,
         },
         district: p.district || "Metropolitan",
+        evidence_image_b64: p.evidence_image_b64 || p.annotated_evidence_path || p.evidence_path,
+        evidence_path: p.evidence_path || p.original_evidence_path,
+        original_evidence_path: p.original_evidence_path || p.evidence_path,
+        annotated_evidence_path: p.annotated_evidence_path || p.evidence_image_b64,
+        thumbnail_path: p.thumbnail_path,
+        source_video: p.source_video || p.video_file_name || "Live Dashcam Stream",
+        condition_type: p.condition_type || (config.category === "ROAD_DAMAGE" && !evType.includes("SIGN") && !evType.includes("DIVIDER") ? "DIRECT" : "POTENTIAL"),
+        condition_label: p.condition_label,
+        is_derived: Boolean(p.is_derived),
+        ticket_id: p.ticket_id,
+        maintenance_ticket_status: p.maintenance_ticket_status || (p.ticket_id ? "ASSIGNED" : "NONE"),
+        frame_number: p.frame_number,
+        track_id: p.track_id,
+        persistent_hazard_id: p.persistent_hazard_id,
+        independent_buses_count: p.independent_buses_count,
+        contributing_buses: p.contributing_buses,
+        persistence_badge: p.persistence_badge,
+        last_detected_at: p.last_detected_at,
+        ai_confidence: typeof p.ai_confidence === "number" ? p.ai_confidence : p.confidence,
+        observation_count: p.observation_count,
         details: p.details || {},
       };
       if (onSelectEvent) onSelectEvent(normalizedPayload);
     });
 
-    // Detailed popup showing all 7 required attributes
+    // Detailed popup showing all required attributes + multi-bus confirmation & visual evidence
     const formattedDate = p.timestamp ? new Date(p.timestamp).toLocaleString() : new Date().toLocaleString();
+    const lastDetectedStr = p.last_detected_at ? new Date(p.last_detected_at).toLocaleString() : formattedDate;
+    const conditionBadge = p.condition_type === "POTENTIAL"
+      ? `<span style="font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: rgba(234, 179, 8, 0.25); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.5);">POTENTIAL</span>`
+      : `<span style="font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: rgba(34, 197, 94, 0.25); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.5);">CONFIRMED</span>`;
+
+    const thumbUrl = p.thumbnail_path || p.annotated_evidence_path || p.evidence_image_b64 || p.original_evidence_path;
+    const thumbHtml = thumbUrl ? `
+      <div style="margin-bottom: 6px; border-radius: 6px; overflow: hidden; max-height: 110px; background: #0b0d18; display: flex; align-items: center; justify-content: center; border: 1px solid #334155;">
+        <img src="${thumbUrl}" alt="Evidence Frame" style="width: 100%; height: 110px; object-fit: cover;" onerror="this.style.display='none'" />
+      </div>
+    ` : "";
+
+    const ticketHtml = p.ticket_id
+      ? `<strong style="color: #34d399;">${p.ticket_id}</strong> <span style="font-size: 8px; color: #a7f3d0;">(${p.maintenance_ticket_status || 'ASSIGNED'})</span>`
+      : `<span style="color: #94a3b8;">No Ticket Dispatched</span>`;
+
+    // Multi-Bus Confirmation Banner (Phase 12)
+    const busCount = p.independent_buses_count || 1;
+    const multiBusBadgeHtml = (p.persistence_badge || busCount > 1) ? `
+      <div style="margin-top: 6px; padding: 4px 6px; border-radius: 4px; background: rgba(37, 99, 235, 0.2); border: 1px solid #3b82f6; color: #93c5fd; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+        <span>🛡️ ${p.persistence_badge || `CONFIRMED BY ${busCount} BUSES`}</span>
+        <span style="color: #bfdbfe; font-size: 8px;">Obs: ${p.observation_count || busCount}</span>
+      </div>
+    ` : "";
 
     marker.bindPopup(`
-      <div style="font-family: ui-monospace, monospace; font-size: 11px; min-width: 220px; line-height: 1.4; color: #e2e8f0; padding: 2px;">
+      <div style="font-family: ui-monospace, monospace; font-size: 11px; min-width: 240px; max-width: 280px; line-height: 1.4; color: #e2e8f0; padding: 3px;">
+        ${thumbHtml}
         <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 6px;">
           <span style="font-weight: bold; color: #f59e0b; display: flex; align-items: center; gap: 4px;">
             ${config.icon} ${config.label}
           </span>
-          <span style="font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: ${p.severity === 'SEVERE' ? '#ef4444' : p.severity === 'HIGH' ? '#f97316' : '#3b82f6'}; color: white;">
-            ${p.severity || 'HIGH'}
-          </span>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            ${conditionBadge}
+            <span style="font-size: 9px; font-weight: bold; padding: 1px 5px; border-radius: 3px; background: ${p.severity === 'SEVERE' ? '#ef4444' : p.severity === 'HIGH' ? '#f97316' : '#3b82f6'}; color: white;">
+              ${p.severity || 'HIGH'}
+            </span>
+          </div>
         </div>
-        <div style="font-weight: 600; color: #ffffff; margin-bottom: 4px;">
+        <div style="font-weight: 600; color: #ffffff; margin-bottom: 4px; font-size: 11px;">
           ${p.address || p.road_segment || 'Monitored Transit Corridor'}
         </div>
+        ${multiBusBadgeHtml}
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px; color: #94a3b8; margin-top: 6px;">
           <div>Bus: <strong style="color: #60a5fa;">${p.bus_id || 'BUS_001'}</strong></div>
-          <div>Conf: <strong style="color: #34d399;">${confPct}%</strong></div>
+          <div>AI Conf: <strong style="color: #34d399;">${confPct}%</strong></div>
           <div>Status: <strong style="color: #cbd5e1;">${p.status || 'ACTIVE'}</strong></div>
-          <div>Route: <strong style="color: #a78bfa;">${p.route_id || 'CORRIDOR_01'}</strong></div>
+          <div>Video: <strong style="color: #a78bfa; word-break: break-all;">${p.source_video || 'Live Stream'}</strong></div>
         </div>
-        <div style="font-size: 9px; color: #64748b; margin-top: 6px; border-top: 1px solid #1e293b; padding-top: 4px;">
-          📍 ${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E • 🕒 ${formattedDate}
+        <div style="font-size: 10px; color: #94a3b8; margin-top: 4px; border-top: 1px solid #1e293b; padding-top: 4px;">
+          Ticket: ${ticketHtml}
+        </div>
+        <div style="font-size: 9px; color: #64748b; margin-top: 4px;">
+          📍 ${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E • 🕒 ${lastDetectedStr}
         </div>
       </div>
     `);
@@ -446,11 +665,22 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
     // 1. Apply Step 3 Multi-Dimensional Filters
     const filtered = rawEvents.filter((ev) => {
       const p = ev.properties || ev;
-      const evType = p.event_type || "";
 
-      if (!matchesCategory(evType, effectiveCategory)) return false;
+      if (!matchesCategory(ev, effectiveCategory)) return false;
       if (effectiveSeverity !== "ALL" && (p.severity || "").toUpperCase() !== effectiveSeverity.toUpperCase()) return false;
-      if (effectiveStatus !== "ALL" && (p.status || "").toUpperCase() !== effectiveStatus.toUpperCase()) return false;
+      if (effectiveStatus !== "ALL") {
+        const itemStat = (p.status || "").toUpperCase();
+        const targetStat = effectiveStatus.toUpperCase();
+        if (itemStat !== targetStat && !(targetStat === "UNDER_REPAIR" && itemStat === "IN_REPAIR")) {
+          return false;
+        }
+      }
+      if (effectiveDistrict !== "ALL") {
+        const dTarget = effectiveDistrict.toLowerCase();
+        const itemDist = String(p.district || ev.district || "").toLowerCase();
+        const itemAddr = String(p.address || ev.address || p.road_segment || "").toLowerCase();
+        if (!itemDist.includes(dTarget) && !itemAddr.includes(dTarget)) return false;
+      }
       if (effectiveBus !== "ALL" && p.bus_id !== effectiveBus) return false;
       if (effectiveRoute !== "ALL" && p.route_id !== effectiveRoute) return false;
       if (effectiveMinConfidence > 0 && (p.confidence || 0) < effectiveMinConfidence) return false;
@@ -539,7 +769,7 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
       });
     }
   }, [
-    effectiveCategory, effectiveSeverity, effectiveStatus, effectiveDate,
+    effectiveCategory, effectiveSeverity, effectiveStatus, effectiveDistrict, effectiveDate,
     effectiveBus, effectiveRoute, effectiveMinConfidence, isClusterMode
   ]);
 
@@ -704,32 +934,52 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
     }
   };
 
-  // Fetch & Update Live Buses (Every 2.5 seconds)
+  // Fetch & Update Live Buses (Phase 8: Edge Nodes with Kinematics & AI Status)
   const fetchLiveBuses = async () => {
     try {
-      const res = await fetch("/api/v1/demo/buses");
+      let res = await fetch("/api/v1/buses");
+      if (!res.ok) {
+        res = await fetch("/api/v1/demo/buses");
+      }
       if (!res.ok || !busLayerGroupRef.current) return;
-      const buses: BusItem[] = await res.json();
+      const data = await res.json();
+      const buses: BusItem[] = Array.isArray(data) ? data.map((b: any) => ({
+        ...b,
+        lat: b.latitude ?? b.current_lat ?? b.lat ?? 28.6139,
+        lon: b.longitude ?? b.current_lon ?? b.lon ?? 77.2090,
+        speed_kmh: b.speed ?? b.speed_kmh ?? 0,
+        bearing_deg: b.heading ?? b.bearing_deg ?? 0,
+        camera_status: b.camera_status || "ACTIVE",
+        AI_status: b.AI_status || "ONLINE",
+        connection_status: b.connection_status || "CONNECTED",
+      })) : [];
+
       if (!buses || buses.length === 0) return;
       
       setBusesCount(buses.length);
       busLayerGroupRef.current.clearLayers();
 
       buses.forEach((b) => {
+        const isInferencing = b.AI_status === "INFERENCING";
+        const isStreaming = b.camera_status === "STREAMING" || b.camera_status === "ACTIVE";
+        const headingDeg = b.heading ?? b.bearing_deg ?? 0;
+
         const busIcon = L.divIcon({
           className: "custom-bus-marker",
           html: `
-            <div class="relative flex items-center justify-center cursor-pointer group">
-              <div class="w-8 h-8 rounded-full bg-blue-600 border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold transform transition-transform group-hover:scale-125">
-                🚌
+            <div class="relative flex items-center justify-center cursor-pointer group" style="width: 42px; height: 42px;">
+              ${isInferencing ? '<div class="absolute inset-0 rounded-full bg-amber-400/40 animate-ping"></div>' : ''}
+              <div class="w-9 h-9 rounded-full ${isInferencing ? 'bg-gradient-to-tr from-amber-600 to-yellow-500 border-2 border-yellow-200 shadow-amber-500/50' : 'bg-gradient-to-tr from-blue-700 to-indigo-600 border-2 border-white shadow-blue-500/50'} shadow-lg flex items-center justify-center text-white text-xs font-bold transform transition-transform group-hover:scale-110">
+                <span style="display: inline-block; transform: rotate(${headingDeg}deg); font-size: 14px;">🚌</span>
               </div>
-              <div class="absolute -bottom-4 bg-gray-950/90 text-blue-300 text-[9px] px-1 rounded border border-blue-500/40 whitespace-nowrap shadow font-mono">
-                ${b.bus_id} • ${b.speed_kmh}km/h
+              <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full ${isInferencing ? 'bg-amber-400 animate-pulse' : isStreaming ? 'bg-emerald-400' : 'bg-slate-400'} border border-slate-900 shadow"></div>
+              <div class="absolute -bottom-4 bg-gray-950/95 text-cyan-300 text-[9px] px-1.5 py-0.2 rounded border border-cyan-500/40 whitespace-nowrap shadow font-mono font-bold">
+                ${b.bus_id} • ${Math.round(b.speed_kmh)}km/h
               </div>
             </div>
           `,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
+          iconSize: [42, 42],
+          iconAnchor: [21, 21],
         });
 
         const marker = L.marker([b.lat, b.lon], { icon: busIcon });
@@ -737,15 +987,33 @@ export const LiveGisMap: React.FC<LiveGisMapProps> = ({
           if (onSelectBus) onSelectBus(b);
         });
 
+        const aiBadgeColor = isInferencing ? '#f59e0b' : b.AI_status === 'ONLINE' ? '#10b981' : '#64748b';
+        const camBadgeColor = b.camera_status === 'ACTIVE' || b.camera_status === 'STREAMING' ? '#10b981' : '#f97316';
+
         marker.bindPopup(`
-          <div style="font-family: ui-monospace, monospace; font-size: 11px; padding: 4px; min-width: 180px;">
-            <div style="font-weight: bold; color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 4px; margin-bottom: 4px;">
-              🚌 ${b.name || b.bus_id}
+          <div style="font-family: ui-monospace, monospace; font-size: 11px; padding: 4px; min-width: 220px; color: #e2e8f0;">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 4px; margin-bottom: 6px;">
+              <span style="font-weight: bold; color: #60a5fa; font-size: 12px;">
+                🚌 ${b.name || b.bus_id}
+              </span>
+              <span style="font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4);">
+                ${b.route_id}
+              </span>
             </div>
-            <div style="color: #cbd5e1; font-size: 10px;">Route: ${b.route_id}</div>
-            <div style="color: #cbd5e1; font-size: 10px;">Speed: <strong style="color: #34d399;">${b.speed_kmh} km/h</strong></div>
-            <div style="color: #cbd5e1; font-size: 10px;">Occupancy: <strong style="color: #f59e0b;">${b.passenger_occupancy_pct || 60}%</strong></div>
-            <div style="color: #94a3b8; font-size: 9px; margin-top: 4px;">GPS: ${b.lat.toFixed(4)}, ${b.lon.toFixed(4)}</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px; margin-bottom: 6px;">
+              <div>Speed: <strong style="color: #34d399;">${Math.round(b.speed_kmh)} km/h</strong></div>
+              <div>Heading: <strong style="color: #cbd5e1;">${Math.round(headingDeg)}°</strong></div>
+              <div>Camera: <strong style="color: ${camBadgeColor};">${b.camera_status || 'ACTIVE'}</strong></div>
+              <div>AI State: <strong style="color: ${aiBadgeColor};">${b.AI_status || 'ONLINE'}</strong></div>
+            </div>
+            <div style="font-size: 9px; color: #94a3b8; border-top: 1px solid #1e293b; padding-top: 4px;">
+              GPS: ${b.lat.toFixed(4)}°N, ${b.lon.toFixed(4)}°E
+            </div>
+            <div style="margin-top: 6px; text-align: center;">
+              <button onclick="window.dispatchEvent(new CustomEvent('inspect-bus-edge-node', { detail: '${b.bus_id}' }))" style="width: 100%; background: #2563eb; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 10px; font-weight: bold; cursor: pointer;">
+                Inspect Edge Node & Hazards →
+              </button>
+            </div>
           </div>
         `);
 

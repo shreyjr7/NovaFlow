@@ -30,6 +30,7 @@ import DemoFlowTheater from "./pages/DemoFlow/DemoFlowTheater";
 import Hazards from "./pages/Hazards/Hazards";
 import WorkOrders from "./pages/WorkOrders/WorkOrders";
 import FleetAnalytics from "./pages/FleetAnalytics/FleetAnalytics";
+import RoadScan from "./pages/Scan/RoadScan";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const AppShell: React.FC = () => {
@@ -61,6 +62,8 @@ const AppShell: React.FC = () => {
               <Route path="/road-defects" element={<RoadDefects />} />
               <Route path="/hazards" element={<Hazards />} />
               <Route path="/ai-hazards" element={<Hazards />} />
+              <Route path="/scan" element={<RoadScan />} />
+              <Route path="/ai-road-scan" element={<RoadScan />} />
               <Route path="/work-orders" element={<WorkOrders />} />
               <Route path="/pwd-work-orders" element={<WorkOrders />} />
               <Route path="/analytics" element={<FleetAnalytics />} />

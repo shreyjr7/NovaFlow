@@ -92,6 +92,16 @@ export const GovernmentHeader: React.FC<GovernmentHeaderProps> = ({
             GIS Dashboard
           </Link>
           <Link
+            to="/scan"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
+              location.pathname === "/scan" || location.pathname === "/ai-road-scan"
+                ? "bg-[#2563EB] text-white shadow-sm ring-1 ring-blue-400/40"
+                : "text-[#8E9BB0] hover:text-white hover:bg-[#202547]"
+            }`}
+          >
+            AI Road Scan
+          </Link>
+          <Link
             to="/hazards"
             className={`px-2.5 py-1 rounded-md text-xs font-semibold transition ${
               location.pathname === "/hazards" || location.pathname === "/road-defects"

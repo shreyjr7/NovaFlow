@@ -8,7 +8,7 @@ import {
   Map, AlertTriangle, Wrench, BarChart3, Bus, ShieldCheck,
   Activity, ArrowRight, ArrowUpRight, CheckCircle2, Clock,
   FileText, Download, Layers, ShieldAlert, Cpu, Radio,
-  Droplet, Eye, Users, ChevronRight, X
+  Droplet, Eye, Users, ChevronRight, Video, X
 } from "lucide-react";
 
 export const Home: React.FC = () => {
@@ -72,6 +72,14 @@ export const Home: React.FC = () => {
               <Map className="w-4 h-4" />
               <span>Launch Live GIS Map</span>
               <ArrowRight className="w-4 h-4 ml-0.5" />
+            </button>
+
+            <button
+              onClick={() => navigate("/scan")}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1E293B] hover:bg-[#2D3A6E] text-[#93C5FD] hover:text-white text-sm font-semibold transition border border-[#3B82F6]/40 shadow-sm"
+            >
+              <Video className="w-4 h-4 text-[#60A5FA]" />
+              <span>AI Road Scan</span>
             </button>
 
             <button

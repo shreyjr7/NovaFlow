@@ -5,7 +5,7 @@ import {
   MapPin, Wrench, Bus, TrafficCone, Flame, AlertTriangle,
   TrendingUp, Users, Camera, Navigation, Activity, FileText,
   Cpu, Shield, HardDrive, ShieldCheck, ShieldAlert, CheckCircle2,
-  ChevronLeft, ChevronRight, LayoutDashboard, X
+  ChevronLeft, ChevronRight, LayoutDashboard, Video, X
 } from "lucide-react";
 
 interface NavGroup {
@@ -25,6 +25,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { name: "Home Dashboard", path: "/", icon: LayoutDashboard, color: "text-slate-200" },
       { name: "Live GIS Command", path: "/gis", icon: MapPin, badge: "LIVE", color: "text-amber-400" },
+      { name: "AI Road Scan", path: "/scan", icon: Video, badge: "NEW", color: "text-blue-400" },
       { name: "AI Hazard Detections", path: "/hazards", icon: AlertTriangle, badge: "AI", color: "text-rose-400" },
       { name: "PWD Work Orders", path: "/work-orders", icon: Wrench, badge: "PWD", color: "text-sky-400" },
       { name: "Fleet Analytics", path: "/analytics", icon: TrendingUp, badge: "TREND", color: "text-indigo-400" },

@@ -1,5 +1,14 @@
 """FastAPI entry point for NovaFlow Transport backend."""
 
+import os
+import sys
+from pathlib import Path
+
+# Ensure edge package directory is resolvable
+_edge_src = Path(__file__).resolve().parent.parent.parent / "edge" / "src"
+if _edge_src.exists() and str(_edge_src) not in sys.path:
+    sys.path.insert(0, str(_edge_src))
+
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,6 +49,8 @@ from .routers.demo_flow import router as demo_flow_router
 from .routers.buses_api import router as buses_api_router
 from .routers.routes_api import router as routes_api_router
 from .routers.analytics_api import router as analytics_api_router
+from .routers.analyze import router as analyze_router
+from .routers.hazards_api import router as hazards_router
 from .services.demo_seeder_service import get_demo_seeder_service
 from .services.event_processor import get_event_processor
 
@@ -96,6 +107,9 @@ app.include_router(ai_models_router, prefix="/api/v1/ai-models", tags=["ai-model
 app.include_router(testing_framework_router, prefix="/api/v1/testing", tags=["testing"])
 app.include_router(demo_environment_router, prefix="/api/v1/demo", tags=["demo-environment"])
 app.include_router(demo_flow_router, prefix="/api/v1/demo-flow", tags=["demo-flow"])
+app.include_router(analyze_router, prefix="/api/v1", tags=["AI Road Scan & Vision Engine"])
+app.include_router(analyze_router, prefix="/api", tags=["AI Road Scan Root"])
+app.include_router(hazards_router, tags=["Multi-Bus Road Hazards"])
 
 # ── Step 24 Basic Structure: Root-level & Versioned Core API Endpoints ──────
 app.include_router(events.router, prefix="/events", tags=["events-root"])

@@ -2,6 +2,7 @@
 // Full-Screen GIS Command Center (Phase 17)
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { LiveGisMap } from "../../components/LiveGisMap";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
 import adminHierarchyData from "../../data/india_administrative_hierarchy.json";
@@ -11,7 +12,7 @@ import {
   Wrench, Eye, ZoomIn, ZoomOut, Maximize2, Minimize2,
   RefreshCw, MapPin, Clock, Camera, ChevronRight, X,
   FileText, Activity, ArrowUpRight, Flame, Send, ArrowLeft,
-  Radio, Cpu
+  Radio, Cpu, GripHorizontal, RotateCcw, Minus, Square, Move
 } from "lucide-react";
 
 // ── Layer & Filter Definitions ───────────────────────────────────────────────
@@ -30,6 +31,7 @@ export interface GisEventItem {
   id: string;
   event_id: string;
   event_type: string;
+  category?: string;
   layer: string;
   confidence: number;
   bus_id: string;
@@ -44,23 +46,48 @@ export interface GisEventItem {
   };
   district: string;
   severity: "LOW" | "MEDIUM" | "HIGH" | "SEVERE";
-  status: "ACTIVE" | "CONFIRMED" | "DISMISSED" | "ESCALATED" | "TICKET_CREATED";
+  status: "ACTIVE" | "CONFIRMED" | "DISMISSED" | "ESCALATED" | "TICKET_CREATED" | "UNDER_REPAIR" | "RESOLVED" | "UNVERIFIED";
   evidence_image_b64?: string;
+  original_evidence_path?: string;
+  annotated_evidence_path?: string;
+  thumbnail_path?: string;
+  source_video?: string;
+  condition_type?: "DIRECT" | "POTENTIAL";
+  condition_label?: string;
+  is_derived?: boolean;
+  maintenance_ticket_status?: string;
+  frame_number?: number;
+  track_id?: number;
   evidence_clip_url?: string;
   ticket_id?: string;
+  persistent_hazard_id?: string;
+  independent_buses_count?: number;
+  contributing_buses?: string | string[];
+  persistence_badge?: string;
+  last_detected_at?: string;
+  ai_confidence?: number;
+  observation_count?: number;
   details?: Record<string, any>;
 }
 
 export interface BusTelemetry {
   bus_id: string;
   route_id: string;
-  name: string;
+  name?: string;
   lat: number;
   lon: number;
+  latitude?: number;
+  longitude?: number;
   bearing_deg: number;
+  heading?: number;
   speed_kmh: number;
+  speed?: number;
   status: string;
-  passenger_load_pct: number;
+  passenger_load_pct?: number;
+  timestamp?: string;
+  camera_status?: string;
+  AI_status?: string;
+  connection_status?: string;
 }
 
 export function normalizeGisEvent(raw: any): GisEventItem {
@@ -93,12 +120,12 @@ export function normalizeGisEvent(raw: any): GisEventItem {
   let layer = p.layer;
   if (!layer) {
     if (event_type.includes("POTHOLE")) layer = "potholes";
-    else if (event_type.includes("DAMAGE")) layer = "road_damage";
+    else if (event_type.includes("DAMAGE") || event_type.includes("CRACK") || event_type.includes("DEBRIS")) layer = "road_damage";
     else if (event_type.includes("WATERLOG")) layer = "waterlogging";
     else if (event_type.includes("SIGN")) layer = "missing_signs";
     else if (event_type.includes("DIVIDER")) layer = "missing_dividers";
     else if (event_type.includes("ZEBRA")) layer = "zebra_crossing_issues";
-    else if (event_type.includes("CONGESTION")) layer = "traffic_congestion";
+    else if (event_type.includes("CONGESTION") || event_type.includes("CAR") || event_type.includes("BUS") || event_type.includes("TRUCK")) layer = "traffic_congestion";
     else if (event_type.includes("INCIDENT")) layer = "incidents";
     else if (event_type.includes("PEDESTRIAN")) layer = "pedestrian_risk";
     else if (event_type.includes("ANPR") || event_type.includes("PLATE") || event_type.includes("INTRUSION")) layer = "anpr_violations";
@@ -112,12 +139,31 @@ export function normalizeGisEvent(raw: any): GisEventItem {
   const statRaw = String(p.status || "ACTIVE").toUpperCase();
   const status = (["ACTIVE", "CONFIRMED", "DISMISSED", "ESCALATED", "TICKET_CREATED", "UNDER_REPAIR", "RESOLVED", "UNVERIFIED"].includes(statRaw)
     ? statRaw
-    : "ACTIVE") as any;
+    : statRaw === "IN_REPAIR" ? "UNDER_REPAIR" : "ACTIVE") as any;
+
+  const category = p.category || (
+    ["potholes", "road_damage", "missing_signs", "missing_dividers", "zebra_crossing_issues"].includes(layer)
+      ? "ROAD_DAMAGE"
+      : layer === "waterlogging"
+      ? "WATERLOGGING"
+      : layer === "traffic_congestion"
+      ? "TRAFFIC"
+      : layer === "pedestrian_risk"
+      ? "PEDESTRIAN_RISK"
+      : layer === "incidents"
+      ? "INCIDENT"
+      : layer === "anpr_violations"
+      ? "ANPR"
+      : "ROAD_DAMAGE"
+  );
+
+  const condType = p.condition_type || (layer === "traffic_congestion" || layer === "pedestrian_risk" || layer === "missing_signs" || layer === "missing_dividers" || layer === "incidents" ? "POTENTIAL" : "DIRECT");
 
   return {
     id: String(p.id || p.event_id || p.eventId || `ev_${Math.random().toString(36).slice(2, 8)}`),
     event_id: String(p.event_id || p.eventId || p.id || "EV-0000"),
     event_type,
+    category,
     layer,
     confidence: typeof p.confidence === "number" ? p.confidence : 0.9,
     bus_id: String(p.bus_id || p.busId || "BUS_001"),
@@ -133,9 +179,26 @@ export function normalizeGisEvent(raw: any): GisEventItem {
     district: String(p.district || "Metropolitan"),
     severity,
     status,
-    evidence_image_b64: p.evidence_image_b64,
+    evidence_image_b64: p.evidence_image_b64 || p.annotated_evidence_path || p.evidence_path,
+    original_evidence_path: p.original_evidence_path || p.evidence_path,
+    annotated_evidence_path: p.annotated_evidence_path || p.evidence_image_b64 || p.evidence_path,
+    thumbnail_path: p.thumbnail_path,
+    source_video: p.source_video || p.video_file_name || "Live Dashcam Stream",
+    condition_type: condType,
+    condition_label: p.condition_label,
+    is_derived: Boolean(p.is_derived || condType === "POTENTIAL"),
+    maintenance_ticket_status: p.maintenance_ticket_status || (p.ticket_id ? "ASSIGNED" : undefined),
+    frame_number: p.frame_number,
+    track_id: p.track_id,
     evidence_clip_url: p.evidence_clip_url,
     ticket_id: p.ticket_id,
+    persistent_hazard_id: p.persistent_hazard_id,
+    independent_buses_count: p.independent_buses_count,
+    contributing_buses: p.contributing_buses,
+    persistence_badge: p.persistence_badge,
+    last_detected_at: p.last_detected_at,
+    ai_confidence: typeof p.ai_confidence === "number" ? p.ai_confidence : (typeof p.confidence === "number" ? p.confidence : 0.9),
+    observation_count: p.observation_count,
     details: p.details || {},
   };
 }
@@ -328,6 +391,9 @@ export const GisCommandCenter: React.FC = () => {
   const [events, setEvents] = useState<GisEventItem[]>(SEED_EVENTS);
   const [buses, setBuses] = useState<BusTelemetry[]>(SEED_BUSES);
   const [selectedEvent, setSelectedEvent] = useState<GisEventItem | null>(null);
+  const [selectedBus, setSelectedBus] = useState<BusTelemetry | null>(null);
+  const [busDetailData, setBusDetailData] = useState<any | null>(null);
+  const [drawerEvidenceMode, setDrawerEvidenceMode] = useState<"ANNOTATED" | "ORIGINAL">("ANNOTATED");
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [mapViewMode, setMapViewMode] = useState<"REAL_MAP" | "VECTOR">("REAL_MAP");
@@ -359,6 +425,85 @@ export const GisCommandCenter: React.FC = () => {
   // Mobile responsiveness states (<lg)
   const [mobileGisTab, setMobileGisTab] = useState<"MAP" | "INTEL">("MAP");
   const [mobileLayersOpen, setMobileLayersOpen] = useState<boolean>(false);
+
+  // ── Movable / Draggable Floating Windows & Controls State ────────────────
+  const [showLayersPanel, setShowLayersPanel] = useState<boolean>(false);
+  const [isLayersMinimized, setIsLayersMinimized] = useState<boolean>(false);
+  const [layersPos, setLayersPos] = useState<{ x: number; y: number }>({ x: 16, y: 70 });
+
+  const [showIntelPanel, setShowIntelPanel] = useState<boolean>(false);
+  const [isIntelMinimized, setIsIntelMinimized] = useState<boolean>(false);
+  const [intelPos, setIntelPos] = useState<{ x: number; y: number }>(() => ({
+    x: typeof window !== "undefined" ? Math.max(16, window.innerWidth - 410) : 800,
+    y: 70,
+  }));
+
+  const [showFiltersBar, setShowFiltersBar] = useState<boolean>(true);
+  const [isFilterBarMinimized, setIsFilterBarMinimized] = useState<boolean>(false);
+  const [filterBarPos, setFilterBarPos] = useState<{ x: number; y: number }>(() => ({
+    x: 16,
+    y: 56,
+  }));
+  const [activeWindowZ, setActiveWindowZ] = useState<"LAYERS" | "INTEL" | "FILTERS">("FILTERS");
+
+  // Reset positions to default corners
+  const resetLayersPos = () => setLayersPos({ x: 16, y: 70 });
+  const resetIntelPos = () => setIntelPos({
+    x: typeof window !== "undefined" ? Math.max(16, window.innerWidth - 410) : 800,
+    y: 70,
+  });
+  const resetFilterBarPos = () => setFilterBarPos({ x: 16, y: 56 });
+
+  // Generic Drag Handler using Pointer Events
+  const handlePanelDragStart = (
+    e: React.PointerEvent<HTMLDivElement>,
+    panel: "LAYERS" | "INTEL" | "FILTERS"
+  ) => {
+    if ((e.target as HTMLElement).closest("button, input, select, a, label")) {
+      return;
+    }
+    e.preventDefault();
+    setActiveWindowZ(panel);
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const currentPos = panel === "LAYERS" ? layersPos : panel === "INTEL" ? intelPos : filterBarPos;
+    const setPos = panel === "LAYERS" ? setLayersPos : panel === "INTEL" ? setIntelPos : setFilterBarPos;
+    const initialX = currentPos.x;
+    const initialY = currentPos.y;
+    const panelWidth = panel === "LAYERS" ? 280 : panel === "INTEL" ? 390 : 720;
+
+    const target = e.currentTarget;
+    try {
+      target.setPointerCapture(e.pointerId);
+    } catch {}
+
+    const handlePointerMove = (moveEv: PointerEvent) => {
+      const dx = moveEv.clientX - startX;
+      const dy = moveEv.clientY - startY;
+
+      const maxX = Math.max(10, window.innerWidth - panelWidth - 10);
+      const maxY = Math.max(10, window.innerHeight - 100);
+
+      const nextX = Math.max(10, Math.min(maxX, initialX + dx));
+      const nextY = Math.max(10, Math.min(maxY, initialY + dy));
+
+      setPos({ x: nextX, y: nextY });
+    };
+
+    const handlePointerUp = (upEv: PointerEvent) => {
+      try {
+        target.releasePointerCapture(upEv.pointerId);
+      } catch {}
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -404,6 +549,160 @@ export const GisCommandCenter: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Fetch live buses from /api/v1/buses (Phase 8: Connected Transit Edge Nodes)
+  useEffect(() => {
+    const fetchBusesData = async () => {
+      try {
+        const res = await fetch("/api/v1/buses");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const mapped: BusTelemetry[] = data.map((b: any) => ({
+              bus_id: b.bus_id,
+              route_id: b.route_id || "R-01",
+              name: b.name || `Connected Bus ${b.bus_id}`,
+              lat: b.latitude ?? b.current_lat ?? b.lat ?? 28.6139,
+              lon: b.longitude ?? b.current_lon ?? b.lon ?? 77.2090,
+              latitude: b.latitude ?? b.current_lat,
+              longitude: b.longitude ?? b.current_lon,
+              bearing_deg: b.heading ?? b.bearing_deg ?? 0,
+              heading: b.heading ?? b.bearing_deg ?? 0,
+              speed_kmh: b.speed ?? b.speed_kmh ?? 0,
+              speed: b.speed ?? b.speed_kmh ?? 0,
+              status: b.status || "LIVE",
+              passenger_load_pct: b.passenger_load_pct ?? 62,
+              timestamp: b.timestamp,
+              camera_status: b.camera_status || "ACTIVE",
+              AI_status: b.AI_status || "ONLINE",
+              connection_status: b.connection_status || "CONNECTED",
+            }));
+            setBuses(mapped);
+          }
+        }
+      } catch (err) {
+        console.debug("Bus fetch error:", err);
+      }
+    };
+    fetchBusesData();
+    const bTimer = setInterval(fetchBusesData, 6000);
+    return () => clearInterval(bTimer);
+  }, []);
+
+  // Listen to inspect-bus-edge-node custom events from map marker popups
+  useEffect(() => {
+    const handleInspectBus = (e: any) => {
+      const busId = e.detail;
+      const found = buses.find((b) => b.bus_id === busId);
+      if (found) {
+        setSelectedBus(found);
+        setSelectedEvent(null);
+        setIsDetailsOpen(true);
+        setMapFlyToTarget({ lat: found.lat, lon: found.lon, zoom: 16, label: found.bus_id });
+      }
+    };
+    window.addEventListener("inspect-bus-edge-node", handleInspectBus);
+    return () => window.removeEventListener("inspect-bus-edge-node", handleInspectBus);
+  }, [buses]);
+
+  // Load detailed telemetry and recent hazards when selectedBus changes
+  useEffect(() => {
+    if (!selectedBus) {
+      setBusDetailData(null);
+      return;
+    }
+    const loadBusDetail = async () => {
+      try {
+        const res = await fetch(`/api/v1/buses/${selectedBus.bus_id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setBusDetailData(data);
+        }
+      } catch (e) {
+        console.debug("Bus detail fetch note:", e);
+      }
+    };
+    loadBusDetail();
+  }, [selectedBus]);
+
+  // Helper to match category filter (comprehensive category & keyword mapping)
+  const matchesCategoryItem = (ev: GisEventItem, targetCategory: string): boolean => {
+    if (!targetCategory || targetCategory === "ALL") return true;
+    const directCat = (ev.category || (ev as any).category || "").toUpperCase();
+    if (directCat === targetCategory.toUpperCase()) return true;
+
+    const evType = String(ev.event_type || "").toUpperCase();
+    const lyr = String(ev.layer || "").toLowerCase();
+
+    if (targetCategory === "ROAD_DAMAGE") {
+      if (["potholes", "road_damage", "missing_signs", "missing_dividers", "zebra_crossing_issues"].includes(lyr)) return true;
+      return ["POTHOLE", "DAMAGE", "CRACK", "DEBRIS", "SIGN", "DIVIDER", "ZEBRA"].some((k) => evType.includes(k));
+    }
+    if (targetCategory === "WATERLOGGING") {
+      if (lyr === "waterlogging") return true;
+      return evType.includes("WATERLOG") || evType.includes("FLOOD") || evType.includes("PUDDLE");
+    }
+    if (targetCategory === "TRAFFIC") {
+      if (lyr === "traffic_congestion") return true;
+      return ["CONGESTION", "TRAFFIC", "BUS", "CAR", "TRUCK", "MOTORCYCLE", "VEHICLE"].some((k) => evType.includes(k));
+    }
+    if (targetCategory === "PEDESTRIAN_RISK") {
+      if (lyr === "pedestrian_risk") return true;
+      return evType.includes("PEDESTRIAN");
+    }
+    if (targetCategory === "INCIDENT") {
+      if (lyr === "incidents") return true;
+      return evType.includes("INCIDENT") || evType.includes("COLLISION") || evType.includes("ACCIDENT");
+    }
+    if (targetCategory === "ANPR") {
+      if (lyr === "anpr_violations") return true;
+      return evType.includes("ANPR") || evType.includes("PLATE") || evType.includes("INTRUSION");
+    }
+    return false;
+  };
+
+  // Helper to match date filter
+  const matchesDateFilter = (timestampStr: string | undefined, dateFilter: string): boolean => {
+    if (!dateFilter || dateFilter === "ALL") return true;
+    if (!timestampStr) return true;
+    const evDate = new Date(timestampStr);
+    if (isNaN(evDate.getTime())) return true;
+    const now = new Date();
+    const diffHours = (now.getTime() - evDate.getTime()) / (1000 * 60 * 60);
+
+    if (dateFilter === "TODAY") {
+      return evDate.toDateString() === now.toDateString() || Math.abs(diffHours) <= 24;
+    }
+    if (dateFilter === "24H") {
+      return Math.abs(diffHours) <= 24;
+    }
+    if (dateFilter === "7D") {
+      return Math.abs(diffHours) <= 168;
+    }
+    return true;
+  };
+
+  // Live Counts per Category for Instant Visual Feedback on Pills
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      ALL: events.length,
+      ROAD_DAMAGE: 0,
+      WATERLOGGING: 0,
+      TRAFFIC: 0,
+      PEDESTRIAN_RISK: 0,
+      INCIDENT: 0,
+      ANPR: 0,
+    };
+    events.forEach((ev) => {
+      if (matchesCategoryItem(ev, "ROAD_DAMAGE")) counts.ROAD_DAMAGE++;
+      if (matchesCategoryItem(ev, "WATERLOGGING")) counts.WATERLOGGING++;
+      if (matchesCategoryItem(ev, "TRAFFIC")) counts.TRAFFIC++;
+      if (matchesCategoryItem(ev, "PEDESTRIAN_RISK")) counts.PEDESTRIAN_RISK++;
+      if (matchesCategoryItem(ev, "INCIDENT")) counts.INCIDENT++;
+      if (matchesCategoryItem(ev, "ANPR")) counts.ANPR++;
+    });
+    return counts;
+  }, [events]);
+
   // ── Multi-Dimensional Filter Pipeline (Step 3) ───────────────────────────
   const filteredEvents = useMemo(() => {
     return events.filter((ev) => {
@@ -412,14 +711,8 @@ export const GisCommandCenter: React.FC = () => {
       if (layerConfig && !layerConfig.visible) return false;
 
       // 2. Step 3: Category Quick Filter
-      const evT = (ev.event_type || "").toUpperCase();
       if (filterCategory !== "ALL") {
-        if (filterCategory === "ROAD_DAMAGE" && !["POTHOLE", "DAMAGED_ROAD", "MISSING_TRAFFIC_SIGN", "MISSING_ROAD_DIVIDER", "MISSING_ZEBRA_CROSSING"].includes(evT)) return false;
-        if (filterCategory === "WATERLOGGING" && !evT.includes("WATERLOG")) return false;
-        if (filterCategory === "TRAFFIC" && !evT.includes("CONGESTION")) return false;
-        if (filterCategory === "PEDESTRIAN_RISK" && !evT.includes("PEDESTRIAN")) return false;
-        if (filterCategory === "INCIDENT" && !evT.includes("INCIDENT")) return false;
-        if (filterCategory === "ANPR" && !(evT.includes("ANPR") || evT.includes("PLATE") || evT.includes("INTRUSION"))) return false;
+        if (!matchesCategoryItem(ev, filterCategory)) return false;
       }
 
       // 3. Event Type filter
@@ -429,7 +722,12 @@ export const GisCommandCenter: React.FC = () => {
       if (filterSeverity !== "ALL" && ev.severity !== filterSeverity) return false;
 
       // 5. District filter
-      if (filterDistrict !== "ALL" && ev.district !== filterDistrict) return false;
+      if (selectedDistrict !== "ALL") {
+        const dTarget = selectedDistrict.toLowerCase();
+        const evDist = String(ev.district || "").toLowerCase();
+        const evAddr = String(ev.gps?.address || ev.gps?.road_segment || "").toLowerCase();
+        if (!evDist.includes(dTarget) && !evAddr.includes(dTarget)) return false;
+      }
 
       // 6. Bus filter
       if (filterBus !== "ALL" && ev.bus_id !== filterBus) return false;
@@ -437,15 +735,24 @@ export const GisCommandCenter: React.FC = () => {
       // 7. Route filter
       if (filterRoute !== "ALL" && (ev as any).route_id !== filterRoute) return false;
 
-      // 8. Confidence threshold
+      // 8. Date filter
+      if (!matchesDateFilter(ev.timestamp, filterDate)) return false;
+
+      // 9. Confidence threshold
       if (filterMinConfidence > 0 && (ev.confidence || 0) < filterMinConfidence) return false;
 
-      // 9. Status filter
-      if (filterStatus !== "ALL" && ev.status !== filterStatus) return false;
+      // 10. Status filter
+      if (filterStatus !== "ALL") {
+        const evStat = (ev.status || "").toUpperCase();
+        const targetStat = filterStatus.toUpperCase();
+        if (evStat !== targetStat && !(targetStat === "UNDER_REPAIR" && evStat === "IN_REPAIR")) {
+          return false;
+        }
+      }
 
       return true;
     });
-  }, [events, layers, filterCategory, filterType, filterSeverity, filterDistrict, filterBus, filterRoute, filterMinConfidence, filterStatus]);
+  }, [events, layers, filterCategory, filterType, filterSeverity, selectedDistrict, filterBus, filterRoute, filterDate, filterMinConfidence, filterStatus]);
 
   // ── Spatial Clustering at Lower Zoom Levels ─────────────────────────────────
   const clusters = useMemo(() => {
@@ -732,43 +1039,141 @@ export const GisCommandCenter: React.FC = () => {
       {/* ── WORKSPACE BODY: SIDEBARS + MAP CANVAS ────────────────────────────── */}
       <div className="flex-1 flex relative overflow-hidden">
         {/* ── LEFT FLOATING PANEL: MAP LAYERS ────────────────────── */}
-        <aside className={`absolute top-3 left-3 z-30 w-64 max-w-[calc(100vw-24px)] bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex-col max-h-[calc(100%-24px)] overflow-hidden text-slate-100 transition-all ${
-          mobileLayersOpen ? "flex" : "hidden sm:flex"
-        }`}>
-          {/* Header */}
-          <div className="p-3 border-b border-[#232746] flex items-center justify-between bg-[#16192E]">
-            <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-white">
-              <Layers size={14} className="text-amber-400" />
-              <span>Map Layers</span>
-              <span className="text-[10px] text-slate-400 font-mono font-normal">
-                ({layers.filter((l) => l.visible).length}/{layers.length})
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold">
-              <button
-                onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: true })))}
-                className="text-amber-400 hover:text-amber-300 hover:underline cursor-pointer"
-              >
-                All
-              </button>
-              <span className="text-slate-600">/</span>
-              <button
-                onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: false })))}
-                className="text-slate-400 hover:text-slate-200 hover:underline cursor-pointer"
-              >
-                None
-              </button>
-              <button
-                onClick={() => setMobileLayersOpen(false)}
-                className="sm:hidden ml-1 p-1 text-slate-400 hover:text-white rounded cursor-pointer"
-                title="Close Layers"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          </div>
+        {/* ── TOP MAP HUD QUICK ACCESS TOOLBAR ──────────────────────── */}
+        <div style={{ zIndex: 1300 }} className="absolute top-3 left-3 z-[1300] flex flex-wrap items-center gap-2 pointer-events-auto">
+          {/* Toggle Map Layers Button */}
+          <button
+            onClick={() => {
+              setShowLayersPanel((v) => !v);
+              setActiveWindowZ("LAYERS");
+            }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xl border backdrop-blur-md cursor-pointer ${
+              showLayersPanel
+                ? "bg-[#C85A17] text-white border-amber-500 shadow-orange-900/40"
+                : "bg-[#131628]/90 text-slate-300 border-[#2B325E] hover:text-white hover:bg-[#1E2342]"
+            }`}
+            title="Open / Close Map Layers panel"
+          >
+            <Layers size={14} className={showLayersPanel ? "text-white" : "text-amber-400"} />
+            <span>Map Layers</span>
+            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-amber-300">
+              {layers.filter((l) => l.visible).length}/{layers.length}
+            </span>
+          </button>
 
-          {/* Grouped Layer List */}
+          {/* Toggle Fleet & Intel Sidebar Button */}
+          <button
+            onClick={() => {
+              setShowIntelPanel((v) => !v);
+              setActiveWindowZ("INTEL");
+            }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xl border backdrop-blur-md cursor-pointer ${
+              showIntelPanel
+                ? "bg-[#2563EB] text-white border-blue-400 shadow-blue-900/40"
+                : "bg-[#131628]/90 text-slate-300 border-[#2B325E] hover:text-white hover:bg-[#1E2342]"
+            }`}
+            title="Open / Close Fleet & Intelligence Feed"
+          >
+            <Activity size={14} className={showIntelPanel ? "text-white" : "text-cyan-400"} />
+            <span>Fleet & Intel</span>
+            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/40 text-cyan-300">
+              {filteredEvents.length} Plotted
+            </span>
+          </button>
+
+          {/* Toggle Category Filters Bar Button */}
+          <button
+            onClick={() => {
+              setShowFiltersBar((v) => {
+                const next = !v;
+                if (next) setActiveWindowZ("FILTERS");
+                return next;
+              });
+            }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xl border backdrop-blur-md cursor-pointer ${
+              showFiltersBar
+                ? "bg-[#1E2342] text-white border-amber-500/60 shadow-amber-900/40"
+                : "bg-[#131628]/90 text-slate-300 border-[#2B325E] hover:text-white hover:bg-[#1E2342]"
+            }`}
+            title="Show / Hide Category Quick Filters"
+          >
+            <Filter size={14} className="text-amber-400" />
+            <span>Categories & Filters</span>
+            {filterCategory !== "ALL" && (
+              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-amber-500 text-black font-extrabold">
+                {filterCategory}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* ── MOVABLE / DRAGGABLE FLOATING PANEL: MAP LAYERS (Image 2) ────────────────────── */}
+        {showLayersPanel && (
+          <aside
+            style={{
+              left: `${layersPos.x}px`,
+              top: `${layersPos.y}px`,
+              zIndex: activeWindowZ === "LAYERS" ? 1200 : 1040,
+            }}
+            onPointerDown={() => setActiveWindowZ("LAYERS")}
+            className="absolute w-72 max-w-[calc(100vw-24px)] bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex flex-col overflow-hidden text-slate-100 transition-shadow animate-in fade-in zoom-in-95 duration-150 select-none"
+          >
+            {/* Movable Window Header */}
+            <div
+              onPointerDown={(e) => handlePanelDragStart(e, "LAYERS")}
+              className="p-2.5 border-b border-[#232746] flex items-center justify-between bg-[#16192E] cursor-grab active:cursor-grabbing hover:bg-[#1C203B] transition"
+              title="Click and drag to move panel"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-white select-none">
+                <GripHorizontal size={15} className="text-slate-500 hover:text-amber-400" />
+                <Layers size={14} className="text-amber-400" />
+                <span>Map Layers</span>
+                <span className="text-[10px] text-slate-400 font-mono font-normal">
+                  ({layers.filter((l) => l.visible).length}/{layers.length})
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] font-semibold">
+                <button
+                  onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: true })))}
+                  className="px-1 text-amber-400 hover:text-amber-300 hover:underline cursor-pointer"
+                >
+                  All
+                </button>
+                <span className="text-slate-600">/</span>
+                <button
+                  onClick={() => setLayers((prev) => prev.map((l) => ({ ...l, visible: false })))}
+                  className="px-1 text-slate-400 hover:text-slate-200 hover:underline cursor-pointer"
+                >
+                  None
+                </button>
+                <button
+                  onClick={resetLayersPos}
+                  className="p-1 text-slate-400 hover:text-cyan-400 rounded cursor-pointer transition ml-0.5"
+                  title="Reset Position"
+                >
+                  <RotateCcw size={12} />
+                </button>
+                <button
+                  onClick={() => setIsLayersMinimized((v) => !v)}
+                  className="p-1 text-slate-400 hover:text-amber-400 rounded cursor-pointer transition"
+                  title={isLayersMinimized ? "Expand Panel" : "Minimize Panel"}
+                >
+                  {isLayersMinimized ? <Square size={12} /> : <Minus size={12} />}
+                </button>
+                <button
+                  onClick={() => setShowLayersPanel(false)}
+                  className="p-1 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition"
+                  title="Close Layers Panel"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+            </div>
+
+            {/* Window Body (collapsible) */}
+            {!isLayersMinimized && (
+              <div className="flex-1 flex flex-col max-h-[calc(100vh-180px)] overflow-hidden">
+                {/* Grouped Layer List */}
           <div className="flex-1 overflow-y-auto p-2.5 space-y-3 text-xs">
             {/* 🟢 Group 1: PWD Surface Defects */}
             <div className="space-y-1">
@@ -879,6 +1284,52 @@ export const GisCommandCenter: React.FC = () => {
                   </label>
                 ))}
               </div>
+
+              {/* Connected Edge Fleet Node List (Phase 8) */}
+              <div className="mt-2 space-y-1">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-cyan-400 px-1 flex items-center justify-between">
+                  <span>Connected Fleet Nodes</span>
+                  <span className="text-slate-400 font-mono text-[8px]">{buses.length} online</span>
+                </div>
+                <div className="space-y-1 max-h-36 overflow-y-auto pr-0.5">
+                  {buses.map((b) => (
+                    <div
+                      key={b.bus_id}
+                      onClick={() => {
+                        setSelectedBus(b);
+                        setSelectedEvent(null);
+                        setIsDetailsOpen(true);
+                        setShowIntelPanel(true);
+                        setActiveWindowZ("INTEL");
+                        setMapFlyToTarget({ lat: b.lat, lon: b.lon, zoom: 16, label: b.bus_id });
+                      }}
+                      className={`flex items-center justify-between p-1.5 rounded-lg border cursor-pointer text-[10px] transition ${
+                        selectedBus?.bus_id === b.bus_id
+                          ? "bg-blue-900/40 border-blue-500/60 text-white"
+                          : "bg-[#16192E] hover:bg-[#1E2342] border-[#232746] text-slate-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                          b.AI_status === "INFERENCING" ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
+                        }`} />
+                        <span className="font-bold font-mono text-white truncate">{b.bus_id}</span>
+                        <span className="text-[9px] text-slate-400 truncate">({b.route_id})</span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[9px] font-mono font-bold text-cyan-300">{Math.round(b.speed_kmh)} km/h</span>
+                        <span className={`text-[8px] px-1 py-0.2 rounded font-mono ${
+                          b.AI_status === "INFERENCING"
+                            ? "bg-amber-950 text-amber-300 border border-amber-500/40"
+                            : "bg-blue-950 text-blue-300 border border-blue-800/40"
+                        }`}>
+                          {b.AI_status || "ONLINE"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -917,177 +1368,256 @@ export const GisCommandCenter: React.FC = () => {
               </div>
             );
           })()}
-        </aside>
+              </div>
+            )}
+          </aside>
+        )}
 
-        {/* ── TOP FILTER BAR: CATEGORY PILLS & MULTI-DIMENSIONAL FILTERS ─────── */}
-        <div className="absolute top-3 left-3 sm:left-72 right-3 z-20 flex flex-col gap-2 bg-white/95 backdrop-blur-md border border-[#CBD5E1] p-2 sm:p-2.5 rounded-xl shadow-lg text-xs text-[#1F2243] max-h-[35vh] sm:max-h-none overflow-y-auto sm:overflow-visible touch-scroll">
-          {/* Row 1: Category Quick Filters */}
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#4F546F] mr-1 flex items-center gap-1">
-                <Filter size={12} className="text-amber-600" />
-                Categories:
-              </span>
-              {[
-                { id: "ALL", label: "All", icon: "🌐" },
-                { id: "ROAD_DAMAGE", label: "Road Damage", icon: "🕳️" },
-                { id: "WATERLOGGING", label: "Waterlogging", icon: "💧" },
-                { id: "TRAFFIC", label: "Traffic", icon: "🚗" },
-                { id: "PEDESTRIAN_RISK", label: "Pedestrian Risk", icon: "🚸" },
-                { id: "INCIDENT", label: "Incident", icon: "🚨" },
-                { id: "ANPR", label: "ANPR", icon: "📸" },
-              ].map((cat) => {
-                const isActive = filterCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setFilterCategory(cat.id)}
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold transition flex items-center gap-1 ${
-                      isActive
-                        ? "bg-[#1F2243] text-white shadow-sm ring-1 ring-[#1F2243]"
-                        : "bg-[#F1F5F9] text-[#4F546F] hover:text-[#1F2243] hover:bg-[#E2E8F0]"
-                    }`}
-                  >
-                    <span>{cat.icon}</span>
-                    <span>{cat.label}</span>
-                  </button>
-                );
-              })}
+        {/* ── MOVABLE / DRAGGABLE FLOATING PANEL: CATEGORY PILLS & MULTI-DIMENSIONAL FILTERS ─────── */}
+        {showFiltersBar && (
+          <aside
+            style={{
+              left: `${filterBarPos.x}px`,
+              top: `${filterBarPos.y}px`,
+              zIndex: activeWindowZ === "FILTERS" ? 1200 : 1050,
+            }}
+            onPointerDown={() => setActiveWindowZ("FILTERS")}
+            className="absolute max-w-[calc(100vw-24px)] sm:max-w-4xl bg-white/95 backdrop-blur-md border border-[#CBD5E1] rounded-xl shadow-2xl flex flex-col text-xs text-[#1F2243] pointer-events-auto transition-shadow animate-in fade-in zoom-in-95 duration-150 select-none"
+          >
+            {/* Movable Window Header */}
+            <div
+              onPointerDown={(e) => handlePanelDragStart(e, "FILTERS")}
+              className="p-2 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC] rounded-t-xl cursor-grab active:cursor-grabbing hover:bg-[#F1F5F9] transition"
+              title="Click and drag to move filter bar"
+            >
+              <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#1F2243] select-none">
+                <GripHorizontal size={15} className="text-slate-400 hover:text-amber-600" />
+                <Filter size={13} className="text-amber-600" />
+                <span>Categories & Filters</span>
+                {filterCategory !== "ALL" && (
+                  <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-500 text-black font-extrabold">
+                    {filterCategory}
+                  </span>
+                )}
+                <span className="text-[10px] text-slate-500 font-mono font-normal hidden sm:inline">
+                  ({filteredEvents.length} active events)
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] font-semibold">
+                <button
+                  type="button"
+                  onClick={resetFilterBarPos}
+                  className="p-1 text-slate-400 hover:text-cyan-600 rounded cursor-pointer transition"
+                  title="Reset Filter Bar Position"
+                >
+                  <RotateCcw size={12} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsFilterBarMinimized((v) => !v)}
+                  className="p-1 text-slate-400 hover:text-amber-600 rounded cursor-pointer transition"
+                  title={isFilterBarMinimized ? "Expand Filter Bar" : "Minimize Filter Bar"}
+                >
+                  {isFilterBarMinimized ? <Square size={12} /> : <Minus size={12} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFiltersBar(false)}
+                  className="p-1 text-slate-400 hover:text-rose-600 rounded cursor-pointer transition"
+                  title="Close Filter Bar"
+                >
+                  <X size={13} />
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Row 2: Multi-Dimensional Dropdowns */}
-          <div className="flex flex-wrap items-center gap-2 pt-0.5">
-            {/* Severity Filter */}
-            <select
-              value={filterSeverity}
-              onChange={(e) => setFilterSeverity(e.target.value)}
-              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
-            >
-              <option value="ALL">All Severities</option>
-              <option value="LOW">Low Severity</option>
-              <option value="MEDIUM">Medium Severity</option>
-              <option value="HIGH">High Severity</option>
-              <option value="SEVERE">Severe Hazard</option>
-            </select>
+            {/* Window Body (collapsible) */}
+            {!isFilterBarMinimized && (
+              <div className="p-2 sm:p-2.5 flex flex-col gap-2 max-h-[50vh] sm:max-h-none overflow-y-auto sm:overflow-visible">
+                {/* Row 1: Category Quick Filters */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#4F546F] mr-1 flex items-center gap-1">
+                      <Filter size={12} className="text-amber-600" />
+                      Categories:
+                    </span>
+                    {[
+                      { id: "ALL", label: "All", icon: "🌐" },
+                      { id: "ROAD_DAMAGE", label: "Road Damage", icon: "🕳️" },
+                      { id: "WATERLOGGING", label: "Waterlogging", icon: "💧" },
+                      { id: "TRAFFIC", label: "Traffic", icon: "🚗" },
+                      { id: "PEDESTRIAN_RISK", label: "Pedestrian Risk", icon: "🚸" },
+                      { id: "INCIDENT", label: "Incident", icon: "🚨" },
+                      { id: "ANPR", label: "ANPR", icon: "📸" },
+                    ].map((cat) => {
+                      const isActive = filterCategory === cat.id;
+                      const count = categoryCounts[cat.id] ?? 0;
+                      return (
+                        <button
+                          type="button"
+                          key={cat.id}
+                          onClick={() => setFilterCategory(cat.id)}
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none ${
+                            isActive
+                              ? "bg-[#1F2243] text-white shadow-sm ring-1 ring-[#1F2243]"
+                              : "bg-[#F1F5F9] text-[#4F546F] hover:text-[#1F2243] hover:bg-[#E2E8F0]"
+                          }`}
+                        >
+                          <span>{cat.icon}</span>
+                          <span>{cat.label}</span>
+                          <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
+                            isActive ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
+                          }`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-            {/* Status Filter */}
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="UNVERIFIED">⏳ UNVERIFIED</option>
-              <option value="CONFIRMED">✓ CONFIRMED</option>
-              <option value="UNDER_REPAIR">🔧 UNDER REPAIR</option>
-              <option value="RESOLVED">✓ RESOLVED</option>
-              <option value="DISMISSED">✕ DISMISSED</option>
-            </select>
+                {/* Row 2: Multi-Dimensional Dropdowns */}
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  {/* Severity Filter */}
+                  <select
+                    value={filterSeverity}
+                    onChange={(e) => setFilterSeverity(e.target.value)}
+                    className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
+                  >
+                    <option value="ALL">All Severities</option>
+                    <option value="LOW">Low Severity</option>
+                    <option value="MEDIUM">Medium Severity</option>
+                    <option value="HIGH">High Severity</option>
+                    <option value="SEVERE">Severe Hazard</option>
+                  </select>
 
-            {/* Date Filter */}
-            <select
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
-            >
-              <option value="ALL">All Dates</option>
-              <option value="TODAY">Today Only</option>
-              <option value="24H">Past 24 Hours</option>
-              <option value="7D">Past 7 Days</option>
-            </select>
+                  {/* Status Filter */}
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
+                  >
+                    <option value="ALL">All Statuses</option>
+                    <option value="ACTIVE">⚡ Active / Live</option>
+                    <option value="CONFIRMED">✓ Confirmed</option>
+                    <option value="ESCALATED">🚨 Escalated</option>
+                    <option value="UNDER_REPAIR">🔧 Under Repair</option>
+                    <option value="RESOLVED">✓ Resolved</option>
+                    <option value="UNVERIFIED">⏳ Unverified</option>
+                    <option value="DISMISSED">✕ Dismissed</option>
+                  </select>
 
-            {/* Confidence Filter */}
-            <select
-              value={filterMinConfidence}
-              onChange={(e) => setFilterMinConfidence(Number(e.target.value))}
-              className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500"
-            >
-              <option value={0}>All Confidences</option>
-              <option value={0.80}>≥ 80% Confidence</option>
-              <option value={0.85}>≥ 85% Confidence</option>
-              <option value={0.90}>≥ 90% Confidence</option>
-              <option value={0.95}>≥ 95% Confidence</option>
-            </select>
+                  {/* Date Filter */}
+                  <select
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
+                  >
+                    <option value="ALL">All Dates</option>
+                    <option value="TODAY">Today Only</option>
+                    <option value="24H">Past 24 Hours</option>
+                    <option value="7D">Past 7 Days</option>
+                  </select>
 
-            {/* State Selector */}
-            <select
-              value={selectedState}
-              onChange={(e) => {
-                const newState = e.target.value;
-                setSelectedState(newState);
-                setSelectedDistrict("ALL");
-                setSelectedTehsil("ALL");
-                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === newState);
-                if (stateObj && stateObj.districts.length > 0) {
-                  const firstDist = stateObj.districts[0];
-                  setMapFlyToTarget({ lat: firstDist.lat, lon: firstDist.lon, zoom: 12, label: `${stateObj.state} • Capital: ${stateObj.capital}` });
-                }
-              }}
-              className="bg-[#F8FAFC] border border-blue-400 rounded-md px-2 py-1 text-xs text-blue-800 font-semibold outline-none cursor-pointer"
-              title="Select State & Capital"
-            >
-              {adminHierarchyData.all_states.map((st: any) => (
-                <option key={st.state} value={st.state}>
-                  🏛️ {st.state} (Cap: {st.capital})
-                </option>
-              ))}
-            </select>
+                  {/* Confidence Filter */}
+                  <select
+                    value={filterMinConfidence}
+                    onChange={(e) => setFilterMinConfidence(Number(e.target.value))}
+                    className="bg-[#F8FAFC] border border-[#CBD5E1] rounded-md px-2 py-1 text-xs text-[#1F2243] font-medium outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
+                  >
+                    <option value={0}>All Confidences</option>
+                    <option value={0.80}>≥ 80% Confidence</option>
+                    <option value={0.85}>≥ 85% Confidence</option>
+                    <option value={0.90}>≥ 90% Confidence</option>
+                    <option value={0.95}>≥ 95% Confidence</option>
+                  </select>
 
-            {/* District Selector */}
-            <select
-              value={selectedDistrict}
-              onChange={(e) => {
-                const newDist = e.target.value;
-                setSelectedDistrict(newDist);
-                setSelectedTehsil("ALL");
-                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-                if (stateObj) {
-                  const distObj = stateObj.districts.find((d: any) => d.name === newDist);
-                  if (distObj) {
-                    setMapFlyToTarget({ lat: distObj.lat, lon: distObj.lon, zoom: 13, label: `${distObj.name} District, ${stateObj.state}` });
-                  }
-                }
-              }}
-              className="bg-[#F8FAFC] border border-emerald-400 rounded-md px-2 py-1 text-xs text-emerald-800 font-semibold outline-none cursor-pointer"
-              title="Select District"
-            >
-              <option value="ALL">All Districts</option>
-              {(() => {
-                const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
-                return stateObj ? stateObj.districts.map((d: any) => (
-                  <option key={d.name} value={d.name}>
-                    📍 {d.name}
-                  </option>
-                )) : null;
-              })()}
-            </select>
+                  {/* State Selector */}
+                  <select
+                    value={selectedState}
+                    onChange={(e) => {
+                      const newState = e.target.value;
+                      setSelectedState(newState);
+                      setSelectedDistrict("ALL");
+                      setFilterDistrict("ALL");
+                      setSelectedTehsil("ALL");
+                      const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === newState);
+                      if (stateObj && stateObj.districts.length > 0) {
+                        const firstDist = stateObj.districts[0];
+                        setMapFlyToTarget({ lat: firstDist.lat, lon: firstDist.lon, zoom: 12, label: `${stateObj.state} • Capital: ${stateObj.capital}` });
+                      }
+                    }}
+                    className="bg-[#F8FAFC] border border-blue-400 rounded-md px-2 py-1 text-xs text-blue-800 font-semibold outline-none cursor-pointer"
+                    title="Select State & Capital"
+                  >
+                    {adminHierarchyData.all_states.map((st: any) => (
+                      <option key={st.state} value={st.state}>
+                        🏛️ {st.state} (Cap: {st.capital})
+                      </option>
+                    ))}
+                  </select>
 
-            {/* Reset Filters */}
-            <button
-              onClick={() => {
-                setFilterCategory("ALL");
-                setFilterType("ALL");
-                setFilterSeverity("ALL");
-                setFilterDistrict("ALL");
-                setFilterBus("ALL");
-                setFilterRoute("ALL");
-                setFilterDate("ALL");
-                setFilterStatus("ALL");
-                setFilterMinConfidence(0);
-                setSelectedDistrict("ALL");
-                setSelectedTehsil("ALL");
-              }}
-              className="px-2.5 py-1 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] hover:text-[#1F2243] transition text-[11px] font-semibold ml-auto border border-[#CBD5E1]"
-            >
-              Reset Filters
-            </button>
-          </div>
-        </div>
+                  {/* District Selector */}
+                  <select
+                    value={selectedDistrict}
+                    onChange={(e) => {
+                      const newDist = e.target.value;
+                      setSelectedDistrict(newDist);
+                      setFilterDistrict(newDist);
+                      setSelectedTehsil("ALL");
+                      const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
+                      if (stateObj) {
+                        const distObj = stateObj.districts.find((d: any) => d.name === newDist);
+                        if (distObj) {
+                          setMapFlyToTarget({ lat: distObj.lat, lon: distObj.lon, zoom: 13, label: `${distObj.name} District, ${stateObj.state}` });
+                        }
+                      }
+                    }}
+                    className="bg-[#F8FAFC] border border-emerald-400 rounded-md px-2 py-1 text-xs text-emerald-800 font-semibold outline-none cursor-pointer"
+                    title="Select District"
+                  >
+                    <option value="ALL">All Districts</option>
+                    {(() => {
+                      const stateObj = adminHierarchyData.all_states.find((s: any) => s.state === selectedState);
+                      return stateObj ? stateObj.districts.map((d: any) => (
+                        <option key={d.name} value={d.name}>
+                          📍 {d.name}
+                        </option>
+                      )) : null;
+                    })()}
+                  </select>
+
+                  {/* Reset Filters */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFilterCategory("ALL");
+                      setFilterType("ALL");
+                      setFilterSeverity("ALL");
+                      setFilterDistrict("ALL");
+                      setFilterBus("ALL");
+                      setFilterRoute("ALL");
+                      setFilterDate("ALL");
+                      setFilterStatus("ALL");
+                      setFilterMinConfidence(0);
+                      setSelectedDistrict("ALL");
+                      setSelectedTehsil("ALL");
+                      setActionNotice("Filters reset to default view.");
+                      setTimeout(() => setActionNotice(null), 2500);
+                    }}
+                    className="px-2.5 py-1 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#4F546F] hover:text-[#1F2243] transition text-[11px] font-semibold ml-auto border border-[#CBD5E1] cursor-pointer"
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+            )}
+          </aside>
+        )}
 
         {/* ── MAP CANVAS (REAL GOOGLE MAPS / VECTOR PROJECTION) ───────────────────── */}
         {mapViewMode === "REAL_MAP" ? (
-          <div className={`flex-1 w-full h-[calc(100vh-56px)] min-h-[450px] relative bg-gray-950 overflow-hidden ${
+          <div className={`flex-1 w-full h-[calc(100vh-56px)] min-h-[450px] relative z-0 isolate bg-gray-950 overflow-hidden ${
             mobileGisTab === "INTEL" ? "hidden lg:block" : "block"
           }`}>
             <LiveGisMap
@@ -1100,6 +1630,7 @@ export const GisCommandCenter: React.FC = () => {
                 severity: filterSeverity,
                 status: filterStatus,
                 date: filterDate,
+                district: selectedDistrict,
                 bus: filterBus,
                 route: filterRoute,
                 minConfidence: filterMinConfidence,
@@ -1109,12 +1640,14 @@ export const GisCommandCenter: React.FC = () => {
                 const norm = normalizeGisEvent(ev);
                 setSelectedEvent(norm);
                 setIsDetailsOpen(true);
+                setShowIntelPanel(true);
+                setActiveWindowZ("INTEL");
                 setMobileGisTab("INTEL");
               }}
             />
           </div>
         ) : (
-        <div className={`flex-1 w-full h-full relative bg-gray-950 overflow-hidden cursor-default ${
+        <div className={`flex-1 w-full h-full relative z-0 isolate bg-gray-950 overflow-hidden cursor-default ${
           mobileGisTab === "INTEL" ? "hidden lg:block" : "block"
         }`}>
           {/* Cartographic Vector Grid Background (CartoDB Dark Tile Simulation) */}
@@ -1207,6 +1740,8 @@ export const GisCommandCenter: React.FC = () => {
                       setZoomLevel((z) => Math.min(16, z + 2));
                       setSelectedEvent(normalizeGisEvent(c.events[0]));
                       setIsDetailsOpen(true);
+                      setShowIntelPanel(true);
+                      setActiveWindowZ("INTEL");
                     }}
                   >
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand to-purple-600 text-white font-mono font-black text-xs flex items-center justify-center shadow-xl shadow-brand/50 border-2 border-white/80 group-hover:scale-110 transition">
@@ -1233,6 +1768,8 @@ export const GisCommandCenter: React.FC = () => {
                   onClick={() => {
                     setSelectedEvent(normalizeGisEvent(ev));
                     setIsDetailsOpen(true);
+                    setShowIntelPanel(true);
+                    setActiveWindowZ("INTEL");
                   }}
                 >
                   <div
@@ -1289,12 +1826,252 @@ export const GisCommandCenter: React.FC = () => {
         </div>
         )}
 
-        {/* ── RIGHT INTELLIGENCE SIDEBAR ──── */}
-        <aside className={`w-full lg:w-[390px] bg-[#131628] border-l border-[#232746] shadow-2xl flex-col h-full z-20 shrink-0 text-slate-100 overflow-hidden ${
-          mobileGisTab === "MAP" ? "hidden lg:flex" : "flex"
-        }`}>
+        {/* ── MOVABLE / DRAGGABLE FLOATING PANEL: INTELLIGENCE & FLEET SIDEBAR (Image 3) ──── */}
+        {showIntelPanel && (
+          <aside
+            style={{
+              left: `${intelPos.x}px`,
+              top: `${intelPos.y}px`,
+              zIndex: activeWindowZ === "INTEL" ? 1200 : 1040,
+            }}
+            onPointerDown={() => setActiveWindowZ("INTEL")}
+            className="absolute w-[390px] max-w-[calc(100vw-24px)] bg-[#131628]/95 backdrop-blur-md border border-[#232746] rounded-xl shadow-2xl flex flex-col overflow-hidden text-slate-100 transition-shadow animate-in fade-in zoom-in-95 duration-150 select-none"
+          >
+            {/* Movable Window Header */}
+            <div
+              onPointerDown={(e) => handlePanelDragStart(e, "INTEL")}
+              className="p-2.5 border-b border-[#232746] flex items-center justify-between bg-[#16192E] cursor-grab active:cursor-grabbing hover:bg-[#1C203B] transition"
+              title="Click and drag to move panel"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-white select-none truncate">
+                <GripHorizontal size={15} className="text-slate-500 hover:text-amber-400 shrink-0" />
+                <Activity size={14} className="text-cyan-400 shrink-0" />
+                <span className="truncate">Fleet & Detection Intelligence</span>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] font-semibold shrink-0">
+                <button
+                  onClick={resetIntelPos}
+                  className="p-1 text-slate-400 hover:text-cyan-400 rounded cursor-pointer transition"
+                  title="Reset Position"
+                >
+                  <RotateCcw size={12} />
+                </button>
+                <button
+                  onClick={() => setIsIntelMinimized((v) => !v)}
+                  className="p-1 text-slate-400 hover:text-amber-400 rounded cursor-pointer transition"
+                  title={isIntelMinimized ? "Expand Panel" : "Minimize Panel"}
+                >
+                  {isIntelMinimized ? <Square size={12} /> : <Minus size={12} />}
+                </button>
+                <button
+                  onClick={() => setShowIntelPanel(false)}
+                  className="p-1 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition"
+                  title="Close Intel Panel"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+            </div>
+
+            {/* Window Body (collapsible) */}
+            {!isIntelMinimized && (
+              <div className="flex-1 flex flex-col max-h-[calc(100vh-180px)] overflow-hidden">
           <ErrorBoundary fallbackTitle="Intelligence Drawer Interruption">
-            {isDetailsOpen && selectedEvent ? (
+            {isDetailsOpen && selectedBus ? (
+              /* ── BUS EDGE NODE INSPECTOR VIEW (Phase 8) ────────────────────── */
+              <div className="flex-1 flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200 touch-scroll">
+                {/* Inspector Header */}
+                <div className="p-3.5 border-b border-[#232746] flex items-center justify-between bg-[#16192E] sticky top-0 z-10">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setIsDetailsOpen(false);
+                        setSelectedBus(null);
+                      }}
+                      className="px-2 py-1 rounded-md bg-[#1E2342] hover:bg-[#282F5A] text-slate-300 hover:text-white border border-[#2B325E] transition flex items-center gap-1 text-xs font-bold cursor-pointer"
+                      title="Return to Stream"
+                    >
+                      <ArrowLeft size={13} />
+                      <span>Stream</span>
+                    </button>
+                    <span className="text-slate-600">|</span>
+                    <span className="font-mono font-black text-sm text-white">
+                      🚌 {selectedBus.bus_id}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono border ${
+                      selectedBus.AI_status === "INFERENCING"
+                        ? "bg-amber-950/80 text-amber-300 border-amber-500/50 animate-pulse"
+                        : "bg-emerald-950/80 text-emerald-300 border-emerald-500/50"
+                    }`}>
+                      AI: {selectedBus.AI_status || "ONLINE"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Inspector Body */}
+                <div className="p-4 space-y-3.5 text-xs text-slate-200">
+                  {/* Bus Identity Card */}
+                  <div className="bg-[#0B0D18] border border-[#232746] rounded-xl p-3.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono">
+                          Transit Corridor Node
+                        </div>
+                        <div className="text-sm font-extrabold text-white">
+                          {selectedBus.name || `Connected Bus ${selectedBus.bus_id}`}
+                        </div>
+                      </div>
+                      <span className="px-2 py-1 rounded-lg bg-blue-950 text-blue-300 border border-blue-800/60 font-mono font-extrabold text-xs">
+                        {selectedBus.route_id}
+                      </span>
+                    </div>
+
+                    {/* Real-time Kinematics Grid */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#232746]/80 text-[11px]">
+                      <div>
+                        <span className="text-[9px] uppercase tracking-wider text-slate-400 font-mono block">Instant Speed</span>
+                        <span className="text-lg font-black text-cyan-300 font-mono">
+                          {Math.round(selectedBus.speed_kmh || selectedBus.speed || 0)} <span className="text-xs font-normal">km/h</span>
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] uppercase tracking-wider text-slate-400 font-mono block">Compass Bearing</span>
+                        <span className="text-lg font-black text-amber-300 font-mono flex items-center gap-1">
+                          <span style={{ display: "inline-block", transform: `rotate(${selectedBus.bearing_deg || selectedBus.heading || 0}deg)` }}>⬆</span>
+                          {Math.round(selectedBus.bearing_deg || selectedBus.heading || 0)}°
+                        </span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-[9px] uppercase tracking-wider text-slate-400 font-mono block">GPS Coordinate</span>
+                        <span className="font-mono text-slate-300">
+                          📍 {(selectedBus.latitude || selectedBus.lat).toFixed(5)}°N, {(selectedBus.longitude || selectedBus.lon).toFixed(5)}°E
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Edge Sensing & AI Health Card */}
+                  <div className="bg-[#0B0D18] border border-[#232746] rounded-xl p-3.5 space-y-2.5">
+                    <div className="text-[10px] uppercase font-bold tracking-wider text-cyan-400 font-mono flex items-center gap-1.5">
+                      <Cpu size={13} />
+                      <span>Edge Hardware & AI Pipeline</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 text-center">
+                      <div className="p-2 rounded-lg bg-[#16192E] border border-[#232746]">
+                        <div className="text-[8px] uppercase text-slate-400 font-mono">Camera</div>
+                        <div className={`text-[10px] font-black font-mono mt-0.5 ${
+                          selectedBus.camera_status === "ACTIVE" || selectedBus.camera_status === "STREAMING" ? "text-emerald-400" : "text-amber-400"
+                        }`}>
+                          {selectedBus.camera_status || "ACTIVE"}
+                        </div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-[#16192E] border border-[#232746]">
+                        <div className="text-[8px] uppercase text-slate-400 font-mono">AI State</div>
+                        <div className={`text-[10px] font-black font-mono mt-0.5 ${
+                          selectedBus.AI_status === "INFERENCING" ? "text-amber-400" : "text-emerald-400"
+                        }`}>
+                          {selectedBus.AI_status || "ONLINE"}
+                        </div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-[#16192E] border border-[#232746]">
+                        <div className="text-[8px] uppercase text-slate-400 font-mono">Uplink</div>
+                        <div className="text-[10px] font-black font-mono text-cyan-400 mt-0.5">
+                          {selectedBus.connection_status || "CONNECTED"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-slate-400 pt-1 flex items-center justify-between border-t border-[#232746]/60">
+                      <span>Edge Computer:</span>
+                      <span className="text-white font-mono font-bold">NVIDIA Jetson Orin Nano</span>
+                    </div>
+                  </div>
+
+                  {/* Recent Hazards Detected by this Bus */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span className="text-white uppercase tracking-wide flex items-center gap-1">
+                        <AlertTriangle size={13} className="text-amber-400" />
+                        <span>Hazards Reported by {selectedBus.bus_id}</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-1.5 py-0.2 rounded border border-cyan-800/40">
+                        {busDetailData?.total_detections_count ?? (events.filter(e => e.bus_id === selectedBus.bus_id).length)} Total
+                      </span>
+                    </div>
+
+                    {(() => {
+                      const hazards = busDetailData?.recent_hazards?.length
+                        ? busDetailData.recent_hazards
+                        : events.filter(e => e.bus_id === selectedBus.bus_id).slice(0, 6);
+
+                      if (!hazards || hazards.length === 0) {
+                        return (
+                          <div className="p-4 rounded-xl bg-[#0B0D18] border border-[#232746] text-center text-slate-400 text-xs">
+                            No recent hazards reported along {selectedBus.route_id}. Transit corridor is currently clear.
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="space-y-1.5 max-h-56 overflow-y-auto pr-0.5">
+                          {hazards.map((h: any, idx: number) => {
+                            const hType = (h.type || h.event_type || "POTHOLE").toUpperCase();
+                            const sev = (h.severity || "MEDIUM").toUpperCase();
+                            return (
+                              <div
+                                key={h.id || idx}
+                                onClick={() => {
+                                  setSelectedEvent(normalizeGisEvent(h));
+                                  setSelectedBus(null);
+                                }}
+                                className="p-2 rounded-lg bg-[#0B0D18] hover:bg-[#16192E] border border-[#232746] hover:border-amber-500/50 transition cursor-pointer flex items-center justify-between text-xs"
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="text-base shrink-0">
+                                    {hType.includes("POTHOLE") ? "🕳" : hType.includes("WATERLOG") ? "💧" : hType.includes("CONGESTION") ? "🚗" : "🚧"}
+                                  </span>
+                                  <div className="min-w-0">
+                                    <div className="font-bold text-white truncate text-[11px]">
+                                      {hType.replace(/_/g, " ")}
+                                    </div>
+                                    <div className="text-[9px] text-slate-400 font-mono">
+                                      {h.timestamp ? new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently"}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono block ${
+                                    sev === "CRITICAL" || sev === "SEVERE" ? "bg-rose-950 text-rose-300 border border-rose-500/40" : "bg-amber-950 text-amber-300 border border-amber-500/40"
+                                  }`}>
+                                    {sev}
+                                  </span>
+                                  <span className="text-[9px] text-cyan-300 font-mono block mt-0.5">
+                                    {Math.round((h.confidence ?? 0.85) * 100)}% conf
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Action CTA: Launch AI Road Scan for this Bus */}
+                  <div className="pt-2">
+                    <Link
+                      to={`/scan?busId=${encodeURIComponent(selectedBus.bus_id)}&routeId=${encodeURIComponent(selectedBus.route_id)}`}
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 transition border border-blue-400/40 text-xs"
+                    >
+                      <Camera size={14} />
+                      <span>Launch AI Road Scan for {selectedBus.bus_id}</span>
+                      <ChevronRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : isDetailsOpen && selectedEvent ? (
               /* ── EVENT DETAIL INSPECTOR VIEW ───────────────────────────────── */
               <div className="flex-1 flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200 touch-scroll">
                 {/* Inspector Header */}
@@ -1354,37 +2131,125 @@ export const GisCommandCenter: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[9px] text-[#64748B] block font-mono">CONFIDENCE</span>
-                      <span className="text-amber-600 font-extrabold text-sm font-mono">
-                        {(((selectedEvent.confidence ?? 0.9)) * 100).toFixed(0)}%
+                      <span className="text-[9px] text-[#64748B] block font-mono">AI MODEL CONFIDENCE</span>
+                      <span className="text-emerald-600 font-extrabold text-sm font-mono">
+                        {(((selectedEvent.ai_confidence ?? selectedEvent.confidence ?? 0.9)) * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
 
-                  {/* Optical Evidence Frame */}
-                  <div className="space-y-1.5">
-                    <div className="text-[10px] text-[#4F546F] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <Camera size={12} className="text-amber-600" />
-                      <span>Optical Evidence Frame (Edge AI Buffer)</span>
+                  {/* Multi-Bus Hazard Confirmation Banner (Phase 12) */}
+                  {(selectedEvent.persistence_badge || (selectedEvent.independent_buses_count && selectedEvent.independent_buses_count > 1)) ? (
+                    <div className="p-2.5 rounded-lg bg-blue-950/70 border border-blue-500/50 text-blue-200 flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🛡️</span>
+                        <div>
+                          <div className="font-extrabold text-white text-xs tracking-wide">
+                            {selectedEvent.persistence_badge || `CONFIRMED BY ${selectedEvent.independent_buses_count || 1} BUSES`}
+                          </div>
+                          <div className="text-[10px] text-blue-300 font-medium">
+                            Independent consensus: {Array.isArray(selectedEvent.contributing_buses) ? selectedEvent.contributing_buses.join(", ") : (selectedEvent.contributing_buses || selectedEvent.bus_id)}
+                            {selectedEvent.observation_count ? ` • ${selectedEvent.observation_count} observations` : ""}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-blue-900/80 text-blue-300 border border-blue-400/50">
+                        PERSISTENT
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {/* Condition Certainty Advisory Banner */}
+                  <div className={`p-2.5 rounded-lg border text-xs flex items-center justify-between ${
+                    selectedEvent.condition_type === "POTENTIAL"
+                      ? "bg-amber-950/40 border-amber-500/40 text-amber-200"
+                      : "bg-emerald-950/40 border-emerald-500/40 text-emerald-200"
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">
+                        {selectedEvent.condition_type === "POTENTIAL" ? "⚠️" : "✓"}
+                      </span>
+                      <div>
+                        <div className="font-bold">
+                          {selectedEvent.condition_type === "POTENTIAL"
+                            ? "Potential Condition (Advisory)"
+                            : "Direct Model Detection (Confirmed)"}
+                        </div>
+                        <div className="text-[10px] opacity-80">
+                          {selectedEvent.condition_label || (selectedEvent.condition_type === "POTENTIAL"
+                            ? "Derived geospatial anomaly pattern"
+                            : "Direct optical feature confirmation")}
+                        </div>
+                      </div>
+                    </div>
+                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                      selectedEvent.condition_type === "POTENTIAL"
+                        ? "bg-amber-900/60 text-amber-300 border-amber-500/40"
+                        : "bg-emerald-900/60 text-emerald-300 border-emerald-500/40"
+                    }`}>
+                      {selectedEvent.condition_type || "CONFIRMED"}
+                    </span>
+                  </div>
+
+                  {/* Optical Evidence Frame with Dual-Mode Toggle */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] text-[#4F546F] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <Camera size={12} className="text-amber-600" />
+                        <span>Optical Evidence Frame</span>
+                      </div>
+                      <div className="flex items-center bg-[#F1F5F9] rounded-md p-0.5 border border-[#CBD5E1] text-[10px]">
+                        <button
+                          onClick={() => setDrawerEvidenceMode("ANNOTATED")}
+                          className={`px-2 py-0.5 rounded font-bold transition ${
+                            drawerEvidenceMode === "ANNOTATED"
+                              ? "bg-[#1F2243] text-white shadow-sm"
+                              : "text-[#4F546F] hover:text-[#1F2243]"
+                          }`}
+                        >
+                          AI Annotated
+                        </button>
+                        <button
+                          onClick={() => setDrawerEvidenceMode("ORIGINAL")}
+                          className={`px-2 py-0.5 rounded font-bold transition ${
+                            drawerEvidenceMode === "ORIGINAL"
+                              ? "bg-[#1F2243] text-white shadow-sm"
+                              : "text-[#4F546F] hover:text-[#1F2243]"
+                          }`}
+                        >
+                          Clean Original
+                        </button>
+                      </div>
                     </div>
 
-                    {selectedEvent.evidence_image_b64 ? (
-                      <div className="relative rounded-xl overflow-hidden border border-[#CBD5E1] aspect-video bg-black flex items-center justify-center shadow-sm">
-                        <img
-                          src={selectedEvent.evidence_image_b64}
-                          alt="Incident Evidence"
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute bottom-2 left-2 bg-[#1F2243]/90 text-[10px] px-2 py-0.5 rounded text-white font-mono border border-white/20">
-                          Cam: {selectedEvent.camera_id || "FRONT"} • {selectedEvent.bus_id}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="rounded-xl border border-[#CBD5E1] p-5 bg-[#F8FAFC] flex flex-col items-center justify-center text-[#64748B] text-center">
-                        <Camera size={22} className="mb-1 text-slate-400" />
-                        <span className="text-[11px]">Optical Frame Stream Buffered</span>
-                      </div>
-                    )}
+                    {(() => {
+                      const displayImg = drawerEvidenceMode === "ORIGINAL"
+                        ? selectedEvent.original_evidence_path || selectedEvent.evidence_image_b64
+                        : selectedEvent.annotated_evidence_path || selectedEvent.evidence_image_b64;
+
+                      return displayImg ? (
+                        <div className="relative rounded-xl overflow-hidden border border-[#CBD5E1] aspect-video bg-black flex items-center justify-center shadow-sm group">
+                          <img
+                            src={displayImg}
+                            alt="Incident Evidence"
+                            className="w-full h-full object-cover"
+                          />
+                          <span className="absolute bottom-2 left-2 bg-[#1F2243]/90 text-[10px] px-2 py-0.5 rounded text-white font-mono border border-white/20">
+                            {drawerEvidenceMode === "ORIGINAL" ? "RAW FRAME" : "AI DETECTIONS"} • {selectedEvent.bus_id}
+                          </span>
+                          {selectedEvent.frame_number ? (
+                            <span className="absolute bottom-2 right-2 bg-black/70 text-[9px] px-1.5 py-0.5 rounded text-slate-300 font-mono">
+                              Frame #{selectedEvent.frame_number}
+                            </span>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <div className="rounded-xl border border-[#CBD5E1] p-5 bg-[#F8FAFC] flex flex-col items-center justify-center text-[#64748B] text-center">
+                          <Camera size={22} className="mb-1 text-slate-400" />
+                          <span className="text-[11px]">Optical Frame Stream Buffered</span>
+                        </div>
+                      );
+                    })()}
 
                     {selectedEvent.evidence_clip_url && (
                       <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-between text-xs text-amber-900 font-medium">
@@ -1402,11 +2267,23 @@ export const GisCommandCenter: React.FC = () => {
                   {/* Telemetry & Metadata Grid */}
                   <div className="bg-[#F8FAFC] rounded-xl p-3 border border-[#E2E8F0] space-y-1.5 text-[11px]">
                     <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
-                      <span className="text-[#64748B]">Bus ID</span>
+                      <span className="text-[#64748B]">Source Bus Node</span>
                       <span className="text-[#1F2243] font-bold font-mono">{selectedEvent.bus_id}</span>
                     </div>
                     <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
-                      <span className="text-[#64748B]">Camera Angle</span>
+                      <span className="text-[#64748B]">Source Feed / Video</span>
+                      <span className="text-[#1F2243] font-mono text-[10px] truncate max-w-[180px]">
+                        {selectedEvent.source_video || "Onboard Dashcam"}
+                      </span>
+                    </div>
+                    {selectedEvent.track_id ? (
+                      <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                        <span className="text-[#64748B]">ByteTracker ID</span>
+                        <span className="text-[#1F2243] font-mono font-bold">Track #{selectedEvent.track_id}</span>
+                      </div>
+                    ) : null}
+                    <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                      <span className="text-[#64748B]">Camera Sensor</span>
                       <span className="text-[#1F2243] font-semibold">{selectedEvent.camera_id || "FRONT"}</span>
                     </div>
                     <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
@@ -1422,12 +2299,30 @@ export const GisCommandCenter: React.FC = () => {
                         {selectedEvent.gps?.lon != null ? selectedEvent.gps.lon.toFixed(4) : "—"}°E
                       </span>
                     </div>
-                    {selectedEvent.ticket_id && (
-                      <div className="flex justify-between py-1 bg-amber-50 px-2 rounded border border-amber-300 font-bold text-amber-900">
-                        <span>Dispatched Work Order:</span>
-                        <span className="font-mono">{selectedEvent.ticket_id}</span>
+                    {selectedEvent.independent_buses_count && selectedEvent.independent_buses_count > 1 ? (
+                      <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                        <span className="text-[#2563EB] font-semibold">Independent Observations</span>
+                        <span className="text-[#1D4ED8] font-mono font-bold">
+                          {selectedEvent.independent_buses_count} Buses ({selectedEvent.observation_count || selectedEvent.independent_buses_count} detections)
+                        </span>
                       </div>
-                    )}
+                    ) : null}
+                    {selectedEvent.last_detected_at ? (
+                      <div className="flex justify-between py-0.5 border-b border-[#E2E8F0]">
+                        <span className="text-[#64748B]">Last Detected At</span>
+                        <span className="text-[#1F2243] font-mono">
+                          {new Date(selectedEvent.last_detected_at).toLocaleString()}
+                        </span>
+                      </div>
+                    ) : null}
+                    <div className="flex justify-between py-1 bg-amber-50/80 px-2 rounded border border-amber-300/80 font-bold text-amber-900">
+                      <span>Maintenance Ticket:</span>
+                      <span className="font-mono">
+                        {selectedEvent.ticket_id
+                          ? `${selectedEvent.ticket_id} (${selectedEvent.maintenance_ticket_status || 'ASSIGNED'})`
+                          : "None (Pending Dispatch)"}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Sensor Diagnostics */}
@@ -1740,7 +2635,10 @@ export const GisCommandCenter: React.FC = () => {
               </div>
             )}
           </ErrorBoundary>
-        </aside>
+              </div>
+            )}
+          </aside>
+        )}
       </div>
     </div>
   );

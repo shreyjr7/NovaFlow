@@ -32,7 +32,9 @@ from sqlmodel import Session, col, desc, select
 
 from ..database.session import engine, get_session
 from ..models.ingested_event import IngestedEvent
+from ..models.ai_scan_entities import RoadDetection, MaintenanceTicket, PersistentHazard
 from ..services.demo_seeder_service import get_demo_seeder_service
+from ..services.video_analyzer_service import _ACTIVE_JOBS
 
 logger = logging.getLogger("routers.gis")
 router = APIRouter()
@@ -207,7 +209,188 @@ async def get_gis_features(
     Returns RFC 7946 GeoJSON FeatureCollection for all 12 command center map layers.
     Combines live database records with default spatial clusters.
     """
-    # 1. Fetch persistent database records
+    # 1. Build maintenance ticket lookup dictionary
+    ticket_by_event_id: Dict[str, Any] = {}
+    try:
+        db_tickets = db.exec(select(MaintenanceTicket)).all()
+        for t in db_tickets:
+            if t.detection_id:
+                ticket_by_event_id[str(t.detection_id)] = t.to_dict()
+            ticket_by_event_id[t.ticket_code] = t.to_dict()
+    except Exception as t_err:
+        logger.debug(f"MaintenanceTicket query note: {t_err}")
+
+    for mt in MAINTENANCE_TICKETS:
+        if mt.get("event_id"):
+            ticket_by_event_id[mt["event_id"]] = mt
+
+    # 1b. Build persistent hazard lookup dictionary
+    hazard_by_id: Dict[str, Any] = {}
+    try:
+        db_hazards = db.exec(select(PersistentHazard)).all()
+        for h in db_hazards:
+            h_data = h.to_dict()
+            hazard_by_id[str(h.id)] = h_data
+            if h.hazard_code:
+                hazard_by_id[h.hazard_code] = h_data
+    except Exception as h_err:
+        logger.debug(f"PersistentHazard query note: {h_err}")
+
+    features = []
+    seen_event_ids = set()
+
+    # Helper: Convert detection record or RoadDetection model to GeoJSON Feature
+    def _map_detection_to_feature(det_dict: Dict[str, Any]) -> Dict[str, Any]:
+        raw_type = str(det_dict.get("type") or det_dict.get("event_type") or "POTHOLE").upper()
+        
+        # Direct vs. Derived categorization
+        is_derived = False
+        condition_type = "DIRECT"
+        condition_label = "Direct AI Computer Vision Detection"
+
+        if "POTHOLE" in raw_type:
+            layer_name = "potholes"
+            cat_name = "ROAD_DAMAGE"
+        elif any(k in raw_type for k in ["CRACK", "DAMAGE", "DEBRIS"]):
+            layer_name = "road_damage"
+            cat_name = "ROAD_DAMAGE"
+        elif "WATERLOG" in raw_type:
+            layer_name = "waterlogging"
+            cat_name = "WATERLOGGING"
+        elif "ZEBRA" in raw_type:
+            layer_name = "zebra_crossing_issues"
+            cat_name = "ROAD_DAMAGE"
+        elif "SIGN" in raw_type:
+            layer_name = "missing_signs"
+            cat_name = "ROAD_DAMAGE"
+            is_derived = True
+            condition_type = "POTENTIAL"
+            condition_label = "Potential Sign Obstruction / Displacement"
+        elif "DIVIDER" in raw_type:
+            layer_name = "missing_dividers"
+            cat_name = "ROAD_DAMAGE"
+            is_derived = True
+            condition_type = "POTENTIAL"
+            condition_label = "Potential Divider Breach / Discontinuity"
+        elif any(k in raw_type for k in ["BUS", "CAR", "TRUCK", "MOTORCYCLE", "VEHICLE", "CONGESTION"]):
+            layer_name = "traffic_congestion"
+            cat_name = "TRAFFIC"
+            is_derived = True
+            condition_type = "POTENTIAL"
+            condition_label = "Potential Vehicle Density Cluster"
+        elif "PEDESTRIAN" in raw_type:
+            layer_name = "pedestrian_risk"
+            cat_name = "PEDESTRIAN_RISK"
+            is_derived = True
+            condition_type = "POTENTIAL"
+            condition_label = "Potential Pedestrian in Transit Corridor"
+        elif "INCIDENT" in raw_type:
+            layer_name = "incidents"
+            cat_name = "INCIDENT"
+            is_derived = True
+            condition_type = "POTENTIAL"
+            condition_label = "Potential Transit Corridor Incident"
+        else:
+            layer_name = "road_damage"
+            cat_name = "ROAD_DAMAGE"
+
+        det_id = str(det_dict.get("id") or det_dict.get("event_id") or uuid.uuid4().hex[:8].upper())
+        override = ACTION_OVERRIDES.get(det_id, {})
+        ticket_info = ticket_by_event_id.get(det_id, {}) or override
+
+        ticket_id = override.get("ticket_id") or ticket_info.get("ticket_id") or det_dict.get("ticket_id")
+        ticket_status = override.get("status") or ticket_info.get("status") or ("ASSIGNED" if ticket_id else "NONE")
+
+        lat = float(det_dict.get("latitude") or det_dict.get("lat") or 12.9348)
+        lon = float(det_dict.get("longitude") or det_dict.get("lon") or 77.6101)
+
+        evidence_original = det_dict.get("original_evidence_path") or det_dict.get("evidence_path")
+        evidence_annotated = det_dict.get("annotated_evidence_path") or det_dict.get("evidence_path") or det_dict.get("evidence_image_b64")
+        evidence_thumb = det_dict.get("thumbnail_path")
+
+        props = {
+            "event_id": det_id,
+            "id": det_id,
+            "event_type": raw_type,
+            "layer": layer_name,
+            "category": cat_name,
+            "is_derived": is_derived,
+            "condition_type": condition_type,
+            "condition_label": condition_label,
+            "confidence": round(float(det_dict.get("confidence") or 0.85), 3),
+            "severity": str(det_dict.get("severity") or "MEDIUM").upper(),
+            "status": override.get("status", det_dict.get("status", "CONFIRMED")),
+            "bus_id": str(det_dict.get("bus_id") or "BUS-027"),
+            "camera_id": str(det_dict.get("camera_id") or "FRONT_CAMERA"),
+            "source_video": str(det_dict.get("source_video") or det_dict.get("video_file_name") or "Live Camera / Stream"),
+            "frame_number": int(det_dict.get("frame_number") or 0),
+            "track_id": int(det_dict.get("track_id") or 0),
+            "timestamp": str(det_dict.get("timestamp") or datetime.now(timezone.utc).isoformat()),
+            "lat": lat,
+            "lon": lon,
+            "gps": {
+                "lat": lat,
+                "lon": lon,
+                "road_segment": str(det_dict.get("road_segment") or f"Transit Corridor ({lat:.4f}, {lon:.4f})"),
+                "address": str(det_dict.get("address") or f"Monitored Transit Route ({lat:.4f}, {lon:.4f})"),
+                "bearing_deg": float(det_dict.get("bearing_deg") or 0),
+            },
+            "evidence_image_b64": evidence_annotated or evidence_original,
+            "evidence_path": evidence_original,
+            "original_evidence_path": evidence_original,
+            "annotated_evidence_path": evidence_annotated,
+            "thumbnail_path": evidence_thumb,
+            "ticket_id": ticket_id,
+            "maintenance_ticket_status": ticket_status,
+            "persistent_hazard_id": det_dict.get("persistent_hazard_id"),
+            "independent_buses_count": int((hazard_by_id.get(str(det_dict.get("persistent_hazard_id") or "")) or {}).get("independent_buses_count") or det_dict.get("independent_buses_count") or 1),
+            "contributing_buses": (hazard_by_id.get(str(det_dict.get("persistent_hazard_id") or "")) or {}).get("contributing_buses") or det_dict.get("contributing_buses") or det_dict.get("bus_id") or "BUS-027",
+            "persistence_badge": (hazard_by_id.get(str(det_dict.get("persistent_hazard_id") or "")) or {}).get("persistence_status") or det_dict.get("persistence_badge") or (f"CONFIRMED BY {int(det_dict.get('independent_buses_count') or 1)} BUSES" if int(det_dict.get("independent_buses_count") or 1) >= 2 else "SINGLE OBSERVATION"),
+            "last_detected_at": str((hazard_by_id.get(str(det_dict.get("persistent_hazard_id") or "")) or {}).get("last_detected_at") or det_dict.get("last_detected_at") or det_dict.get("timestamp") or datetime.now(timezone.utc).isoformat()),
+            "ai_confidence": round(float(det_dict.get("confidence") or 0.85), 3),
+            "observation_count": int((hazard_by_id.get(str(det_dict.get("persistent_hazard_id") or "")) or {}).get("total_observations") or det_dict.get("observation_count") or 1),
+            "details": det_dict.get("details") or {},
+        }
+        return {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [lon, lat],
+            },
+            "properties": props,
+        }
+
+    # 2. Fetch RoadDetection records from database
+    try:
+        det_query = select(RoadDetection)
+        if severity:
+            det_query = det_query.where(RoadDetection.severity == severity.upper())
+        if status_filter:
+            det_query = det_query.where(RoadDetection.status == status_filter.upper())
+        if bus_id:
+            det_query = det_query.where(RoadDetection.bus_id == bus_id)
+
+        db_detections = db.exec(det_query).all()
+        for rd in db_detections:
+            det_dict = rd.to_dict()
+            feat = _map_detection_to_feature(det_dict)
+            features.append(feat)
+            seen_event_ids.add(feat["properties"]["event_id"])
+    except Exception as det_err:
+        logger.debug(f"RoadDetection query note: {det_err}")
+
+    # 3. Include active detections from in-flight / recent scan jobs
+    for jid, job in _ACTIVE_JOBS.items():
+        for det in job.get("detections", []):
+            d_id = det.get("id")
+            if d_id and d_id not in seen_event_ids:
+                det_copy = dict(det)
+                det_copy["source_video"] = job.get("video_file_name", "dashcam_video.mp4")
+                feat = _map_detection_to_feature(det_copy)
+                features.append(feat)
+                seen_event_ids.add(d_id)
+
+    # 4. Fetch persistent IngestedEvent database records
     db_query = select(IngestedEvent)
     if event_type:
         db_query = db_query.where(IngestedEvent.event_type == event_type.upper())
@@ -221,40 +404,22 @@ async def get_gis_features(
         db_query = db_query.where(IngestedEvent.district == district)
 
     db_events = db.exec(db_query).all()
-    features = []
-
-    # Map layer classification helper
-    def _get_layer_name(ev_type: str) -> str:
-        t = ev_type.upper()
-        if "POTHOLE" in t: return "potholes"
-        if "DAMAGE" in t: return "road_damage"
-        if "WATERLOG" in t: return "waterlogging"
-        if "SIGN" in t: return "missing_signs"
-        if "DIVIDER" in t: return "missing_dividers"
-        if "ZEBRA" in t: return "zebra_crossing_issues"
-        if "CONGESTION" in t: return "traffic_congestion"
-        if "INCIDENT" in t: return "incidents"
-        if "PEDESTRIAN" in t: return "pedestrian_risk"
-        if "ANPR" in t or "PLATE" in t or "INTRUSION" in t: return "anpr_violations"
-        if "TICKET" in t: return "maintenance_tickets"
-        return "potholes"
-
-    # Add DB features
     for r in db_events:
-        feat = r.to_geojson_feature()
-        feat["properties"]["layer"] = _get_layer_name(r.event_type)
-        # Apply action overrides if any
-        if r.event_id in ACTION_OVERRIDES:
-            feat["properties"].update(ACTION_OVERRIDES[r.event_id])
-        features.append(feat)
+        if r.event_id not in seen_event_ids:
+            feat = r.to_geojson_feature()
+            feat["properties"]["layer"] = _map_detection_to_feature({"type": r.event_type})["properties"]["layer"]
+            feat["properties"]["condition_type"] = "DIRECT"
+            if r.event_id in ACTION_OVERRIDES:
+                feat["properties"].update(ACTION_OVERRIDES[r.event_id])
+            features.append(feat)
+            seen_event_ids.add(r.event_id)
 
-    # Add sample GIS seeds if database has few records
+    # 5. Add sample GIS seeds if dataset has few records
     for s in DEFAULT_GIS_EVENTS:
-        if s["event_id"] not in [f["properties"]["event_id"] for f in features]:
+        if s["event_id"] not in seen_event_ids:
             props = dict(s)
             if s["event_id"] in ACTION_OVERRIDES:
                 props.update(ACTION_OVERRIDES[s["event_id"]])
-
             feat = {
                 "type": "Feature",
                 "geometry": {
@@ -264,23 +429,29 @@ async def get_gis_features(
                 "properties": props,
             }
             features.append(feat)
+            seen_event_ids.add(s["event_id"])
 
-    # 2. Filter features based on query parameters
+    # 6. Filter features based on query parameters
     active_layers = set(layer.split(",")) if layer else None
 
     filtered_features = []
+    layer_counts: Dict[str, int] = {}
+
     for f in features:
         p = f["properties"]
-        if active_layers and p.get("layer") not in active_layers:
+        l_name = p.get("layer", "road_damage")
+        layer_counts[l_name] = layer_counts.get(l_name, 0) + 1
+
+        if active_layers and l_name not in active_layers:
             continue
         if category and category.upper() != "ALL":
             cat = category.upper()
             ev_t = p.get("event_type", "").upper()
-            if cat == "ROAD_DAMAGE" and not any(k in ev_t for k in ["POTHOLE", "DAMAGE", "SIGN", "DIVIDER", "ZEBRA"]):
+            if cat == "ROAD_DAMAGE" and not any(k in ev_t for k in ["POTHOLE", "DAMAGE", "CRACK", "DEBRIS", "SIGN", "DIVIDER", "ZEBRA"]):
                 continue
             elif cat == "WATERLOGGING" and "WATERLOG" not in ev_t:
                 continue
-            elif cat == "TRAFFIC" and "CONGESTION" not in ev_t:
+            elif cat == "TRAFFIC" and not any(k in ev_t for k in ["CONGESTION", "BUS", "CAR", "TRUCK", "MOTORCYCLE"]):
                 continue
             elif cat == "PEDESTRIAN_RISK" and "PEDESTRIAN" not in ev_t:
                 continue
@@ -317,6 +488,7 @@ async def get_gis_features(
                 "zebra_crossing_issues", "traffic_congestion", "incidents",
                 "pedestrian_risk", "maintenance_tickets"
             ],
+            "layer_counts": layer_counts,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         },
     }
@@ -370,6 +542,7 @@ async def get_gis_routes():
 
 
 @router.patch("/events/{event_id}/action", summary="Perform officer action on event")
+@router.post("/events/{event_id}/action", summary="Perform officer action on event (POST alias)")
 async def perform_event_action(
     event_id: str,
     body: EventActionRequest,
@@ -379,6 +552,9 @@ async def perform_event_action(
     Executes Confirm, Dismiss, Escalate, or Maintenance Ticket generation for an event.
     """
     action_upper = body.action.upper()
+    if action_upper == "CREATE_TICKET":
+        action_upper = "CREATE_MAINTENANCE_TICKET"
+
     valid_actions = {"CONFIRM", "DISMISS", "ESCALATE", "CREATE_MAINTENANCE_TICKET"}
     if action_upper not in valid_actions:
         raise HTTPException(
@@ -429,6 +605,48 @@ async def perform_event_action(
         db.add(db_evt)
         db.commit()
         db.refresh(db_evt)
+
+    # Check if event_id matches a RoadDetection record
+    try:
+        clean_uuid = None
+        if event_id.startswith("DET-"):
+            clean_uuid = uuid.UUID(hex=event_id.replace("DET-", "").zfill(32))
+        else:
+            try:
+                clean_uuid = uuid.UUID(event_id)
+            except Exception:
+                pass
+
+        if clean_uuid:
+            det_stmt = select(RoadDetection).where(RoadDetection.id == clean_uuid)
+            db_det = db.exec(det_stmt).first()
+            if db_det:
+                db_det.status = new_status
+                db.add(db_det)
+                db.commit()
+
+        if ticket_id:
+            db_t = MaintenanceTicket(
+                ticket_code=ticket_id,
+                detection_id=clean_uuid,
+                hazard_type=db_evt.event_type if db_evt else "ROAD_HAZARD",
+                title=f"Repair Work Order for {event_id}",
+                location_description=body.notes or "Identified via NovaFlow Edge Vision Grid",
+                latitude=float(getattr(db_evt, "latitude", 12.9348) if db_evt else 12.9348),
+                longitude=float(getattr(db_evt, "longitude", 77.6101) if db_evt else 77.6101),
+                severity=body.priority or "HIGH",
+                priority=body.priority or "P1",
+                agency=body.department or "PWD Road Infrastructure Maintenance",
+                status="ASSIGNED",
+                evidence=getattr(db_evt, "evidence_url", None) if db_evt else None,
+                source_bus=getattr(db_evt, "bus_id", "OFFICER_DISPATCH") if db_evt else "OFFICER_DISPATCH",
+                observation_count=1,
+                field_notes=body.notes,
+            )
+            db.add(db_t)
+            db.commit()
+    except Exception as db_sync_err:
+        logger.debug(f"Action DB sync note: {db_sync_err}")
 
     logger.info(f"Officer action executed on event {event_id}: {action_upper} -> {new_status}")
 

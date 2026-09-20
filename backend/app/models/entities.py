@@ -23,6 +23,8 @@ from sqlmodel import Field, SQLModel
 
 # Re-export canonical IngestedEvent
 from .ingested_event import IngestedEvent
+# Re-export AI Road Scan entities
+from .ai_scan_entities import ScanJob, RoadDetection, MaintenanceTicket, EvidenceReference
 
 
 class GpsTelemetry(SQLModel, table=True):
@@ -87,37 +89,78 @@ class RouteModel(SQLModel, table=True):
 
 
 class BusModel(SQLModel, table=True):
-    """Connected transit buses with current kinematic position."""
+    """Connected transit buses with current kinematic position and AI edge status."""
     __tablename__ = "transit_buses"
 
     id: UUID = Field(default_factory=uuid4, primary_key=True, index=True)
     bus_id: str = Field(unique=True, index=True, max_length=64)
-    name: str = Field(max_length=128)
+    name: str = Field(default="Connected Transit Bus", max_length=128)
     model: str = Field(default="Tata Starbus EV", max_length=128)
     route_id: Optional[str] = Field(default="R-01", index=True, max_length=64)
     status: str = Field(default="IN_SERVICE", max_length=32)  # IN_SERVICE, MAINTENANCE, DEPOT
+
+    # Kinematics & Spatial (Core Phase 8: latitude, longitude, speed, heading, timestamp)
     current_lat: float = Field(default=28.6139)
     current_lon: float = Field(default=77.2090)
+    latitude: Optional[float] = Field(default=28.6139)
+    longitude: Optional[float] = Field(default=77.2090)
     speed_kmh: float = Field(default=35.0)
+    speed: Optional[float] = Field(default=35.0)
     bearing_deg: float = Field(default=0.0)
-    camera_status: str = Field(default="HEALTHY", max_length=32)
-    edge_device_id: str = Field(default="NVIDIA Jetson Orin Nano", max_length=128)
+    heading: Optional[float] = Field(default=0.0)
     last_heartbeat: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    # Edge Hardware & Intelligence (camera_status, AI_status, connection_status)
+    camera_status: str = Field(default="ACTIVE", max_length=32)  # ACTIVE, STREAMING, DEGRADED, OFFLINE
+    AI_status: str = Field(default="ONLINE", max_length=32)       # INFERENCING, ONLINE, STANDBY, OFFLINE
+    connection_status: str = Field(default="CONNECTED", max_length=32)  # CONNECTED, DEGRADED, DISCONNECTED
+    edge_device_id: str = Field(default="NVIDIA Jetson Orin Nano", max_length=128)
+
+    def sync_kinematics(self, lat: float, lon: float, spd: float = 0.0, hdg: float = 0.0, ts: Optional[datetime] = None):
+        """Helper to synchronize dual kinematic fields."""
+        now = ts or datetime.now(timezone.utc)
+        self.current_lat = lat
+        self.latitude = lat
+        self.current_lon = lon
+        self.longitude = lon
+        self.speed_kmh = spd
+        self.speed = spd
+        self.bearing_deg = hdg
+        self.heading = hdg
+        self.last_heartbeat = now
+        self.timestamp = now
 
     def to_dict(self) -> Dict[str, Any]:
+        lat = self.latitude if self.latitude is not None else self.current_lat
+        lon = self.longitude if self.longitude is not None else self.current_lon
+        spd = self.speed if self.speed is not None else self.speed_kmh
+        hdg = self.heading if self.heading is not None else self.bearing_deg
+        ts = (self.timestamp or self.last_heartbeat or datetime.now(timezone.utc)).isoformat()
+
         return {
+            # 10 Core Phase 8 fields
             "bus_id": self.bus_id,
+            "route_id": self.route_id or "R-01",
+            "latitude": lat,
+            "longitude": lon,
+            "speed": spd,
+            "heading": hdg,
+            "timestamp": ts,
+            "camera_status": self.camera_status,
+            "AI_status": self.AI_status,
+            "connection_status": self.connection_status,
+
+            # Legacy & UI compatibility fields
             "name": self.name,
             "model": self.model,
-            "route_id": self.route_id,
             "status": self.status,
-            "current_lat": self.current_lat,
-            "current_lon": self.current_lon,
-            "speed_kmh": self.speed_kmh,
-            "bearing_deg": self.bearing_deg,
-            "camera_status": self.camera_status,
+            "current_lat": lat,
+            "current_lon": lon,
+            "speed_kmh": spd,
+            "bearing_deg": hdg,
             "edge_device": self.edge_device_id,
-            "last_heartbeat": self.last_heartbeat.isoformat(),
+            "last_heartbeat": ts,
         }
 
 
